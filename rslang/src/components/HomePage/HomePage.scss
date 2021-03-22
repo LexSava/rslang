@@ -7,6 +7,7 @@
   margin-top: 25px;
   text-align: end;
   padding-right: 20px;
+  font-family: "Chango", cursive;
 }
 .main-block {
   height: 700px;
@@ -28,8 +29,29 @@
   font-weight: 500;
 }
 .login-button {
-  font-size: 1.3rem;
   font-weight: 300;
   padding: 7px 27px;
   font-weight: 400;
+}
+.description-block {
+  float: right;
+}
+.description-head {
+  text-align: end;
+  font-size: 1.5rem;
+  font-weight: 900;
+  p {
+    font-weight: 900;
+    font-size: 1.5rem;
+    text-align: end;
+    font-family: "Chango", cursive;
+  }
+}
+.description-text {
+  font-size: 1rem;
+  line-height: 20px;
+}
+.description-btn {
+  width: 150px;
+  height: 50px;
 }
