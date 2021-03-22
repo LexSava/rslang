@@ -59,6 +59,14 @@
   font-size: 1.5rem;
   font-weight: 800;
 }
+.card {
+  transition: 1s;
+}
+.card:hover {
+  cursor: pointer;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
 .card-title {
   text-align: end;
   font-weight: 600;

@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import Words from "../../assets/img/words.jpg";
 import Articles from "../../assets/img/articles.jpg";
 import Tests from "../../assets/img/tests.jpg";
+import Games from "../../assets/img/games.jpg";
+import Progress from "../../assets/img/progress.jpg";
 interface HeaderHomePage {}
 
 const HomePage: React.FC<HeaderHomePage> = (props) => {
@@ -99,7 +101,7 @@ const HomePage: React.FC<HeaderHomePage> = (props) => {
       <Container className="mt-5 teaching-block">
         <h2 className="teaching-head ml-5">Особенности</h2>
 
-        <Container className="d-flex">
+        <Container className="d-flex justify-content-around flex-wrap">
           <Card
             style={{ width: "18rem" }}
             className="border-0 shadow bg-body m-3"
@@ -138,9 +140,37 @@ const HomePage: React.FC<HeaderHomePage> = (props) => {
             <Card.Body>
               <Card.Title className="">Тесты</Card.Title>
               <Card.Text>
-                Если вы регулярно читаете художественные произведения
-                англоязычных писателей, вы осваиваете «правильный» английский
-                язык, который отличается от разговорного.
+                Тесты благоприятно влияют на быстрое изучение нового материала и
+                закрепление уже пройденного, они могут заменить Вам учителя при
+                изучении английского самостоятельно.
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card
+            style={{ width: "18rem" }}
+            className="border-0 shadow bg-body m-3"
+          >
+            <Card.Img variant="top" src={Games} />
+            <Card.Body>
+              <Card.Title className="">Мини-игры</Card.Title>
+              <Card.Text>
+                Игры помогут вам не просто приятно провести время, но и
+                расширить словарный запас, подтянуть знание грамматики и
+                правописание.
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card
+            style={{ width: "18rem" }}
+            className="border-0 shadow bg-body m-3"
+          >
+            <Card.Img variant="top" src={Progress} />
+            <Card.Body>
+              <Card.Title className="">Статистика прогресса</Card.Title>
+              <Card.Text>
+                Вне зависимости от того, играете ли вы или тренируете слова -
+                статистика по изученным словам обновляется и всегда доступна в
+                настройках.
               </Card.Text>
             </Card.Body>
           </Card>
