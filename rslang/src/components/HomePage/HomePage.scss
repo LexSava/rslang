@@ -10,7 +10,7 @@
   font-family: "Chango", cursive;
 }
 .main-block {
-  height: 700px;
+  min-height: 650px;
 }
 .main-img {
   background: url(../../assets/img/main.jpg) no-repeat;
@@ -54,4 +54,15 @@
 .description-btn {
   width: 150px;
   height: 50px;
+}
+.teaching-head {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+.card-title {
+  text-align: end;
+  font-weight: 600;
+}
+.card-text {
+  text-align: center;
 }
