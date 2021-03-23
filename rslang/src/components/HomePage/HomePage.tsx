@@ -373,20 +373,6 @@ const HomePage: React.FC<HeaderHomePage> = (props) => {
               <span className="rss-year">'21</span>
             </a>
           </div>
-          {/* <a
-            style={{ width: "5rem" }}
-            className=""
-            href="https://rs.school/react/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="https://rollingscopes.com/images/logo_rs2.svg"
-              alt="rsschool"
-              className="w-100"
-            />
-          </a>
-          <p>2021</p> */}
         </footer>
       </Container>
     </Container>
