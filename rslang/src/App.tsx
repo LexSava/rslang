@@ -4,15 +4,16 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Loadable from "react-loadable";
 import HomePage from "./components/HomePage/HomePage";
+import TutorialPage from "./components/TutorialPage/TutorialPage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 
 function App() {
   const [loading, setLoading] = useState(false);
 
   const LoadableComponent = Loadable({
-    loader: () => import("./components/HomePage/HomePage"),
+    loader: () => import("./components/TutorialPage/TutorialPage"),
     loading: LoadingScreen,
-    delay: 5300,
+    delay: 300,
   });
 
   // setTimeout(() => {
