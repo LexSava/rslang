@@ -12,13 +12,13 @@ function App() {
     setLoading(true);
   }, 5000);
 
-  // if (!loading) {
-  //   return (
-  //     <div className="App">
-  //       <LoadingScreen />
-  //     </div>
-  //   );
-  // }
+  if (!loading) {
+    return (
+      <div className="App">
+        <LoadingScreen />
+      </div>
+    );
+  }
 
   return (
     <BrowserRouter>
