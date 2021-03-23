@@ -33,7 +33,8 @@ function App() {
       <div className="App">
         <Switch>
           <React.Fragment>
-            <Route path="/" component={LoadableComponent} />
+            <Route path="/" exact component={LoadableComponent} />
+            {/* <Route path="/tutorial-page" exact component={TutorialPage} /> */}
           </React.Fragment>
         </Switch>
       </div>

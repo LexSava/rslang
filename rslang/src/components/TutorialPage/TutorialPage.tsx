@@ -4,20 +4,26 @@ import React from "react";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Menu from "../Menu/Menu";
-import Main from "../Main/Main";
+import Study from "../Study/Study";
 interface HeaderTutorialPage {}
 
 const TutorialPage: React.FC<HeaderTutorialPage> = (props) => {
   return (
     <Container className="min-vh-100">
-      <div className="container-fluid">
-        <div className="row">
-          <Menu />
-          <main className="col-md-9">
-            <Main />
-          </main>
-        </div>
-      </div>
+      <Container className="bg-warning p-3 d-flex justify-content-between">
+        <Link to="/" className="link-logo-block text-primary">
+          <h1 className="logo-tutorial-page text-dark m-0">RS Lang</h1>
+        </Link>
+        <Link
+          to="#"
+          // eventKey="link-1"
+          className="btn btn-primary rounded-pill border border-0 btn-lg mr-3 login-button"
+        >
+          Выход
+        </Link>
+      </Container>
+      <Menu />
+      <Study />
     </Container>
   );
 };

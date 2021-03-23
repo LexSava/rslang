@@ -68,7 +68,7 @@ const HomePage: React.FC<HeaderHomePage> = (props) => {
               </Nav.Item>
               <Nav.Item className="">
                 <Nav.Link
-                  eventKey="link-3"
+                  href="/tutorial-page"
                   className="btn btn-primary rounded-pill border border-4 btn-lg mr-3 login-button"
                 >
                   Войти
