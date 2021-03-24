@@ -9,10 +9,11 @@ interface InterfaceMain {}
 
 const Main: React.FC<InterfaceMain> = (props) => {
   return (
-    <Switch>
-      <Route exact path="/study" component={Study} />
-      <Route path="/vocabulary" component={Vocabulary} />
-    </Switch>
+    <Study />
+    // <Switch>
+    //   <Route exact path="/study" component={Study} />
+    //   <Route path="/vocabulary" component={Vocabulary} />
+    // </Switch>
   );
 };
 export default Main;

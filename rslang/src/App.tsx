@@ -11,7 +11,7 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const LoadableComponent = Loadable({
-    loader: () => import("./components/HomePage/HomePage"),
+    loader: () => import("./components/TutorialPage/TutorialPage"),
     loading: LoadingScreen,
     delay: 300,
   });
