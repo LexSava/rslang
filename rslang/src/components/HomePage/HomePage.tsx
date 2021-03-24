@@ -3,6 +3,7 @@ import "./HomePage.scss";
 import React, { useState, useEffect } from "react";
 import { Container, Nav, Button, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Signin from "../Signin/SignIn";
 import Words from "../../assets/img/words.jpg";
 import Articles from "../../assets/img/articles.jpg";
 import Tests from "../../assets/img/tests.jpg";
@@ -73,6 +74,7 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
                 >
                   Войти
                 </Nav.Link>
+                <Signin tab={'login'}/>
               </Nav.Item>
             </Nav>
           </header>
@@ -98,12 +100,7 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
               т.д. И вуаля: вы на всю жизнь запомните, что за словом «cat»
               скрывается некто пушистый и мурлыкающий.{" "}
             </p>
-            <Button
-              variant="outline-primary"
-              className="rounded-pill description-btn mt-3"
-            >
-              Регистрация
-            </Button>{" "}
+            <Signin tab={'register'}/>
           </div>
         </Container>
       </Container>
