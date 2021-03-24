@@ -11,7 +11,7 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const LoadableComponent = Loadable({
-    loader: () => import("./components/TutorialPage/TutorialPage"),
+    loader: () => import("./components/HomePage/HomePage"),
     loading: LoadingScreen,
     delay: 300,
   });
@@ -34,7 +34,7 @@ function App() {
         <Switch>
           <React.Fragment>
             <Route path="/" exact component={LoadableComponent} />
-            {/* <Route path="/tutorial-page" exact component={TutorialPage} /> */}
+            <Route path="/tutorial-page" component={TutorialPage} />
           </React.Fragment>
         </Switch>
       </div>

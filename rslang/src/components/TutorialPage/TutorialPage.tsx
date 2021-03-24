@@ -4,10 +4,10 @@ import React from "react";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Menu from "../Menu/Menu";
-import Study from "../Study/Study";
-interface HeaderTutorialPage {}
+import Main from "../Main/Main";
+interface InterfaceTutorialPage {}
 
-const TutorialPage: React.FC<HeaderTutorialPage> = (props) => {
+const TutorialPage: React.FC<InterfaceTutorialPage> = (props) => {
   return (
     <Container className="min-vh-100">
       <Container className="bg-warning p-3 d-flex justify-content-between">
@@ -15,15 +15,14 @@ const TutorialPage: React.FC<HeaderTutorialPage> = (props) => {
           <h1 className="logo-tutorial-page text-dark m-0">RS Lang</h1>
         </Link>
         <Link
-          to="#"
-          // eventKey="link-1"
+          to="/"
           className="btn btn-primary rounded-pill border border-0 btn-lg mr-3 login-button"
         >
           Выход
         </Link>
       </Container>
       <Menu />
-      <Study />
+      <Main />
     </Container>
   );
 };

@@ -15,9 +15,9 @@ import Ava_2 from "../../assets/img/ava_2.jpg";
 import Ava_3 from "../../assets/img/ava_3.jpg";
 import Ava_4 from "../../assets/img/ava_4.jpg";
 
-interface HeaderHomePage {}
+interface InterfaceHomePage {}
 
-const HomePage: React.FC<HeaderHomePage> = (props) => {
+const HomePage: React.FC<InterfaceHomePage> = (props) => {
   //   const [loading, setLoading] = useState(false);
 
   //   if (!loading) {
