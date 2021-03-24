@@ -14,9 +14,10 @@ import Ava_1 from "../../assets/img/ava_1.jpg";
 import Ava_2 from "../../assets/img/ava_2.jpg";
 import Ava_3 from "../../assets/img/ava_3.jpg";
 import Ava_4 from "../../assets/img/ava_4.jpg";
-interface HeaderHomePage {}
 
-const HomePage: React.FC<HeaderHomePage> = (props) => {
+interface InterfaceHomePage {}
+
+const HomePage: React.FC<InterfaceHomePage> = (props) => {
   //   const [loading, setLoading] = useState(false);
 
   //   if (!loading) {
@@ -67,7 +68,7 @@ const HomePage: React.FC<HeaderHomePage> = (props) => {
               </Nav.Item>
               <Nav.Item className="">
                 <Nav.Link
-                  eventKey="link-3"
+                  href="/tutorial-page"
                   className="btn btn-primary rounded-pill border border-4 btn-lg mr-3 login-button"
                 >
                   Войти
@@ -373,20 +374,6 @@ const HomePage: React.FC<HeaderHomePage> = (props) => {
               <span className="rss-year">'21</span>
             </a>
           </div>
-          {/* <a
-            style={{ width: "5rem" }}
-            className=""
-            href="https://rs.school/react/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="https://rollingscopes.com/images/logo_rs2.svg"
-              alt="rsschool"
-              className="w-100"
-            />
-          </a>
-          <p>2021</p> */}
         </footer>
       </Container>
     </Container>

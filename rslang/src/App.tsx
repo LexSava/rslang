@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Loadable from "react-loadable";
 import HomePage from "./components/HomePage/HomePage";
+import TutorialPage from "./components/TutorialPage/TutorialPage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
   const LoadableComponent = Loadable({
     loader: () => import("./components/HomePage/HomePage"),
     loading: LoadingScreen,
-    delay: 5300,
+    delay: 300,
   });
 
   // setTimeout(() => {
@@ -32,7 +33,8 @@ function App() {
       <div className="App">
         <Switch>
           <React.Fragment>
-            <Route path="/" component={LoadableComponent} />
+            <Route path="/" exact component={LoadableComponent} />
+            <Route path="/tutorial-page" component={TutorialPage} />
           </React.Fragment>
         </Switch>
       </div>

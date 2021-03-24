@@ -4,9 +4,9 @@ import React from "react";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-interface HeaderLoadingScreen {}
+interface InterfaceLoadingScreen {}
 
-const LoadingScreen: React.FC<HeaderLoadingScreen> = (props) => {
+const LoadingScreen: React.FC<InterfaceLoadingScreen> = (props) => {
   return (
     <Container>
       <div className="container">
