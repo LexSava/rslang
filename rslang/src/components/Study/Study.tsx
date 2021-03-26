@@ -2,7 +2,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Study.scss";
 import React from "react";
 import { Container, Card, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import NewWords from "../../assets/img/new_words.jpg";
 import RepeatWords from "../../assets/img/repeat_words.jpg";
 import HardWords from "../../assets/img/hard_words.jpg";

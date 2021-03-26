@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./HomePage.scss";
-import React, { useState, useEffect } from "react";
-import { Container, Nav, Button, Card } from "react-bootstrap";
+import React from "react";
+import { Container, Nav, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Signin from "../Signin/SignIn";
 import Words from "../../assets/img/words.jpg";
@@ -19,11 +19,7 @@ import Ava_4 from "../../assets/img/ava_4.jpg";
 interface InterfaceHomePage {}
 
 const HomePage: React.FC<InterfaceHomePage> = (props) => {
-  //   const [loading, setLoading] = useState(false);
 
-  //   if (!loading) {
-  //     return <div>loading...</div>;
-  //   }
   return (
     <Container>
       <Container className="d-flex main-block">
@@ -61,7 +57,6 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
               <Nav.Item>
                 <Nav.Link
                   href="#team"
-                  // eventKey="link-2"
                   className="btn btn-outline-warning rounded-pill border border-0 btn-lg mr-5"
                 >
                   Команда
