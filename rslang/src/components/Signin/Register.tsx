@@ -4,13 +4,12 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Form, Modal } from "react-bootstrap";
 
-
 const Register = () => {
   const { register, handleSubmit, errors } = useForm();
 
   const [message, setMessage] = useState<any>(null);
   
-  function api<T>(url: string, userData: any): Promise<T> {
+  async function api<T>(url: string, userData: any): Promise<T> {
    const init: RequestInit = {
     method: 'POST',
     headers: {
@@ -19,36 +18,46 @@ const Register = () => {
     },
     body: JSON.stringify(userData)
    };
-    return fetch(url, init)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(response.statusText)
-        }
-        return response.json() as Promise<T>
-      })
+    const response = await fetch(url, init);
+    
+    if (!response.ok) {
+      const error = response.status + " " + response.statusText;
+        throw new Error(error)
+      }
+    const body = await response.json();
+    return body
   }
 
   const onSubmit = async (userData: FormData): Promise<any> => {
     setMessage({
-      data: `Выполняется вход...`,
+      data: `Выполняется регистрация...`,
       type: "none",
     });
 
   const url = 'https://serene-falls-78086.herokuapp.com/users';
-  console.log(JSON.stringify(userData), typeof userData)
-  api<any>(url, userData)
-  .then(({ responseData }) => {
-    console.log(responseData)
+
+  api<any>(url, userData).then(( responseData:any ) => {
     setMessage({
       data: "Регистрация выполнена",
       type: "",
     });
+    setTimeout(setMessage, 5000)
+    console.log(responseData)
   })
   .catch(error => {
-        setMessage({
+    console.log(error.message)
+    if (error.message === "417 Expectation Failed")  {
+    setMessage({
+      data: "Такой email уже зарегистрирован",
+      type: "alert-warning",
+    });
+    } else {
+    setMessage({
       data: "Ошибка регистрации",
       type: "alert-warning",
     });
+    }
+    setTimeout(setMessage, 5000)
   })
   };
   
@@ -56,6 +65,7 @@ const Register = () => {
       <>
       <Modal.Body>
         <Form>
+          <div className="message">
            {message && (
               <div className={`alert fade show d-flex ${message.type}`}
                      role="alert"
@@ -68,6 +78,7 @@ const Register = () => {
               &times;
             </span>)}
                   </div>)}
+           </div>
           <Form.Group controlId="formBasicEmail 1">
           <Form.Label>Email адрес</Form.Label>
           <Form.Control type="email"

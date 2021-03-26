@@ -3,14 +3,17 @@ import "./signin.scss";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Form, Modal } from "react-bootstrap";
-
+import useLocalStorage from "../../hooks/useLocalStorage";
 
 const Login = () => {
   const { register, handleSubmit, errors } = useForm();
 
   const [message, setMessage] = useState<any>(null);
+  const [token, setToken] = useLocalStorage("token", "");
+  const [refToken, setRefToken] = useLocalStorage("refreshToken", "");
+  const [userId, setUserId] = useLocalStorage("userId", "");
   
-  function api<T>(url: string, data: any): Promise<T> {
+  async function api<T>(url: string, data: any): Promise<T> {
    const init: RequestInit = {
      method: 'POST',
      headers: {
@@ -19,14 +22,13 @@ const Login = () => {
     },
     body: JSON.stringify(data)
    };
-    return fetch(url, init)
-      .then(response => {
-        console.log(response)
-        if (!response.ok) {
-          throw new Error(response.statusText)
-        }
-        return response.json() as Promise<T>
-      })
+    const response = await fetch(url, init);
+    
+    if (!response.ok) {
+      const error = response.status + " " + response.statusText;
+        throw new Error(error)      }
+    const body = await response.json();
+    return body
   }
 
   const onSubmit = async (data: any): Promise<any> => {
@@ -36,19 +38,36 @@ const Login = () => {
     });
   const url = 'https://serene-falls-78086.herokuapp.com/signin';
 
-  api<any>(url, data)
-  .then(({ responseData }) => {
-    console.log(responseData)
+  api(url, data).then(( responseData:any ) => {
     setMessage({
       data: "Вход выполнен",
       type: "",
     });
+    setTimeout(setMessage, 5000)
+    console.log(responseData)
+    setToken(responseData.token)
+    setRefToken(responseData.refreshToken)
+    setUserId(responseData.userId)
   })
   .catch(error => {
-        setMessage({
-      data: "Ошибка входа",
+      console.log(error.message)
+    if (error.message === "403 Forbidden")  {
+    setMessage({
+      data: "Неверный пароль",
+      type: "alert-warning",
+    })
+    } else if (error.message === "404 Not Found") {
+    setMessage({
+      data: "Пользователь с таким email не найден",
+      type: "alert-warning",
+    })
+    } else if (error.message) {
+    setMessage({
+      data: "Ошибка регистрации",
       type: "alert-warning",
     });
+    }
+    setTimeout(setMessage, 5000)
   })
   };
 
@@ -56,19 +75,21 @@ const Login = () => {
     <>
       <Modal.Body>
              <Form>
+              <div className="message">
                 {message && (
                   <div
                     className={`alert fade show d-flex ${message.type}`}
                      role="alert"
-                  >{message.data}
-                  { message.type === 'alert-warning' && ( <span
-              aria-hidden="true"
-              className="ml-auto cursor-pointer"
-              onClick={() => setMessage(null)}
-            >
-              &times;
-            </span>)}
+                    >{message.data}
+                    { message.type === 'alert-warning' && ( 
+                    <span aria-hidden="true"
+                     className="ml-auto cursor-pointer"
+                     onClick={() => setMessage(null)}
+                      >
+                      &times;
+                    </span>)}
                   </div>)}
+              </div>    
               <Form.Group controlId="formBasicEmail 2">
                 <Form.Label>
                   Email адрес
