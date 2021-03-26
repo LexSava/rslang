@@ -1,8 +1,11 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Vocabulary.scss";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Container, Nav, Button } from "react-bootstrap";
+import getWords from "../../api/getWords";
+import useLocalStorage from "../../hooks/useLocalStorage";
 import VocabularySections from "./VocabularySections/VocabularySections";
+
 interface InterfaceVocabulary {}
 
 interface Word {
