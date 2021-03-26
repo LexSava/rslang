@@ -2,8 +2,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Menu.scss";
 import React from "react";
 import { Container, Nav } from "react-bootstrap";
-import { HashRouter, Switch, Route, Link } from "react-router-dom";
-// const { HashRouter, Switch, Route, Link } = ReactRouterDOM;
 interface InterfaceMenu {}
 
 const Menu: React.FC<InterfaceMenu> = (props) => {
