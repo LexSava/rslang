@@ -2,36 +2,39 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./VocabularySections.scss";
 import React, { useState, useEffect } from "react";
 import { Container, Button } from "react-bootstrap";
-interface InterfaceStudiedSections {}
+interface InterfaceStudiedSections {
+  words: any;
+}
 
 const StudiedSections: React.FC<InterfaceStudiedSections> = (props) => {
   const [words, setWord] = useState<number>(0);
-  const [allWords, setAllWord] = useState<any>([]);
+  const [allWords, setAllWord] = useState<any>(props.words);
   const [wordList, setWordList] = useState<any>([]);
   const [selectedWords, setSelectedWords] = useState<any>([]);
-  let arraySelectedWords: any = [];
+
   async function getWeather() {
     const url = `http://serene-falls-78086.herokuapp.com/words`;
     const res = await fetch(url);
     const data = await res.json();
     setAllWord(data);
   }
-
   useEffect(() => {
     getWeather();
   }, []);
 
   const handleChange = (e: any) => {
+    // let arraySelectedWords: any = [];
     if (e.target.checked) {
-      arraySelectedWords = [...arraySelectedWords, e.target.value];
+      setSelectedWords([...selectedWords, e.target.value]);
     } else {
-      arraySelectedWords = arraySelectedWords.filter(
-        (value: string) => value !== e.target.value
+      setSelectedWords(
+        selectedWords.filter((value: string) => value !== e.target.value)
       );
     }
+    console.log(selectedWords);
 
-    console.log(arraySelectedWords);
-    console.log(arraySelectedWords.length);
+    // console.log(arraySelectedWords);
+    // console.log(arraySelectedWords.length);
   };
 
   useEffect(() => {
@@ -63,7 +66,7 @@ const StudiedSections: React.FC<InterfaceStudiedSections> = (props) => {
       </Container>
 
       <Container>
-        <h3>Выбрано 0 слов</h3>
+        <h3>Выбрано {selectedWords.length} слов</h3>
         <ul className="list-group" onChange={handleChange}>
           {wordList}
         </ul>
