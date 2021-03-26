@@ -1,7 +1,19 @@
 .study-page-head-block {
   height: 5rem;
 }
-.study-page-head-text {
+.study-page-head {
   font-size: 2rem;
-  font-weight: 600;
+  font-weight: 900;
+}
+.study-page-head-text {
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 2rem;
+}
+.card {
+  transition: 1s;
+}
+.card:hover {
+  cursor: pointer;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
 }

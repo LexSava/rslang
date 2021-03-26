@@ -34,7 +34,7 @@ function App() {
         <Switch>
           <React.Fragment>
             <Route path="/" exact component={LoadableComponent} />
-            <Route path="/tutorial-page" component={TutorialPage} />
+            <Route path="/tutorial-page/" component={TutorialPage} />
           </React.Fragment>
         </Switch>
       </div>

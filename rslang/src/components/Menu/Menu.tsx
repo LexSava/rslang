@@ -11,27 +11,37 @@ const Menu: React.FC<InterfaceMenu> = (props) => {
     <Container className="p-0">
       <Nav fill variant="tabs" defaultActiveKey="#">
         <Nav.Item>
-          <Nav.Link href="#" className="pt-4 pb-4 menu-elem">
+          <Nav.Link href="/tutorial-page" className="pt-4 pb-4 menu-elem">
             Изучение
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="/link-1" className="pt-4 pb-4 menu-elem">
+          <Nav.Link
+            href="/tutorial-page/vocabulary"
+            className="pt-4 pb-4 menu-elem"
+          >
             Словарь
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="link-2" className="pt-4 pb-4 menu-elem">
+          <Nav.Link href="/tutorial-page/games" className="pt-4 pb-4 menu-elem">
             Мини-игры
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="link-3" className="pt-4 pb-4 menu-elem">
+          <Nav.Link
+            href="/tutorial-page/statistics"
+            className="pt-4 pb-4 menu-elem"
+          >
             Статистика
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="link-4" className="pt-4 pb-4 menu-elem">
+          <Nav.Link
+            eventKey="link-4"
+            href="/tutorial-page/settings"
+            className="pt-4 pb-4 menu-elem"
+          >
             Настройки
           </Nav.Link>
         </Nav.Item>
