@@ -1,11 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Vocabulary.scss";
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Container, Nav, Button } from "react-bootstrap";
-import getWords from "../../api/getWords";
-import useLocalStorage from "../../hooks/useLocalStorage";
 import VocabularySections from "./VocabularySections/VocabularySections";
-
 interface InterfaceVocabulary {}
 
 interface Word {
@@ -66,6 +63,8 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
   const switchSection = (section: string): void => {
     return setSelectedSection(section);
   };
+
+  console.log(selectedSection);
 
   return (
     <Container className="min-vh-100 p-0 border border-top-0">
