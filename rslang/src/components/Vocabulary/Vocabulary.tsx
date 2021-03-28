@@ -67,7 +67,6 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
     return setSelectedSection(section);
   };
 
-  console.log(selectedSection);
 
   return (
     <Container className="min-vh-100 p-0 border border-top-0">

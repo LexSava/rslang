@@ -13,6 +13,7 @@
     "@types/react-router-dom": "^5.1.7",
     "bootstrap": "^4.6.0",
     "bootstrap-icons": "^1.4.0",
+    "lodash": "^4.17.21",
     "node-sass": "^5.0.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.1",
@@ -56,6 +57,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.168",
     "@types/react-loadable": "^5.5.4",
     "react-hook-form": "^6.15.5"
   }
