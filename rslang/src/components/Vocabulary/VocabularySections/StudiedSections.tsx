@@ -12,18 +12,29 @@ const StudiedSections: React.FC<InterfaceStudiedSections> = (props) => {
   const [wordList, setWordList] = useState<any>([]);
   const [selectedWords, setSelectedWords] = useState<any>([]);
 
+  const deleteWords = () => {
+    setAllWord(
+      allWords.filter(
+        (e: any) => selectedWords.findIndex((i: any) => i == e.word) === -1
+      )
+    );
+  };
+  // const arr3: any = arr2.filter(
+  //   (e) => arr1.findIndex((i) => i.name == e.name) === -1
+  // );
+
   async function getWeather() {
     const url = `http://serene-falls-78086.herokuapp.com/words`;
     const res = await fetch(url);
     const data = await res.json();
     setAllWord(data);
+    console.log(data);
   }
   useEffect(() => {
     getWeather();
   }, []);
 
   const handleChange = (e: any) => {
-    // let arraySelectedWords: any = [];
     if (e.target.checked) {
       setSelectedWords([...selectedWords, e.target.value]);
     } else {
@@ -32,9 +43,6 @@ const StudiedSections: React.FC<InterfaceStudiedSections> = (props) => {
       );
     }
     console.log(selectedWords);
-
-    // console.log(arraySelectedWords);
-    // console.log(arraySelectedWords.length);
   };
 
   useEffect(() => {
@@ -60,7 +68,11 @@ const StudiedSections: React.FC<InterfaceStudiedSections> = (props) => {
         <Button variant="warning" className="pt-3 pb-3 pl-5 pr-5 mt-4 mr-4">
           В сложные
         </Button>
-        <Button variant="danger" className="pt-3 pb-3 pl-5 pr-5 mt-4">
+        <Button
+          variant="danger"
+          className="pt-3 pb-3 pl-5 pr-5 mt-4"
+          onClick={deleteWords}
+        >
           Удалить
         </Button>
       </Container>
