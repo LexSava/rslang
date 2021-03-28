@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Button } from "react-bootstrap";
 interface InterfaceComplexSection {
   words: any;
+  onGetSelectedWordsDeleteds(arr: any): void;
 }
 
 const ComplexSection: React.FC<InterfaceComplexSection> = (props) => {
@@ -15,6 +16,33 @@ const ComplexSection: React.FC<InterfaceComplexSection> = (props) => {
   useEffect(() => {
     setAllWord(allWords.concat(props.words));
   }, []);
+
+  const wordDistribution = () => {
+    setAllWord(
+      allWords.filter(
+        (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
+      )
+    );
+    setSelectedWords([]);
+  };
+
+  const deleteWords = () => {
+    props.onGetSelectedWordsDeleteds(
+      wordsToMove.concat(
+        allWords.filter((element: any) => selectedWords.includes(element.word))
+      )
+    );
+  };
+  
+  const handleChange = (e: any) => {
+    if (e.target.checked) {
+      setSelectedWords([...selectedWords, e.target.value]);
+    } else {
+      setSelectedWords(
+        selectedWords.filter((value: string) => value !== e.target.value)
+      );
+    }
+  };
 
   useEffect(() => {
     setWordList(
@@ -33,22 +61,20 @@ const ComplexSection: React.FC<InterfaceComplexSection> = (props) => {
     );
   }, [allWords]);
 
-  const handleChange = (e: any) => {
-    if (e.target.checked) {
-      setSelectedWords([...selectedWords, e.target.value]);
-    } else {
-      setSelectedWords(
-        selectedWords.filter((value: string) => value !== e.target.value)
-      );
-    }
-  };
   return (
     <Container className="bg-light mt-4 min-vh-100">
       <Container className="d-flex justify-content-end">
         <Button variant="primary" className="pt-3 pb-3 pl-5 pr-5 mt-4 mr-4">
           В изученные
         </Button>
-        <Button variant="danger" className="pt-3 pb-3 pl-5 pr-5 mt-4">
+        <Button
+          variant="danger"
+          className="pt-3 pb-3 pl-5 pr-5 mt-4"
+          onClick={() => {
+            wordDistribution();
+            deleteWords();
+          }}
+        >
           Удалить
         </Button>
       </Container>

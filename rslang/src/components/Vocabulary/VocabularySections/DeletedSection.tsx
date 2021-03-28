@@ -5,6 +5,8 @@ import { Container, Button } from "react-bootstrap";
 
 interface InterfaceDeletedSection {
   words: any;
+  onGetSelectedWordsComplex(arr: any): void;
+  onGetSelectedWordsDeleteds(arr: any): void;
 }
 
 const DeletedSection: React.FC<InterfaceDeletedSection> = (props) => {
@@ -16,6 +18,44 @@ const DeletedSection: React.FC<InterfaceDeletedSection> = (props) => {
   useEffect(() => {
     setAllWord(props.words);
   }, []);
+
+  const wordDistribution = () => {
+    setAllWord(
+      allWords.filter(
+        (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
+      )
+    );
+    props.onGetSelectedWordsDeleteds(
+      wordsToMove.concat(
+        allWords.filter((element: any) => selectedWords.includes(element.word))
+      )
+    );
+    setSelectedWords([]);
+  };
+  // const deleteWords = () => {
+  //   props.onGetSelectedWordsDeleteds(
+  //     wordsToMove.concat(
+  //       allWords.filter((element: any) => selectedWords.includes(element.word))
+  //     )
+  //   );
+  // };
+  const difficultWords = () => {
+    props.onGetSelectedWordsComplex(
+      wordsToMove.concat(
+        allWords.filter((element: any) => selectedWords.includes(element.word))
+      )
+    );
+  };
+
+  const handleChange = (e: any) => {
+    if (e.target.checked) {
+      setSelectedWords([...selectedWords, e.target.value]);
+    } else {
+      setSelectedWords(
+        selectedWords.filter((value: string) => value !== e.target.value)
+      );
+    }
+  };
 
   useEffect(() => {
     setWordList(
@@ -34,23 +74,22 @@ const DeletedSection: React.FC<InterfaceDeletedSection> = (props) => {
     );
   }, [allWords]);
 
-  const handleChange = (e: any) => {
-    if (e.target.checked) {
-      setSelectedWords([...selectedWords, e.target.value]);
-    } else {
-      setSelectedWords(
-        selectedWords.filter((value: string) => value !== e.target.value)
-      );
-    }
-  };
-
   return (
     <Container className="bg-light mt-4 min-vh-100">
       <Container className="d-flex justify-content-end">
         <Button variant="primary" className="pt-3 pb-3 pl-5 pr-5 mt-4 mr-4">
           В изученные
         </Button>
-        <Button variant="warning" className="pt-3 pb-3 pl-5 pr-5 mt-4">
+        <Button
+          variant="warning"
+          className="pt-3 pb-3 pl-5 pr-5 mt-4"
+          onClick={() => {
+            wordDistribution();
+            difficultWords();
+            // deleteWords();
+            // studiedtWords();
+          }}
+        >
           В сложные
         </Button>
       </Container>

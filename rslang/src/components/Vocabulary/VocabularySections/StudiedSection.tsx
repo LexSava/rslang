@@ -5,8 +5,9 @@ import { Container, Button } from "react-bootstrap";
 
 interface InterfaceStudiedSection {
   words: any;
-  onGetsetselectedWordsComplex(arr: any): void;
-  onGetsetselectedWordsDeleteds(arr: any): void;
+  onGetSelectedWordsComplex(arr: any): void;
+  onGetSelectedWordsDeleteds(arr: any): void;
+  onGetSelectedWordsStudied(arr: any): void;
 }
 
 const StudiedSection: React.FC<InterfaceStudiedSection> = (props) => {
@@ -28,7 +29,7 @@ const StudiedSection: React.FC<InterfaceStudiedSection> = (props) => {
   }, []);
 
   const deleteWords = () => {
-    props.onGetsetselectedWordsDeleteds(
+    props.onGetSelectedWordsDeleteds(
       wordsToMove.concat(
         allWords.filter((element: any) => selectedWords.includes(element.word))
       )
@@ -36,7 +37,15 @@ const StudiedSection: React.FC<InterfaceStudiedSection> = (props) => {
   };
 
   const difficultWords = () => {
-    props.onGetsetselectedWordsComplex(
+    props.onGetSelectedWordsComplex(
+      wordsToMove.concat(
+        allWords.filter((element: any) => selectedWords.includes(element.word))
+      )
+    );
+  };
+
+  const studiedtWords = () => {
+    props.onGetSelectedWordsStudied(
       wordsToMove.concat(
         allWords.filter((element: any) => selectedWords.includes(element.word))
       )
@@ -88,6 +97,7 @@ const StudiedSection: React.FC<InterfaceStudiedSection> = (props) => {
           onClick={() => {
             wordDistribution();
             difficultWords();
+            // studiedtWords();
           }}
         >
           В сложные
@@ -98,6 +108,7 @@ const StudiedSection: React.FC<InterfaceStudiedSection> = (props) => {
           onClick={() => {
             wordDistribution();
             deleteWords();
+            // studiedtWords();
           }}
         >
           Удалить
