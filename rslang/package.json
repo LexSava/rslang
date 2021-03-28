@@ -13,12 +13,14 @@
     "@types/react-router-dom": "^5.1.7",
     "bootstrap": "^4.6.0",
     "bootstrap-icons": "^1.4.0",
+    "lodash": "^4.17.21",
     "node-sass": "^5.0.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.1",
     "react-bootstrap-icons": "^1.4.0",
     "react-datetime": "^3.0.4",
     "react-dom": "^17.0.1",
+    "react-hook-form": "^6.15.5",
     "react-loadable": "^5.5.0",
     "react-loadable-ssr-addon": "^1.0.1",
     "react-moment": "^1.1.1",
@@ -28,8 +30,7 @@
     "react-scripts": "4.0.3",
     "react-yandex-maps": "^4.6.0",
     "typescript": "^4.2.3",
-    "web-vitals": "^1.1.0",
-    "react-hook-form": "^6.15.5"
+    "web-vitals": "^1.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -56,6 +57,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.168",
     "@types/react-loadable": "^5.5.4",
     "react-hook-form": "^6.15.5"
   }
