@@ -75,9 +75,9 @@ const StudiedSection: React.FC<InterfaceStudiedSection> = (props) => {
     setWordList(
       allWords.map((item: any) => {
         return (
-          <li className="list-group-item" key={item.id}>
+          <li className="list-group-item list-word mt-3" key={item.id}>
             <input
-              className="form-check-input me-1"
+              className="form-check-input list-word-checkbox"
               type="checkbox"
               value={item.word}
             />
@@ -116,7 +116,9 @@ const StudiedSection: React.FC<InterfaceStudiedSection> = (props) => {
       </Container>
 
       <Container>
-        <h3>Выбрано {selectedWords.length} слов</h3>
+        <h3 className="mt-3 mb-3 text-primary selected-words-head">
+          Выбрано {selectedWords.length} слов
+        </h3>
         <ul className="list-group" onChange={handleChange}>
           {wordList}
         </ul>
