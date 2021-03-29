@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { Button, Form, Modal } from "react-bootstrap";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import getUserData from "../../api/getUserData";
+import setUserData from "../../api/setUserData";
 import { Redirect } from 'react-router';
-
-const url = 'https://serene-falls-78086.herokuapp.com';
+import { url, defSettingsData, defStatisticsData } from "../../api/defData";
 
 const Login = () => {
   const { register, handleSubmit, errors } = useForm();
@@ -91,6 +91,13 @@ const Login = () => {
   })
   .catch(error => {
       console.log(error.message);
+      setUserData(fullUrl, token, defStatisticsData).then(( responseData:any ) => {
+    console.log(responseData)
+    setStatistics(responseData)
+  })
+  .catch(error => {
+      console.log(error.message)
+      });
     });
     }
 
@@ -102,7 +109,14 @@ const Login = () => {
     setSettings(responseData)
   })
   .catch(error => {
-      console.log(error.message);
+    console.log(error.message);
+    setUserData(fullUrl, token, defSettingsData).then(( responseData:any ) => {
+    console.log(responseData)
+    setStatistics(responseData)
+  })
+  .catch(error => {
+      console.log(error.message)
+      });
     });
     }
 

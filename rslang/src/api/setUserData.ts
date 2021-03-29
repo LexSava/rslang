@@ -1,11 +1,13 @@
-async function setUserDatas<T>(url: string, bearerToken: string):Promise<T> {
+async function setUserDatas<T>(url: string, bearerToken: string, data: Object):Promise<T> {
+   console.log(data)
    const init: RequestInit = {
      method: 'PUT',
      headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${bearerToken}`
-    }
+    },
+    body: JSON.stringify(data)
     };
     const res = await fetch(url, init);
 
