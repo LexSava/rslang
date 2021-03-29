@@ -4,6 +4,10 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Form, Modal } from "react-bootstrap";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import getUserData from "../../api/getUserData";
+import { Redirect } from 'react-router';
+
+const url = 'https://serene-falls-78086.herokuapp.com';
 
 const Login = () => {
   const { register, handleSubmit, errors } = useForm();
@@ -12,6 +16,9 @@ const Login = () => {
   const [token, setToken] = useLocalStorage("token", "");
   const [refToken, setRefToken] = useLocalStorage("refreshToken", "");
   const [userId, setUserId] = useLocalStorage("userId", "");
+  const [statistics, setStatistics] = useLocalStorage("statistics", "");
+  const [settings, setSettings] = useLocalStorage("settings", "");
+  const [isLoged, setLoged] = useState(false);
   
   async function api<T>(url: string, data: any): Promise<T> {
    const init: RequestInit = {
@@ -36,9 +43,10 @@ const Login = () => {
       data: `Выполняется вход...`,
       type: "none",
     });
-  const url = 'https://serene-falls-78086.herokuapp.com/signin';
 
-  api(url, data).then(( responseData:any ) => {
+  const fullUrl = url + "/signin";
+
+  api(fullUrl, data).then(( responseData:any ) => {
     setMessage({
       data: "Вход выполнен",
       type: "",
@@ -48,9 +56,12 @@ const Login = () => {
     setToken(responseData.token)
     setRefToken(responseData.refreshToken)
     setUserId(responseData.userId)
+    getStatistics();
+    getSettings();
+    setTimeout(() => setLoged(true), 2000)
   })
   .catch(error => {
-      console.log(error.message)
+      console.log(error.message);
     if (error.message === "403 Forbidden")  {
     setMessage({
       data: "Неверный пароль",
@@ -67,13 +78,38 @@ const Login = () => {
       type: "alert-warning",
     });
     }
-    setTimeout(setMessage, 5000)
+    setTimeout(setMessage, 5000);
   })
   };
+
+  const getStatistics = () => {
+        const fullUrl = `${url}/users/${userId}/statistics`;
+
+    getUserData(fullUrl, token).then(( responseData:any ) => {
+    console.log(responseData)
+    setStatistics(responseData)
+  })
+  .catch(error => {
+      console.log(error.message);
+    });
+    }
+
+  const getSettings = () => {
+    const fullUrl = `${url}/users/${userId}/settings`;
+
+    getUserData(fullUrl, token).then(( responseData:any ) => {
+    console.log(responseData)
+    setSettings(responseData)
+  })
+  .catch(error => {
+      console.log(error.message);
+    });
+    }
 
   return (
     <>
       <Modal.Body>
+        {isLoged && <Redirect to="/tutorial-page"/>}
              <Form>
               <div className="message">
                 {message && (
@@ -96,6 +132,7 @@ const Login = () => {
                 </Form.Label>
                 <Form.Control type="email" placeholder="Введите email"
                 name="email"
+                autoComplete="username"
                 ref={register({
                   required: {
                     value: true,
@@ -126,7 +163,8 @@ const Login = () => {
               <Form.Group controlId="formBasicPassword 2">
                 <Form.Label>Пароль</Form.Label>
                 <Form.Control 
-                type="password" 
+                type="password"
+                autoComplete="current-password"
                 placeholder="Пароль"
                    name="password"
                 ref={register({

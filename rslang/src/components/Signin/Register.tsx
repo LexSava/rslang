@@ -83,6 +83,7 @@ const Register = () => {
           <Form.Label>Email адрес</Form.Label>
           <Form.Control type="email"
             placeholder="Введите email"
+            autoComplete="username"
             name="email"
             ref={register({
               required: {
@@ -114,20 +115,21 @@ const Register = () => {
           <Form.Group controlId="formBasicPassword 1">
             <Form.Label>Пароль</Form.Label>
             <Form.Control type="password"
-               placeholder="Пароль"
-               name="password"
-               ref={register({
-                required: {
-                value: true,
-                message: "Введите пароль",
-                },
-                minLength: {
-                value: 8,
-                message: "Не менее 8 символов",
-                },
-                maxLength: {
-                value: 100,
-                message: "Не более 100 символов",
+              placeholder="Пароль"
+              autoComplete="current-password"
+              name="password"
+              ref={register({
+               required: {
+               value: true,
+               message: "Введите пароль",
+              },
+              minLength: {
+              value: 8,
+              message: "Не менее 8 символов",
+              },
+              maxLength: {
+              value: 100,
+              message: "Не более 100 символов",
               },
               })}
             />
