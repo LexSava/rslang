@@ -58,11 +58,17 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
 
   useEffect(() => {
     setNewWord(props.words);
+    console.log(props.words);
   }, [props.words]);
 
   useEffect(() => {
     setTestButtonText("Проверить");
     setTestButtonArrow(BsArrowUp);
+    if (cardNumber > 19) {
+      setCardNumber(0);
+      setShow(false);
+      setProgressPercentage(0);
+    }
   }, [cardNumber]);
 
   useEffect(() => {
@@ -90,8 +96,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     audioMeaning.addEventListener("ended", function () {
       audioExample.play();
     });
-
-    // sound.preload = "auto";
     return audioWord.play();
   };
   const playAudioWord = () => {
@@ -103,7 +107,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     if (inputText.toLowerCase() === newWords[cardNumber].word.toLowerCase()) {
       setTestButtonText("Следующее слово");
       setTestButtonArrow(BsArrowRight);
-      setProgressPercentage(5 + progressPercentage);
     } else {
       setTestButtonText("Проверить");
       setTestButtonArrow(BsArrowUp);
@@ -117,16 +120,14 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
   };
 
   const showNextCard = () => {
-    if (cardNumber <= newWords.length && testButtonText === "Следующее слово") {
+    if (cardNumber < newWords.length && testButtonText === "Следующее слово") {
       setCardNumber(1 + cardNumber);
       setShow(false);
       setInputText("");
       setHintButtonActivity(false);
-    } else if (cardNumber === 19 && testButtonText === "Следующее слово") {
-      setCardNumber(0);
-      setShow(false);
-      setProgressPercentage(0);
-    } else {
+      setProgressPercentage(5 + progressPercentage);
+      console.log(newWords[cardNumber]);
+      console.log(cardNumber);
     }
   };
   const getHint = () => {
@@ -134,6 +135,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     setHintButtonActivity(true);
     playAudioWord();
     console.log(testButtonText);
+    console.log(cardNumber);
   };
 
   useEffect(() => {
@@ -207,8 +209,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
             autoFocus
             className="mb-3"
           />
-          {/* <Card.Link href="#">Card Link</Card.Link>
-          <Card.Link href="#">Another Link</Card.Link> */}
           <Container className="d-flex justify-content-around">
             <Button
               id="check-button"
@@ -229,7 +229,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
               disabled={hintButtonActivity}
               onClick={() => {
                 setShow(!show);
-                // playAudio();
                 getHint();
               }}
             >
@@ -249,7 +248,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     testButtonText,
   ]);
 
-  //   showWordCard();
   return (
     <Jumbotron className="bg-light min-vh-100">
       <ProgressBar now={progressPercentage} label={`${progressPercentage}%`} />
