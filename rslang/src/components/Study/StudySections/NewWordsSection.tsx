@@ -52,6 +52,8 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
   const [testButtonText, setTestButtonText] = useState<string>("Проверить");
   const [testButtonArrow, setTestButtonArrow] = useState<any>(BsArrowUp);
   const [hintButtonActivity, setHintButtonActivity] = useState<boolean>(false);
+  const [textMeaning, setTextMeaning] = useState<string>("");
+  const [textExample, setTextExample] = useState<string>("");
 
   let [progressPercentage, setProgressPercentage] = useState<number>(0);
   let [cardNumber, setCardNumber] = useState<number>(0);
@@ -64,15 +66,34 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
   useEffect(() => {
     setTestButtonText("Проверить");
     setTestButtonArrow(BsArrowUp);
-    if (cardNumber > 19) {
-      setCardNumber(0);
-      setShow(false);
-      setProgressPercentage(0);
-    }
   }, [cardNumber]);
 
   useEffect(() => {
-    console.log(inputText);
+    setTextMeaning(
+      newWords[cardNumber].textMeaning
+        .replace(`<i>${newWords[cardNumber].word}</i>`, "[.....]")
+        .replace(
+          `<i>${
+            newWords[cardNumber].word[0].toUpperCase() +
+            newWords[cardNumber].word.slice(1)
+          }</i>`,
+          "[.....]"
+        )
+    );
+    setTextExample(
+      newWords[cardNumber].textExample
+        .replace(`<b>${newWords[cardNumber].word}</b>`, "[.....]")
+        .replace(
+          `<b>${
+            newWords[cardNumber].word[0].toUpperCase() +
+            newWords[cardNumber].word.slice(1)
+          }</b>`,
+          "[.....]"
+        )
+    );
+  }, [cardNumber, wordCard]);
+
+  useEffect(() => {
     if (inputText.length !== 0) {
       setTestButtonActivity(false);
     } else {
@@ -126,119 +147,123 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
       setInputText("");
       setHintButtonActivity(false);
       setProgressPercentage(5 + progressPercentage);
-      console.log(newWords[cardNumber]);
-      console.log(cardNumber);
     }
   };
   const getHint = () => {
     setInputText(newWords[cardNumber].word);
     setHintButtonActivity(true);
     playAudioWord();
-    console.log(testButtonText);
-    console.log(cardNumber);
   };
 
   useEffect(() => {
-    setWordCard(
-      <Card
-        style={{ width: "30rem" }}
-        key={newWords[cardNumber].id}
-        className="card-new-words"
-      >
-        <Card.Img variant="top" src={url + newWords[cardNumber].image} />
-        <Card.Body>
-          <Card.Title
-            style={show ? { display: "block" } : { display: "none" }}
-            className="text-primary font-weight-bold"
-          >
-            {newWords[cardNumber].word}
-            <Button
-              variant="outline-info"
-              className="ml-5"
-              style={{ float: "right" }}
-              onClick={() => {
-                playAudio();
-              }}
-            >
-              Прослушать <BsSkipEndFill />
-            </Button>
-          </Card.Title>
-          <Card.Title
-            style={show ? { display: "block" } : { display: "none" }}
-            className="font-weight-light"
-          >
-            {newWords[cardNumber].transcription}
-          </Card.Title>
-          <Card.Title className="font-weight-bold">
-            {newWords[cardNumber].wordTranslate}
-          </Card.Title>
-        </Card.Body>
-        <ListGroup className="list-group-flush">
-          <ListGroupItem>
-            {" "}
-            <Card.Text className="h6">
-              {newWords[cardNumber].textMeaning}
-            </Card.Text>
-            <Card.Text
-              className="blockquote-footer"
+    if (cardNumber > 19) {
+      setCardNumber(0);
+      setShow(false);
+      setProgressPercentage(0);
+    } else {
+      setWordCard(
+        <Card
+          style={{ width: "30rem" }}
+          key={newWords[cardNumber].id}
+          className="card-new-words"
+        >
+          <Card.Img variant="top" src={url + newWords[cardNumber].image} />
+          <Card.Body>
+            <Card.Title
               style={show ? { display: "block" } : { display: "none" }}
+              className="text-primary font-weight-bold"
             >
-              {newWords[cardNumber].textMeaningTranslate}
-            </Card.Text>
-          </ListGroupItem>
-          <ListGroupItem>
-            <Card.Text className="h6">
-              {newWords[cardNumber].textExample}
-            </Card.Text>
-            <Card.Text
-              className="blockquote-footer"
+              {newWords[cardNumber].word}
+              <Button
+                variant="outline-info"
+                className="ml-5"
+                style={{ float: "right" }}
+                onClick={() => {
+                  playAudio();
+                }}
+              >
+                Прослушать <BsSkipEndFill />
+              </Button>
+            </Card.Title>
+            <Card.Title
               style={show ? { display: "block" } : { display: "none" }}
+              className="font-weight-light"
             >
-              {newWords[cardNumber].textExampleTranslate}
-            </Card.Text>
-          </ListGroupItem>
-        </ListGroup>
-        <Card.Body className="">
-          <Form.Control
-            type="text"
-            placeholder="Введите слово"
-            value={inputText}
-            onChange={enteredWord}
-            onInput={enteredWord}
-            onKeyPress={keyPressHandler}
-            autoFocus
-            className="mb-3"
-          />
-          <Container className="d-flex justify-content-around">
-            <Button
-              id="check-button"
-              variant="success"
-              disabled={testButtonActivity}
-              onClick={() => {
-                showNextCard();
-                //   playAudioWord();
-                wordCheck();
-              }}
-            >
-              {testButtonText}
-              {testButtonArrow}
-            </Button>
-            <Button
-              className="ml-3"
-              variant="outline-info"
-              disabled={hintButtonActivity}
-              onClick={() => {
-                setShow(!show);
-                getHint();
-              }}
-            >
-              Показать ответ
-              <BsArrowDown />
-            </Button>
-          </Container>
-        </Card.Body>
-      </Card>
-    );
+              {newWords[cardNumber].transcription}
+            </Card.Title>
+            <Card.Title className="font-weight-bold">
+              {newWords[cardNumber].wordTranslate}
+            </Card.Title>
+          </Card.Body>
+          <ListGroup className="list-group-flush">
+            <ListGroupItem>
+              {" "}
+              <Card.Text className="h6">{textMeaning}</Card.Text>
+              <Card.Text
+                className="blockquote-footer"
+                style={show ? { display: "block" } : { display: "none" }}
+              >
+                {newWords[cardNumber].textMeaningTranslate}
+              </Card.Text>
+            </ListGroupItem>
+            <ListGroupItem>
+              <Card.Text className="h6">{textExample}</Card.Text>
+              <Card.Text
+                className="blockquote-footer"
+                style={show ? { display: "block" } : { display: "none" }}
+              >
+                {newWords[cardNumber].textExampleTranslate}
+              </Card.Text>
+            </ListGroupItem>
+          </ListGroup>
+          <Card.Body className="">
+            <Form.Control
+              type="text"
+              placeholder="Введите слово"
+              value={inputText}
+              onChange={enteredWord}
+              onInput={enteredWord}
+              onKeyPress={keyPressHandler}
+              autoFocus
+              className="mb-3"
+            />
+            <Container className="d-flex justify-content-around mb-5">
+              <Button
+                id="check-button"
+                variant="success"
+                disabled={testButtonActivity}
+                onClick={() => {
+                  showNextCard();
+                  //   playAudioWord();
+                  wordCheck();
+                }}
+              >
+                {testButtonText}
+                {testButtonArrow}
+              </Button>
+              <Button
+                className=""
+                variant="outline-info"
+                disabled={hintButtonActivity}
+                onClick={() => {
+                  setShow(!show);
+                  getHint();
+                }}
+              >
+                Показать ответ
+                <BsArrowDown />
+              </Button>
+            </Container>
+            <Container className="d-flex justify-content-end">
+              <Button variant="warning" className="mr-2">
+                Сложные слова
+              </Button>
+              <Button variant="danger">Удалённые слова</Button>
+            </Container>
+          </Card.Body>
+        </Card>
+      );
+    }
   }, [
     newWords,
     show,
@@ -246,11 +271,21 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     testButtonActivity,
     inputText,
     testButtonText,
+    textMeaning,
   ]);
 
   return (
     <Jumbotron className="bg-light min-vh-100">
-      <ProgressBar now={progressPercentage} label={`${progressPercentage}%`} />
+      <Container className="mb-4">
+        <p className="study-page-head-text m-0 mb-3">
+          Сегодня изучено: {cardNumber} из {newWords.length} слов
+        </p>
+        <ProgressBar
+          now={progressPercentage}
+          label={`${progressPercentage}%`}
+          className="w-50 progress-line"
+        />
+      </Container>
       {wordCard}
     </Jumbotron>
   );
