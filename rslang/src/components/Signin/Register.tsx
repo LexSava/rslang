@@ -3,6 +3,8 @@ import "./signin.scss";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Form, Modal } from "react-bootstrap";
+import { url } from "../../api/defData";
+
 
 const Register = () => {
   const { register, handleSubmit, errors } = useForm();
@@ -34,7 +36,7 @@ const Register = () => {
       type: "none",
     });
 
-  const url = 'https://serene-falls-78086.herokuapp.com/users';
+  // const url = 'http://127.0.0.1:4000/users';
 
   api<any>(url, userData).then(( responseData:any ) => {
     setMessage({
@@ -83,6 +85,7 @@ const Register = () => {
           <Form.Label>Email адрес</Form.Label>
           <Form.Control type="email"
             placeholder="Введите email"
+            autoComplete="username"
             name="email"
             ref={register({
               required: {
@@ -111,23 +114,48 @@ const Register = () => {
               )}
             </Form.Text>
           </Form.Group>
+          <Form.Group controlId="formBasicName 1">
+          <Form.Label>Имя</Form.Label>
+          <Form.Control type="name"
+            placeholder="Введите имя"
+            name="username"
+            ref={register({
+              required: {
+              value: false,
+              message: "Please enter your email address",
+              },
+              maxLength: {
+                value: 70,
+                message: "Не более 70 символов",
+              },
+            })}
+           />
+            <Form.Text className="errorMessage mandatory">
+              {errors.name && (
+                <span className="errorMessage mandatory">
+                  {errors.name.message}
+                </span>
+              )}
+            </Form.Text>
+          </Form.Group>
           <Form.Group controlId="formBasicPassword 1">
             <Form.Label>Пароль</Form.Label>
             <Form.Control type="password"
-               placeholder="Пароль"
-               name="password"
-               ref={register({
-                required: {
-                value: true,
-                message: "Введите пароль",
-                },
-                minLength: {
-                value: 8,
-                message: "Не менее 8 символов",
-                },
-                maxLength: {
-                value: 100,
-                message: "Не более 100 символов",
+              placeholder="Пароль"
+              autoComplete="current-password"
+              name="password"
+              ref={register({
+               required: {
+               value: true,
+               message: "Введите пароль",
+              },
+              minLength: {
+              value: 8,
+              message: "Не менее 8 символов",
+              },
+              maxLength: {
+              value: 100,
+              message: "Не более 100 символов",
               },
               })}
             />
@@ -142,7 +170,7 @@ const Register = () => {
             <Form.Group>
             <Form.File id="FormControlFile1"
               label="Выберите изображение профиля" 
-              name="file"
+              name="userpic"
               ref={register({
               required: {
               value: false,
