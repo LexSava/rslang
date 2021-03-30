@@ -14,8 +14,6 @@ import {
   Card,
   ListGroup,
   ListGroupItem,
-  InputGroup,
-  FormControl,
   Jumbotron,
   Form,
   ProgressBar,
@@ -223,7 +221,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
                 disabled={testButtonActivity}
                 onClick={() => {
                   showNextCard();
-                  //   playAudioWord();
                   wordCheck();
                 }}
               >

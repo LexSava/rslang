@@ -7,8 +7,6 @@ import RepeatWords from "../../assets/img/repeat_words.jpg";
 import HardWords from "../../assets/img/hard_words.jpg";
 import getWords from "../../api/getWords";
 import NewWordsSection from "./StudySections/NewWordsSection";
-import HardWordsSection from "./StudySections/HardWordsSection";
-import RepeatWordsSection from "./StudySections/RepeatWordsSection";
 
 const url = `https://serene-falls-78086.herokuapp.com/words`;
 
@@ -122,9 +120,9 @@ const Study: React.FC<InterfaceStudy> = (props) => {
   if (larnNewWord === "NewWordsSection") {
     return <NewWordsSection words={words} onClosePage={closePage} />;
   } else if (larnNewWord === "HardWordsSection") {
-    return <HardWordsSection words={words} onClosePage={closePage} />;
+    return <NewWordsSection words={words} onClosePage={closePage} />;
   } else if (larnNewWord === "RepeatWordsSection") {
-    return <RepeatWordsSection words={words} onClosePage={closePage} />;
+    return <NewWordsSection words={words} onClosePage={closePage} />;
   } else {
     return showPageStudy();
   }
