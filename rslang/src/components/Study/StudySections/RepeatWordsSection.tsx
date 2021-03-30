@@ -22,12 +22,12 @@ import {
 } from "react-bootstrap";
 const url = `https://serene-falls-78086.herokuapp.com/`;
 
-interface InterfaceNewWordsSection {
+interface InterfaceRepeatWordsSection {
   words: any;
   onClosePage(str: string): void;
 }
 
-const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
+const RepeatWordsSection: React.FC<InterfaceRepeatWordsSection> = (props) => {
   const [newWords, setNewWord] = useState<any>(props.words);
   const [wordCard, setWordCard] = useState<any>(0);
   const [show, setShow] = useState(false);
@@ -64,7 +64,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
           "[.....]"
         )
     );
-
     setTextExample(
       newWords[cardNumber].textExample
         .replace(`<b>${newWords[cardNumber].word}</b>`, "[.....]")
@@ -139,11 +138,9 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     setHintButtonActivity(true);
     playAudioWord();
   };
-
   const closePage = () => {
     props.onClosePage("");
   };
-
   useEffect(() => {
     if (cardNumber > 19) {
       setCardNumber(0);
@@ -288,4 +285,5 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     </Jumbotron>
   );
 };
-export default NewWordsSection;
+
+export default RepeatWordsSection;

@@ -22,12 +22,12 @@ import {
 } from "react-bootstrap";
 const url = `https://serene-falls-78086.herokuapp.com/`;
 
-interface InterfaceNewWordsSection {
+interface InterfaceHardWordsSection {
   words: any;
   onClosePage(str: string): void;
 }
 
-const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
+const HardWordsSection: React.FC<InterfaceHardWordsSection> = (props) => {
   const [newWords, setNewWord] = useState<any>(props.words);
   const [wordCard, setWordCard] = useState<any>(0);
   const [show, setShow] = useState(false);
@@ -64,7 +64,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
           "[.....]"
         )
     );
-
     setTextExample(
       newWords[cardNumber].textExample
         .replace(`<b>${newWords[cardNumber].word}</b>`, "[.....]")
@@ -288,4 +287,5 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     </Jumbotron>
   );
 };
-export default NewWordsSection;
+
+export default HardWordsSection;
