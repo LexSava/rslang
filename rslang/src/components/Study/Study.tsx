@@ -7,13 +7,15 @@ import RepeatWords from "../../assets/img/repeat_words.jpg";
 import HardWords from "../../assets/img/hard_words.jpg";
 import getWords from "../../api/getWords";
 import NewWordsSection from "./StudySections/NewWordsSection";
+import HardWordsSection from "./StudySections/HardWordsSection";
+import RepeatWordsSection from "./StudySections/RepeatWordsSection";
 
 const url = `https://serene-falls-78086.herokuapp.com/words`;
 
 interface InterfaceStudy {}
 
 const Study: React.FC<InterfaceStudy> = (props) => {
-  const [larnNewWord, setlarnNewWord] = useState<boolean>(false);
+  const [larnNewWord, setlarnNewWord] = useState<string>("");
   const [words, setWords] = useState<any>([]);
 
   async function getData(url: string, pref: string) {
@@ -25,8 +27,12 @@ const Study: React.FC<InterfaceStudy> = (props) => {
     getData(url, "");
   }, []);
 
-  const startLearningNewWords = () => {
-    setlarnNewWord(true);
+  const startSectionWithWords = (section: string) => {
+    setlarnNewWord(section);
+  };
+
+  const closePage = (str: string) => {
+    setlarnNewWord(str);
   };
 
   const showPageStudy = () => {
@@ -61,7 +67,12 @@ const Study: React.FC<InterfaceStudy> = (props) => {
               <Card.Text>
                 Нажмите, чтобы выучить новые слова на сегодня.
               </Card.Text>
-              <Button variant="primary" onClick={startLearningNewWords}>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  startSectionWithWords("NewWordsSection");
+                }}
+              >
                 Начать
               </Button>
             </Card.Body>
@@ -70,11 +81,18 @@ const Study: React.FC<InterfaceStudy> = (props) => {
             style={{ width: "20rem" }}
             className="border-0 shadow bg-body m-3"
           >
-            <Card.Img variant="top" src={HardWords} />
+            <Card.Img variant="top" src={RepeatWords} />
             <Card.Body>
               <Card.Title className="">Повторить слова</Card.Title>
               <Card.Text>Нажмите, чтобы повторить выученные слова.</Card.Text>
-              <Button variant="primary">Начать</Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  startSectionWithWords("RepeatWordsSection");
+                }}
+              >
+                Начать
+              </Button>
             </Card.Body>
           </Card>
 
@@ -82,11 +100,18 @@ const Study: React.FC<InterfaceStudy> = (props) => {
             style={{ width: "20rem" }}
             className="border-0 shadow bg-body m-3"
           >
-            <Card.Img variant="top" src={RepeatWords} />
+            <Card.Img variant="top" src={HardWords} />
             <Card.Body>
               <Card.Title className="">Сложные слова</Card.Title>
               <Card.Text>Нажмите, чтобы повторить сложные слова.</Card.Text>
-              <Button variant="primary">Начать</Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  startSectionWithWords("HardWordsSection");
+                }}
+              >
+                Начать
+              </Button>
             </Card.Body>
           </Card>
         </Container>
@@ -94,9 +119,14 @@ const Study: React.FC<InterfaceStudy> = (props) => {
     );
   };
 
-  if (larnNewWord === false) {
+  if (larnNewWord === "NewWordsSection") {
+    return <NewWordsSection words={words} onClosePage={closePage} />;
+  } else if (larnNewWord === "HardWordsSection") {
+    return <HardWordsSection words={words} onClosePage={closePage} />;
+  } else if (larnNewWord === "RepeatWordsSection") {
+    return <RepeatWordsSection words={words} onClosePage={closePage} />;
+  } else {
     return showPageStudy();
   }
-  return <NewWordsSection words={words} />;
 };
 export default Study;
