@@ -1,0 +1,37 @@
+.preview {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__jumbotron {
+    color: white;
+    font-weight: 600;
+    text-align: center;
+
+    &__heading {
+      font-size: 4rem;
+    }
+
+    &__description {
+      font-size: 1.2rem;
+    }
+
+    &__level {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+
+      &__title {
+        margin-right: 1%;
+      }
+    }
+  }
+}
