@@ -6,7 +6,10 @@ import getWords from "../../api/getWords";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import VocabularySections from "./VocabularySections/VocabularySections";
 
-interface InterfaceVocabulary {}
+interface InterfaceVocabulary {
+  // hardWords: any;
+  // learnedWords: any;
+}
 
 interface Word {
   id: string;
@@ -43,25 +46,25 @@ const wordExample = {
   wordTranslate: "лодка",
 };
 
-const url = `https://serene-falls-78086.herokuapp.com/words`;
+// const url = `https://serene-falls-78086.herokuapp.com/words`;
 
 const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
   const [selectedSection, setSelectedSection] = useState<string>(
     "studied-sections"
   );
-  const [userId, setUserId] = useLocalStorage("userId", "");
-  const [token, setToken] = useLocalStorage("token", "");
-  const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", "");
-  const [words, setWords] = useState<any>([]);
+  // const [userId, setUserId] = useLocalStorage("userId", "");
+  // const [token, setToken] = useLocalStorage("token", "");
+  // const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", "");
+  // const [words, setWords] = useState<any>([]);
 
-  async function getData(url: string, pref: string) {
-    const fullUrl = url + pref;
-    const data: any = await getWords(fullUrl);
-    setWords(data);
-  }
-  useEffect(() => {
-    getData(url, "");
-  }, []);
+  // async function getData(url: string, pref: string) {
+  //   const fullUrl = url + pref;
+  //   const data: any = await getWords(fullUrl);
+  //   setWords(data);
+  // }
+  // useEffect(() => {
+  //   getData(url, "");
+  // }, []);
 
   const switchSection = (section: string): void => {
     return setSelectedSection(section);
@@ -91,7 +94,7 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
             <Button
               variant="outline-success"
               className="p-3  vocabulary-page-link"
-              onClick={() => switchSection("complex-sections")}
+              onClick={() => switchSection("hard-sections")}
             >
               Сложные
             </Button>
@@ -107,7 +110,11 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
           </Nav.Item>
         </Nav>
       </Container>
-      <VocabularySections selectedSection={selectedSection} words={words} />
+      <VocabularySections
+        selectedSection={selectedSection}
+        hardWords={selectedSection}
+        learnedWords={selectedSection}
+      />
     </Container>
   );
 };

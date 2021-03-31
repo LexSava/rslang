@@ -3,54 +3,56 @@ import "./VocabularySections.scss";
 import React, { useState, useEffect } from "react";
 import { Container, Button } from "react-bootstrap";
 
-interface InterfaceStudiedSection {
-  words: any;
-  onGetSelectedWordsComplex(arr: any): void;
-  onGetSelectedWordsDeleteds(arr: any): void;
-  onGetSelectedWordsStudied(arr: any): void;
+interface InterfaceStudiedVocabularySection {
+  learnedWords: any;
+  // onGetSelectedWordsComplex(arr: any): void;
+  // onGetSelectedWordsDeleteds(arr: any): void;
+  // onGetSelectedWordsStudied(arr: any): void;
 }
 
-const StudiedSection: React.FC<InterfaceStudiedSection> = (props) => {
-  const [words, setWord] = useState<number>(0);
-  const [allWords, setAllWord] = useState<any>([]);
+const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
+  props
+) => {
+  const [words, setWords] = useState<number>(0);
+  const [allWords, setAllWord] = useState<any>(props.learnedWords);
   const [wordList, setWordList] = useState<any>([]);
   const [selectedWords, setSelectedWords] = useState<any>([]);
   const [wordsToMove, setwordsToMove] = useState<any>([]);
 
-  async function getWeather() {
-    const url = `http://serene-falls-78086.herokuapp.com/words`;
-    const res = await fetch(url);
-    const data = await res.json();
-    setAllWord(data);
-    console.log(data);
-  }
-  useEffect(() => {
-    getWeather();
-  }, []);
+  // async function getWeather() {
+  //   const url = `http://serene-falls-78086.herokuapp.com/words`;
+  //   const res = await fetch(url);
+  //   const data = await res.json();
+  //   setAllWord(data);
+  //   console.log(data);
+  // }
+  // useEffect(() => {
+  //   getWeather();
+  // }, []);
 
-  const deleteWords = () => {
-    props.onGetSelectedWordsDeleteds(
-      wordsToMove.concat(
-        allWords.filter((element: any) => selectedWords.includes(element.word))
-      )
-    );
-  };
+  // const deleteWords = () => {
+  //   props.onGetSelectedWordsDeleteds(
+  //     wordsToMove.concat(
+  //       allWords.filter((element: any) => selectedWords.includes(element.word))
+  //     )
+  //   );
+  // };
 
-  const difficultWords = () => {
-    props.onGetSelectedWordsComplex(
-      wordsToMove.concat(
-        allWords.filter((element: any) => selectedWords.includes(element.word))
-      )
-    );
-  };
+  // const difficultWords = () => {
+  //   props.onGetSelectedWordsComplex(
+  //     wordsToMove.concat(
+  //       allWords.filter((element: any) => selectedWords.includes(element.word))
+  //     )
+  //   );
+  // };
 
-  const studiedtWords = () => {
-    props.onGetSelectedWordsStudied(
-      wordsToMove.concat(
-        allWords.filter((element: any) => selectedWords.includes(element.word))
-      )
-    );
-  };
+  // const studiedtWords = () => {
+  //   props.onGetSelectedWordsStudied(
+  //     wordsToMove.concat(
+  //       allWords.filter((element: any) => selectedWords.includes(element.word))
+  //     )
+  //   );
+  // };
 
   const wordDistribution = () => {
     setAllWord(
@@ -96,7 +98,7 @@ const StudiedSection: React.FC<InterfaceStudiedSection> = (props) => {
           className="pt-3 pb-3 pl-5 pr-5 mt-4 mr-4"
           onClick={() => {
             wordDistribution();
-            difficultWords();
+            // difficultWords();
             // studiedtWords();
           }}
         >
@@ -107,7 +109,7 @@ const StudiedSection: React.FC<InterfaceStudiedSection> = (props) => {
           className="pt-3 pb-3 pl-5 pr-5 mt-4"
           onClick={() => {
             wordDistribution();
-            deleteWords();
+            // deleteWords();
             // studiedtWords();
           }}
         >
@@ -127,4 +129,4 @@ const StudiedSection: React.FC<InterfaceStudiedSection> = (props) => {
   );
 };
 
-export default StudiedSection;
+export default StudiedVocabularySection;

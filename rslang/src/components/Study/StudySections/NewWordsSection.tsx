@@ -49,10 +49,10 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
   const getHardWord = () => {
     props.onGetHardWords(newWords[cardNumber]);
   };
-  // const getLearnedWords = () => {
-  //   props.onGetLearnedWords(newWords[cardNumber]);
-  //   // console.log(newWords[cardNumber]);
-  // };
+  const getLearnedWords = () => {
+    props.onGetLearnedWords(newWords[cardNumber]);
+    // console.log(newWords[cardNumber]);
+  };
 
   useEffect(() => {
     setTestButtonText("Проверить");
@@ -122,7 +122,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     if (inputText.toLowerCase() === newWords[cardNumber].word.toLowerCase()) {
       setTestButtonText("Следующее слово");
       setTestButtonArrow(BsArrowRight);
-      props.onGetLearnedWords(newWords[cardNumber]);
+      getLearnedWords();
     } else {
       setTestButtonText("Проверить");
       setTestButtonArrow(BsArrowUp);

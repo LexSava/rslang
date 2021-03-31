@@ -2,36 +2,32 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./VocabularySections.scss";
 import React, { useState, useEffect } from "react";
 import { Container, Button } from "react-bootstrap";
-
-interface InterfaceDeletedSection {
-  words: any;
-  onGetSelectedWordsComplex(arr: any): void;
-  onGetSelectedWordsDeleteds(arr: any): void;
+interface InterfaceHardVocabularySection {
+  hardWords: any;
+  // onGetSelectedWordsDeleteds(arr: any): void;
 }
 
-const DeletedSection: React.FC<InterfaceDeletedSection> = (props) => {
-  const [allWords, setAllWord] = useState<any>([]);
+const HardVocabularySection: React.FC<InterfaceHardVocabularySection> = (
+  props
+) => {
+  const [allWords, setAllWords] = useState<any>(props.hardWords);
   const [wordList, setWordList] = useState<any>([]);
   const [selectedWords, setSelectedWords] = useState<any>([]);
   const [wordsToMove, setwordsToMove] = useState<any>([]);
 
   useEffect(() => {
-    setAllWord(props.words);
-  }, []);
+    setAllWords(props.hardWords);
+  }, [props.hardWords]);
 
-  const wordDistribution = () => {
-    setAllWord(
-      allWords.filter(
-        (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
-      )
-    );
-    props.onGetSelectedWordsDeleteds(
-      wordsToMove.concat(
-        allWords.filter((element: any) => selectedWords.includes(element.word))
-      )
-    );
-    setSelectedWords([]);
-  };
+  // const wordDistribution = () => {
+  //   setAllWord(
+  //     allWords.filter(
+  //       (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
+  //     )
+  //   );
+  //   setSelectedWords([]);
+  // };
+
   // const deleteWords = () => {
   //   props.onGetSelectedWordsDeleteds(
   //     wordsToMove.concat(
@@ -39,13 +35,6 @@ const DeletedSection: React.FC<InterfaceDeletedSection> = (props) => {
   //     )
   //   );
   // };
-  const difficultWords = () => {
-    props.onGetSelectedWordsComplex(
-      wordsToMove.concat(
-        allWords.filter((element: any) => selectedWords.includes(element.word))
-      )
-    );
-  };
 
   const handleChange = (e: any) => {
     if (e.target.checked) {
@@ -81,16 +70,14 @@ const DeletedSection: React.FC<InterfaceDeletedSection> = (props) => {
           В изученные
         </Button>
         <Button
-          variant="warning"
+          variant="danger"
           className="pt-3 pb-3 pl-5 pr-5 mt-4"
           onClick={() => {
-            wordDistribution();
-            difficultWords();
+            // wordDistribution();
             // deleteWords();
-            // studiedtWords();
           }}
         >
-          В сложные
+          Удалить
         </Button>
       </Container>
       <Container>
@@ -104,4 +91,4 @@ const DeletedSection: React.FC<InterfaceDeletedSection> = (props) => {
     </Container>
   );
 };
-export default DeletedSection;
+export default HardVocabularySection;

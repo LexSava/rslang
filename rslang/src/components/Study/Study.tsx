@@ -9,31 +9,29 @@ import getWords from "../../api/getWords";
 import NewWordsSection from "./StudySections/NewWordsSection";
 import RepeatWordsSection from "./StudySections/RepeatWordsSection";
 import HardWordsSection from "./StudySections/HardWordsSection";
-
+import useLocalStorage from "../../hooks/useLocalStorage";
 import _ from "lodash";
 const url = `https://serene-falls-78086.herokuapp.com/words`;
 
-interface InterfaceStudy {}
+interface InterfaceStudy {
+  words: any;
+  hardWords: any;
+  learnedWords: any;
+  getHardWords(arr: any): void;
+  getLearnedWords(arr: any): void;
+}
 
 const Study: React.FC<InterfaceStudy> = (props) => {
   const [larnNewWord, setlarnNewWord] = useState<string>("");
-  const [words, setWords] = useState<any>([]);
-  const [hardWords, setHardWords] = useState<any>([]);
-  const [learnedWords, setLearnedWords] = useState<any>([]);
+  const [hardWords, setHardWords] = useLocalStorage([], "");
+  const [learnedWords, setLearnedWords] = useLocalStorage([], "");
 
-  async function getData(url: string, pref: string) {
-    const fullUrl = url + pref;
-    const data: any = await getWords(fullUrl);
-    setWords(data);
-  }
   useEffect(() => {
-    getData(url, "");
-  }, []);
-  useEffect(() => {
-    console.log(hardWords);
+    props.getHardWords(hardWords);
   }, [hardWords]);
+
   useEffect(() => {
-    console.log(learnedWords);
+    props.getLearnedWords(learnedWords);
   }, [learnedWords]);
 
   const getHardWords = (arr: any) => {
@@ -69,7 +67,7 @@ const Study: React.FC<InterfaceStudy> = (props) => {
         <Container className="d-flex flex-wrap align-items-center justify-content-around">
           <h3 className="study-page-head m-0">Сегодня изучено</h3>
           <p className="study-page-head-text m-0">
-            Сегодня изучено: 0 из 20 слов
+            Сегодня изучено: {learnedWords.length} из {props.words.length} слов
           </p>
         </Container>
         <Container className="d-flex justify-content-around flex-wrap mt-4 p-5 bg-light">
@@ -138,18 +136,18 @@ const Study: React.FC<InterfaceStudy> = (props) => {
   if (larnNewWord === "NewWordsSection") {
     return (
       <NewWordsSection
-        words={words}
+        words={props.words}
         onClosePage={closePage}
         onGetHardWords={getHardWords}
         onGetLearnedWords={getLearnedWords}
       />
     );
   } else if (larnNewWord === "HardWordsSection") {
-    return <HardWordsSection words={hardWords} onClosePage={closePage} />;
+    return <HardWordsSection words={props.hardWords} onClosePage={closePage} />;
   } else if (larnNewWord === "RepeatWordsSection") {
     return (
       <RepeatWordsSection
-        words={learnedWords}
+        words={props.learnedWords}
         onClosePage={closePage}
         onGetHardWords={getHardWords}
       />
