@@ -14,20 +14,21 @@ import {
   Card,
   ListGroup,
   ListGroupItem,
+  InputGroup,
+  FormControl,
   Jumbotron,
   Form,
   ProgressBar,
 } from "react-bootstrap";
 const url = `https://serene-falls-78086.herokuapp.com/`;
 
-interface InterfaceNewWordsSection {
+interface InterfaceRepeatWordsSection {
   words: any;
   onClosePage(str: string): void;
-  onGetHardWords(arr: any): void;
-  onGetLearnedWords(arr: any): void;
+  onGetHardWords(str: string): void;
 }
 
-const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
+const RepeatWordsSection: React.FC<InterfaceRepeatWordsSection> = (props) => {
   const [newWords, setNewWord] = useState<any>(props.words);
   const [wordCard, setWordCard] = useState<any>(0);
   const [show, setShow] = useState(false);
@@ -46,45 +47,34 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     setNewWord(props.words);
   }, [props.words]);
 
-  const getHardWord = () => {
-    props.onGetHardWords(newWords[cardNumber]);
-  };
-  // const getLearnedWords = () => {
-  //   props.onGetLearnedWords(newWords[cardNumber]);
-  //   // console.log(newWords[cardNumber]);
-  // };
-
   useEffect(() => {
     setTestButtonText("Проверить");
     setTestButtonArrow(BsArrowUp);
   }, [cardNumber]);
 
   useEffect(() => {
-    if (cardNumber <= newWords.length - 1) {
-      setTextMeaning(
-        newWords[cardNumber].textMeaning
-          .replace(`<i>${newWords[cardNumber].word}</i>`, "[.....]")
-          .replace(
-            `<i>${
-              newWords[cardNumber].word[0].toUpperCase() +
-              newWords[cardNumber].word.slice(1)
-            }</i>`,
-            "[.....]"
-          )
-      );
-
-      setTextExample(
-        newWords[cardNumber].textExample
-          .replace(`<b>${newWords[cardNumber].word}</b>`, "[.....]")
-          .replace(
-            `<b>${
-              newWords[cardNumber].word[0].toUpperCase() +
-              newWords[cardNumber].word.slice(1)
-            }</b>`,
-            "[.....]"
-          )
-      );
-    }
+    setTextMeaning(
+      newWords[cardNumber].textMeaning
+        .replace(`<i>${newWords[cardNumber].word}</i>`, "[.....]")
+        .replace(
+          `<i>${
+            newWords[cardNumber].word[0].toUpperCase() +
+            newWords[cardNumber].word.slice(1)
+          }</i>`,
+          "[.....]"
+        )
+    );
+    setTextExample(
+      newWords[cardNumber].textExample
+        .replace(`<b>${newWords[cardNumber].word}</b>`, "[.....]")
+        .replace(
+          `<b>${
+            newWords[cardNumber].word[0].toUpperCase() +
+            newWords[cardNumber].word.slice(1)
+          }</b>`,
+          "[.....]"
+        )
+    );
   }, [cardNumber, wordCard]);
 
   useEffect(() => {
@@ -122,7 +112,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     if (inputText.toLowerCase() === newWords[cardNumber].word.toLowerCase()) {
       setTestButtonText("Следующее слово");
       setTestButtonArrow(BsArrowRight);
-      props.onGetLearnedWords(newWords[cardNumber]);
     } else {
       setTestButtonText("Проверить");
       setTestButtonArrow(BsArrowUp);
@@ -149,13 +138,11 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     setHintButtonActivity(true);
     playAudioWord();
   };
-
   const closePage = () => {
     props.onClosePage("");
   };
-
   useEffect(() => {
-    if (cardNumber > newWords.length - 1) {
+    if (cardNumber > 19) {
       setCardNumber(0);
       setShow(false);
       setProgressPercentage(0);
@@ -233,6 +220,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
                 disabled={testButtonActivity}
                 onClick={() => {
                   showNextCard();
+                  //   playAudioWord();
                   wordCheck();
                 }}
               >
@@ -253,13 +241,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
               </Button>
             </Container>
             <Container className="d-flex justify-content-end">
-              <Button
-                variant="warning"
-                className="mr-2"
-                onClick={() => {
-                  getHardWord();
-                }}
-              >
+              <Button variant="warning" className="mr-2">
                 Сложные слова
               </Button>
               <Button variant="danger">Удалённые слова</Button>
@@ -303,4 +285,5 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     </Jumbotron>
   );
 };
-export default NewWordsSection;
+
+export default RepeatWordsSection;

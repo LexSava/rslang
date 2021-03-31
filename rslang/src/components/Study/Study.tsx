@@ -7,7 +7,10 @@ import RepeatWords from "../../assets/img/repeat_words.jpg";
 import HardWords from "../../assets/img/hard_words.jpg";
 import getWords from "../../api/getWords";
 import NewWordsSection from "./StudySections/NewWordsSection";
+import RepeatWordsSection from "./StudySections/RepeatWordsSection";
+import HardWordsSection from "./StudySections/HardWordsSection";
 
+import _ from "lodash";
 const url = `https://serene-falls-78086.herokuapp.com/words`;
 
 interface InterfaceStudy {}
@@ -15,6 +18,8 @@ interface InterfaceStudy {}
 const Study: React.FC<InterfaceStudy> = (props) => {
   const [larnNewWord, setlarnNewWord] = useState<string>("");
   const [words, setWords] = useState<any>([]);
+  const [hardWords, setHardWords] = useState<any>([]);
+  const [learnedWords, setLearnedWords] = useState<any>([]);
 
   async function getData(url: string, pref: string) {
     const fullUrl = url + pref;
@@ -24,6 +29,19 @@ const Study: React.FC<InterfaceStudy> = (props) => {
   useEffect(() => {
     getData(url, "");
   }, []);
+  useEffect(() => {
+    console.log(hardWords);
+  }, [hardWords]);
+  useEffect(() => {
+    console.log(learnedWords);
+  }, [learnedWords]);
+
+  const getHardWords = (arr: any) => {
+    setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
+  };
+  const getLearnedWords = (arr: any) => {
+    setLearnedWords(_.uniqWith(learnedWords.concat(arr), _.isEqual));
+  };
 
   const startSectionWithWords = (section: string) => {
     setlarnNewWord(section);
@@ -118,11 +136,24 @@ const Study: React.FC<InterfaceStudy> = (props) => {
   };
 
   if (larnNewWord === "NewWordsSection") {
-    return <NewWordsSection words={words} onClosePage={closePage} />;
+    return (
+      <NewWordsSection
+        words={words}
+        onClosePage={closePage}
+        onGetHardWords={getHardWords}
+        onGetLearnedWords={getLearnedWords}
+      />
+    );
   } else if (larnNewWord === "HardWordsSection") {
-    return <NewWordsSection words={words} onClosePage={closePage} />;
+    return <HardWordsSection words={hardWords} onClosePage={closePage} />;
   } else if (larnNewWord === "RepeatWordsSection") {
-    return <NewWordsSection words={words} onClosePage={closePage} />;
+    return (
+      <RepeatWordsSection
+        words={learnedWords}
+        onClosePage={closePage}
+        onGetHardWords={getHardWords}
+      />
+    );
   } else {
     return showPageStudy();
   }
