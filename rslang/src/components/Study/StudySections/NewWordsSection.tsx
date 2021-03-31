@@ -18,6 +18,7 @@ import {
   Form,
   ProgressBar,
 } from "react-bootstrap";
+import EmptySection from "./EmptySection";
 const url = `https://serene-falls-78086.herokuapp.com/`;
 
 interface InterfaceNewWordsSection {
@@ -25,6 +26,7 @@ interface InterfaceNewWordsSection {
   onClosePage(str: string): void;
   onGetHardWords(arr: any): void;
   onGetLearnedWords(arr: any): void;
+  onGetDeletedWords(arr: any): void;
 }
 
 const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
@@ -49,6 +51,11 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
   const getHardWord = () => {
     props.onGetHardWords(newWords[cardNumber]);
   };
+  const getDeletedWords = () => {
+    props.onGetDeletedWords(newWords[cardNumber]);
+    setNewWord(newWords.filter((n: any) => n.id !== newWords[cardNumber].id));
+  };
+
   // const getLearnedWords = () => {
   //   props.onGetLearnedWords(newWords[cardNumber]);
   //   // console.log(newWords[cardNumber]);
@@ -262,7 +269,14 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
               >
                 Сложные слова
               </Button>
-              <Button variant="danger">Удалённые слова</Button>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  getDeletedWords();
+                }}
+              >
+                Удалённые слова
+              </Button>
             </Container>
           </Card.Body>
         </Card>
@@ -276,32 +290,34 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     inputText,
     testButtonText,
     textMeaning,
-  
   ]);
-
-  return (
-    <Jumbotron className="bg-light min-vh-100 position-relative">
-      <Button
-        variant="outline-dark"
-        className="position-absolute btn-close mr-5"
-        onClick={() => {
-          closePage();
-        }}
-      >
-        <BsX />
-      </Button>
-      <Container className="mb-4">
-        <p className="study-page-head-text m-0 mb-3">
-          Сегодня изучено: {cardNumber} из {newWords.length} слов
-        </p>
-        <ProgressBar
-          now={progressPercentage}
-          label={`${progressPercentage}%`}
-          className="w-50 progress-line"
-        />
-      </Container>
-      {wordCard}
-    </Jumbotron>
-  );
+  if (newWords.length === 0) {
+    return <EmptySection onClosePage={closePage} />;
+  } else {
+    return (
+      <Jumbotron className="bg-light min-vh-100 position-relative">
+        <Button
+          variant="outline-dark"
+          className="position-absolute btn-close mr-5"
+          onClick={() => {
+            closePage();
+          }}
+        >
+          <BsX />
+        </Button>
+        <Container className="mb-4">
+          <p className="study-page-head-text m-0 mb-3">
+            Сегодня изучено: {cardNumber} из {newWords.length} слов
+          </p>
+          <ProgressBar
+            now={progressPercentage}
+            label={`${progressPercentage}%`}
+            className="w-50 progress-line"
+          />
+        </Container>
+        {wordCard}
+      </Jumbotron>
+    );
+  }
 };
 export default NewWordsSection;

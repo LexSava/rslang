@@ -9,6 +9,7 @@ interface InterfaceVocabularySections {
   selectedSection: string;
   hardWords: any;
   learnedWords: any;
+  deletedWords: any;
   getHardWords(arr: any): void;
   getLearnedWords(arr: any): void;
 }
@@ -73,7 +74,7 @@ const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
     } else if (props.selectedSection === "deleted-sections") {
       return (
         <DeletedVocabularySection
-          words={props.learnedWords}
+        deletedWords={props.deletedWords}
           // onGetSelectedWordsComplex={getSelectedWordsComplex}
           // onGetSelectedWordsDeleteds={getSelectedWordsDeleteds}
         />

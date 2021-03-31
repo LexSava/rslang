@@ -20,6 +20,7 @@ const Main: React.FC<InterfaceMain> = (props) => {
   const [words, setWords] = useState<any>([]);
   const [learnedWords, setLearnedWords] = useLocalStorage("learnedWords", "");
   const [hardWords, setHardWords] = useLocalStorage("hardWords", "");
+  const [deletedWords, setDeletedWords] = useLocalStorage("deletedWords", "");
   // const [learnedWords, setLearnedWords] = useState<any>([]);
   // const [hardWords, setHardWords] = useState<any>([]);
 
@@ -43,6 +44,9 @@ const Main: React.FC<InterfaceMain> = (props) => {
   const getLearnedWords = (arr: any) => {
     setLearnedWords(_.uniqWith(learnedWords.concat(arr), _.isEqual));
   };
+  const getDeletedWords = (arr: any) => {
+    setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
+  };
 
   return (
     <Switch>
@@ -50,17 +54,21 @@ const Main: React.FC<InterfaceMain> = (props) => {
         <Study
           words={words}
           hardWords={hardWords}
+          deletedWords={deletedWords}
           learnedWords={learnedWords}
           getHardWords={getHardWords}
           getLearnedWords={getLearnedWords}
+          getDeletedWords={getDeletedWords}
         />
       </Route>
       <Route path="/tutorial-page/vocabulary">
         <Vocabulary
           hardWords={hardWords}
           learnedWords={learnedWords}
+          deletedWords={deletedWords}
           getHardWords={getHardWords}
           getLearnedWords={getLearnedWords}
+          getDeletedWords={getDeletedWords}
         />
       </Route>
       <Route path="/tutorial-page/games">

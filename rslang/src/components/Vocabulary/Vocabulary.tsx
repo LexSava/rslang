@@ -7,13 +7,6 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 import VocabularySections from "./VocabularySections/VocabularySections";
 import _ from "lodash";
 
-interface InterfaceVocabulary {
-  hardWords: any;
-  learnedWords: any;
-  getHardWords(arr: any): void;
-  getLearnedWords(arr: any): void;
-}
-
 interface Word {
   id: string;
   group: number;
@@ -49,6 +42,14 @@ const wordExample = {
   wordTranslate: "лодка",
 };
 
+interface InterfaceVocabulary {
+  hardWords: any;
+  learnedWords: any;
+  deletedWords: any;
+  getHardWords(arr: any): void;
+  getLearnedWords(arr: any): void;
+  getDeletedWords(arr: any): void;
+}
 // const url = `https://serene-falls-78086.herokuapp.com/words`;
 
 const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
@@ -135,6 +136,7 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
         selectedSection={selectedSection}
         hardWords={props.hardWords}
         learnedWords={props.learnedWords}
+        deletedWords={props.deletedWords}
         getHardWords={getHardWords}
         getLearnedWords={getLearnedWords}
       />

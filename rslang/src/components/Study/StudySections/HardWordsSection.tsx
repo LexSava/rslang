@@ -27,6 +27,7 @@ const url = `https://serene-falls-78086.herokuapp.com/`;
 interface InterfaceHardWordsSection {
   words: any;
   onClosePage(str: string): void;
+  onGetDeletedWords(arr: any): void;
 }
 
 const HardWordsSection: React.FC<InterfaceHardWordsSection> = (props) => {
@@ -43,6 +44,11 @@ const HardWordsSection: React.FC<InterfaceHardWordsSection> = (props) => {
 
   let [progressPercentage, setProgressPercentage] = useState<number>(0);
   let [cardNumber, setCardNumber] = useState<number>(0);
+
+  const getDeletedWords = () => {
+    props.onGetDeletedWords(newWords[cardNumber]);
+    setNewWord(newWords.filter((n: any) => n.id !== newWords[cardNumber].id));
+  };
 
   useEffect(() => {
     setNewWord(props.words);
@@ -245,10 +251,14 @@ const HardWordsSection: React.FC<InterfaceHardWordsSection> = (props) => {
               </Button>
             </Container>
             <Container className="d-flex justify-content-end">
-              <Button variant="warning" className="mr-2">
-                Сложные слова
+              <Button
+                variant="danger"
+                onClick={() => {
+                  getDeletedWords();
+                }}
+              >
+                Удалённые слова
               </Button>
-              <Button variant="danger">Удалённые слова</Button>
             </Container>
           </Card.Body>
         </Card>

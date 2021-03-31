@@ -15,7 +15,7 @@ interface InterfaceStudiedVocabularySection {
 const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
   props
 ) => {
-  const [words, setWords] = useState<number>(0);
+  const [words, setWords] = useState<any>([]);
   const [allWords, setAllWord] = useState<any>(props.learnedWords);
   const [wordList, setWordList] = useState<any>([]);
   const [selectedWords, setSelectedWords] = useState<any>([]);
@@ -29,8 +29,8 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
   //   console.log(data);
   // }
   // useEffect(() => {
-  //   props.onGetHardWords(wordsToMove);
-  // }, [wordsToMove]);
+  //   props.onGetLearnedWords(words);
+  // }, [words]);
 
   // const deleteWords = () => {
   //   props.onGetSelectedWordsDeleteds(
@@ -50,7 +50,7 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
 
   const studiedtWords = () => {
     console.log(allWords);
-
+    console.log(words);
     // props.onGetLearnedWords(
     //   wordsToMove.concat(
     //     allWords.filter((element: any) => selectedWords.includes(element.word))
@@ -64,6 +64,17 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
         (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
       )
     );
+    props.onGetLearnedWords(
+      allWords.filter(
+        (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
+      )
+    );
+    // console.log(
+    //   allWords.filter(
+    //     (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
+    //   )
+    // );
+
     setSelectedWords([]);
     // props.onGetLearnedWords(wordList);
   };

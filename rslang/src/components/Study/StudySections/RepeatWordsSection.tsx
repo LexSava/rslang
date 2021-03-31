@@ -27,6 +27,7 @@ interface InterfaceRepeatWordsSection {
   words: any;
   onClosePage(str: string): void;
   onGetHardWords(str: string): void;
+  onGetDeletedWords(arr: any): void;
 }
 
 const RepeatWordsSection: React.FC<InterfaceRepeatWordsSection> = (props) => {
@@ -145,6 +146,15 @@ const RepeatWordsSection: React.FC<InterfaceRepeatWordsSection> = (props) => {
   const closePage = () => {
     props.onClosePage("");
   };
+
+  const getHardWord = () => {
+    props.onGetHardWords(newWords[cardNumber]);
+  };
+
+  const getDeletedWords = () => {
+    props.onGetDeletedWords(newWords[cardNumber]);
+    setNewWord(newWords.filter((n: any) => n.id !== newWords[cardNumber].id));
+  };
   useEffect(() => {
     if (cardNumber > newWords.length - 1) {
       setCardNumber(0);
@@ -245,10 +255,23 @@ const RepeatWordsSection: React.FC<InterfaceRepeatWordsSection> = (props) => {
               </Button>
             </Container>
             <Container className="d-flex justify-content-end">
-              <Button variant="warning" className="mr-2">
+              <Button
+                variant="warning"
+                className="mr-2"
+                onClick={() => {
+                  getHardWord();
+                }}
+              >
                 Сложные слова
               </Button>
-              <Button variant="danger">Удалённые слова</Button>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  getDeletedWords();
+                }}
+              >
+                Удалённые слова
+              </Button>
             </Container>
           </Card.Body>
         </Card>

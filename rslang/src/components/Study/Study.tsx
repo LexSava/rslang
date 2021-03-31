@@ -17,14 +17,17 @@ interface InterfaceStudy {
   words: any;
   hardWords: any;
   learnedWords: any;
+  deletedWords: any;
   getHardWords(arr: any): void;
   getLearnedWords(arr: any): void;
+  getDeletedWords(arr: any): void;
 }
 
 const Study: React.FC<InterfaceStudy> = (props) => {
   const [larnNewWord, setlarnNewWord] = useState<string>("");
   const [hardWords, setHardWords] = useState<any>([]);
   const [learnedWords, setLearnedWords] = useState<any>([]);
+  const [deletedWords, setDeletedWords] = useState<any>([]);
 
   useEffect(() => {
     props.getHardWords(hardWords);
@@ -34,11 +37,18 @@ const Study: React.FC<InterfaceStudy> = (props) => {
     props.getLearnedWords(learnedWords);
   }, [learnedWords]);
 
+  useEffect(() => {
+    props.getDeletedWords(deletedWords);
+  }, [deletedWords]);
+
   const getHardWords = (arr: any) => {
     setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
   };
   const getLearnedWords = (arr: any) => {
     setLearnedWords(_.uniqWith(learnedWords.concat(arr), _.isEqual));
+  };
+  const getDeletedWords = (arr: any) => {
+    setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
   };
 
   const startSectionWithWords = (section: string) => {
@@ -141,16 +151,24 @@ const Study: React.FC<InterfaceStudy> = (props) => {
         onClosePage={closePage}
         onGetHardWords={getHardWords}
         onGetLearnedWords={getLearnedWords}
+        onGetDeletedWords={getDeletedWords}
       />
     );
   } else if (larnNewWord === "HardWordsSection") {
-    return <HardWordsSection words={props.hardWords} onClosePage={closePage} />;
+    return (
+      <HardWordsSection
+        words={props.hardWords}
+        onClosePage={closePage}
+        onGetDeletedWords={getDeletedWords}
+      />
+    );
   } else if (larnNewWord === "RepeatWordsSection") {
     return (
       <RepeatWordsSection
         words={props.learnedWords}
         onClosePage={closePage}
         onGetHardWords={getHardWords}
+        onGetDeletedWords={getDeletedWords}
       />
     );
   } else {

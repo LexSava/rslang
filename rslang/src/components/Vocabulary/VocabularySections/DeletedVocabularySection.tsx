@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Button } from "react-bootstrap";
 
 interface InterfaceDeletedVocabularySection {
-  words: any;
+  deletedWords: any;
   // onGetSelectedWordsComplex(arr: any): void;
   // onGetSelectedWordsDeleteds(arr: any): void;
 }
@@ -18,8 +18,8 @@ const DeletedVocabularySection: React.FC<InterfaceDeletedVocabularySection> = (
   const [wordsToMove, setwordsToMove] = useState<any>([]);
 
   useEffect(() => {
-    setAllWord(props.words);
-  }, []);
+    setAllWord(props.deletedWords);
+  }, [props.deletedWords]);
 
   // const wordDistribution = () => {
   //   setAllWord(
