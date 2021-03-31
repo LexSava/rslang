@@ -23,8 +23,8 @@ interface InterfaceStudy {
 
 const Study: React.FC<InterfaceStudy> = (props) => {
   const [larnNewWord, setlarnNewWord] = useState<string>("");
-  const [hardWords, setHardWords] = useLocalStorage([], "");
-  const [learnedWords, setLearnedWords] = useLocalStorage([], "");
+  const [hardWords, setHardWords] = useState<any>([]);
+  const [learnedWords, setLearnedWords] = useState<any>([]);
 
   useEffect(() => {
     props.getHardWords(hardWords);
@@ -67,7 +67,8 @@ const Study: React.FC<InterfaceStudy> = (props) => {
         <Container className="d-flex flex-wrap align-items-center justify-content-around">
           <h3 className="study-page-head m-0">Сегодня изучено</h3>
           <p className="study-page-head-text m-0">
-            Сегодня изучено: {learnedWords.length} из {props.words.length} слов
+            Сегодня изучено: {props.learnedWords.length} из {props.words.length}{" "}
+            слов
           </p>
         </Container>
         <Container className="d-flex justify-content-around flex-wrap mt-4 p-5 bg-light">

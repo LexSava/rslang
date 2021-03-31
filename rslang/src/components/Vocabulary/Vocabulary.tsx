@@ -5,10 +5,13 @@ import { Container, Nav, Button } from "react-bootstrap";
 import getWords from "../../api/getWords";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import VocabularySections from "./VocabularySections/VocabularySections";
+import _ from "lodash";
 
 interface InterfaceVocabulary {
-  // hardWords: any;
-  // learnedWords: any;
+  hardWords: any;
+  learnedWords: any;
+  getHardWords(arr: any): void;
+  getLearnedWords(arr: any): void;
 }
 
 interface Word {
@@ -52,6 +55,24 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
   const [selectedSection, setSelectedSection] = useState<string>(
     "studied-sections"
   );
+
+  const [hardWords, setHardWords] = useState<any>([]);
+  const [learnedWords, setLearnedWords] = useState<any>([]);
+
+  useEffect(() => {
+    props.getHardWords(hardWords);
+  }, [hardWords]);
+
+  useEffect(() => {
+    props.getLearnedWords(learnedWords);
+  }, [learnedWords]);
+
+  const getHardWords = (arr: any) => {
+    setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
+  };
+  const getLearnedWords = (arr: any) => {
+    setLearnedWords(_.uniqWith(learnedWords.concat(arr), _.isEqual));
+  };
   // const [userId, setUserId] = useLocalStorage("userId", "");
   // const [token, setToken] = useLocalStorage("token", "");
   // const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", "");
@@ -112,8 +133,10 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
       </Container>
       <VocabularySections
         selectedSection={selectedSection}
-        hardWords={selectedSection}
-        learnedWords={selectedSection}
+        hardWords={props.hardWords}
+        learnedWords={props.learnedWords}
+        getHardWords={getHardWords}
+        getLearnedWords={getLearnedWords}
       />
     </Container>
   );

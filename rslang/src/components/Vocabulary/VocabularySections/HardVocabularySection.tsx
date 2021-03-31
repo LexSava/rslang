@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Button } from "react-bootstrap";
 interface InterfaceHardVocabularySection {
   hardWords: any;
+  onGetLearnedWords(arr: any): void;
   // onGetSelectedWordsDeleteds(arr: any): void;
 }
 
@@ -19,22 +20,22 @@ const HardVocabularySection: React.FC<InterfaceHardVocabularySection> = (
     setAllWords(props.hardWords);
   }, [props.hardWords]);
 
-  // const wordDistribution = () => {
-  //   setAllWord(
-  //     allWords.filter(
-  //       (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
-  //     )
-  //   );
-  //   setSelectedWords([]);
-  // };
+  const wordDistribution = () => {
+    setAllWords(
+      allWords.filter(
+        (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
+      )
+    );
+    setSelectedWords([]);
+  };
 
-  // const deleteWords = () => {
-  //   props.onGetSelectedWordsDeleteds(
-  //     wordsToMove.concat(
-  //       allWords.filter((element: any) => selectedWords.includes(element.word))
-  //     )
-  //   );
-  // };
+  const studiedtWords = () => {
+    props.onGetLearnedWords(
+      wordsToMove.concat(
+        allWords.filter((element: any) => selectedWords.includes(element.word))
+      )
+    );
+  };
 
   const handleChange = (e: any) => {
     if (e.target.checked) {
@@ -66,7 +67,15 @@ const HardVocabularySection: React.FC<InterfaceHardVocabularySection> = (
   return (
     <Container className="bg-light mt-4 min-vh-100">
       <Container className="d-flex justify-content-end">
-        <Button variant="primary" className="pt-3 pb-3 pl-5 pr-5 mt-4 mr-4">
+        <Button
+          variant="primary"
+          className="pt-3 pb-3 pl-5 pr-5 mt-4 mr-4"
+          onClick={() => {
+            wordDistribution();
+            studiedtWords();
+            // deleteWords();
+          }}
+        >
           В изученные
         </Button>
         <Button

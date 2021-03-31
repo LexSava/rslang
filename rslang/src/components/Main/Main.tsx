@@ -18,8 +18,10 @@ interface InterfaceMain {}
 
 const Main: React.FC<InterfaceMain> = (props) => {
   const [words, setWords] = useState<any>([]);
-  const [hardWords, setHardWords] = useState<any>([]);
-  const [learnedWords, setLearnedWords] = useState<any>([]);
+  const [learnedWords, setLearnedWords] = useLocalStorage("learnedWords", "");
+  const [hardWords, setHardWords] = useLocalStorage("hardWords", "");
+  // const [learnedWords, setLearnedWords] = useState<any>([]);
+  // const [hardWords, setHardWords] = useState<any>([]);
 
   async function getData(url: string, pref: string) {
     const fullUrl = url + pref;
@@ -54,7 +56,12 @@ const Main: React.FC<InterfaceMain> = (props) => {
         />
       </Route>
       <Route path="/tutorial-page/vocabulary">
-        <Vocabulary />
+        <Vocabulary
+          hardWords={hardWords}
+          learnedWords={learnedWords}
+          getHardWords={getHardWords}
+          getLearnedWords={getLearnedWords}
+        />
       </Route>
       <Route path="/tutorial-page/games">
         <Games />

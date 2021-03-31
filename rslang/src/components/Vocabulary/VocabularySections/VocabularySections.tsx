@@ -9,9 +9,27 @@ interface InterfaceVocabularySections {
   selectedSection: string;
   hardWords: any;
   learnedWords: any;
+  getHardWords(arr: any): void;
+  getLearnedWords(arr: any): void;
 }
 
 const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
+  const [hardWords, setHardWords] = useState<any>([]);
+  const [learnedWords, setLearnedWords] = useState<any>([]);
+  useEffect(() => {
+    props.getHardWords(hardWords);
+  }, [hardWords]);
+
+  useEffect(() => {
+    props.getLearnedWords(learnedWords);
+  }, [learnedWords]);
+
+  const getHardWords = (arr: any) => {
+    setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
+  };
+  const getLearnedWords = (arr: any) => {
+    setLearnedWords(_.uniqWith(learnedWords.concat(arr), _.isEqual));
+  };
   // const [words, setWords] = useState<any>([]);
   // const [selectedWordsDeleted, setSelectedWordsDeleted] = useState<any>([]);
   // const [selectedWordsComplex, setSelectedWordsComplex] = useState<any>([]);
@@ -48,6 +66,7 @@ const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
       return (
         <HardVocabularySection
           hardWords={props.hardWords}
+          onGetLearnedWords={getLearnedWords}
           // onGetSelectedWordsDeleteds={getSelectedWordsDeleteds}
         />
       );
@@ -63,6 +82,8 @@ const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
       return (
         <StudiedVocabularySection
           learnedWords={props.learnedWords}
+          onGetHardWords={getHardWords}
+          onGetLearnedWords={getLearnedWords}
           // onGetSelectedWordsDeleteds={getSelectedWordsDeleteds}
           // onGetSelectedWordsComplex={getSelectedWordsComplex}
           // onGetSelectedWordsStudied={getSelectedWordsStudied}

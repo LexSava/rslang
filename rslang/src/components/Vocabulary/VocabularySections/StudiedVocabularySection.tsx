@@ -5,6 +5,8 @@ import { Container, Button } from "react-bootstrap";
 
 interface InterfaceStudiedVocabularySection {
   learnedWords: any;
+  onGetHardWords(arr: any): void;
+  onGetLearnedWords(arr: any): void;
   // onGetSelectedWordsComplex(arr: any): void;
   // onGetSelectedWordsDeleteds(arr: any): void;
   // onGetSelectedWordsStudied(arr: any): void;
@@ -27,8 +29,8 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
   //   console.log(data);
   // }
   // useEffect(() => {
-  //   getWeather();
-  // }, []);
+  //   props.onGetHardWords(wordsToMove);
+  // }, [wordsToMove]);
 
   // const deleteWords = () => {
   //   props.onGetSelectedWordsDeleteds(
@@ -38,21 +40,23 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
   //   );
   // };
 
-  // const difficultWords = () => {
-  //   props.onGetSelectedWordsComplex(
-  //     wordsToMove.concat(
-  //       allWords.filter((element: any) => selectedWords.includes(element.word))
-  //     )
-  //   );
-  // };
+  const difficultWords = () => {
+    props.onGetHardWords(
+      wordsToMove.concat(
+        allWords.filter((element: any) => selectedWords.includes(element.word))
+      )
+    );
+  };
 
-  // const studiedtWords = () => {
-  //   props.onGetSelectedWordsStudied(
-  //     wordsToMove.concat(
-  //       allWords.filter((element: any) => selectedWords.includes(element.word))
-  //     )
-  //   );
-  // };
+  const studiedtWords = () => {
+    console.log(allWords);
+
+    // props.onGetLearnedWords(
+    //   wordsToMove.concat(
+    //     allWords.filter((element: any) => selectedWords.includes(element.word))
+    //   )
+    // );
+  };
 
   const wordDistribution = () => {
     setAllWord(
@@ -61,6 +65,7 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
       )
     );
     setSelectedWords([]);
+    // props.onGetLearnedWords(wordList);
   };
 
   const handleChange = (e: any) => {
@@ -98,8 +103,8 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
           className="pt-3 pb-3 pl-5 pr-5 mt-4 mr-4"
           onClick={() => {
             wordDistribution();
-            // difficultWords();
-            // studiedtWords();
+            difficultWords();
+            studiedtWords();
           }}
         >
           В сложные
