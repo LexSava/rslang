@@ -1,15 +1,15 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Settings.scss";
 import { useState } from "react";
-import { Container } from "react-bootstrap";
+import { Container, Nav } from "react-bootstrap";
 import getUserData from "../../api/getUserData";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { url } from "../../api/defData";
 
 interface InterfaceSettings {}
 interface dataInterface {
-    id: string,
-    wordsPerDay: number
+  id: string;
+  wordsPerDay: number;
 }
 
 const Settings: React.FC<InterfaceSettings> = (props) => {
@@ -21,12 +21,13 @@ const Settings: React.FC<InterfaceSettings> = (props) => {
 
   async function getSettings(url: string, bearerToken: string) {
     const fullUrl = `${url}users/${userId}/settings`;
-    await getUserData(fullUrl, bearerToken).then(( responseData:any ) => {
-    console.log(responseData)
-  })
-  .catch(error => {
-      console.log(error.message)
-    })
+    await getUserData(fullUrl, bearerToken)
+      .then((responseData: any) => {
+        console.log(responseData);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   }
 
   // getSettings(url, token)
@@ -35,8 +36,30 @@ const Settings: React.FC<InterfaceSettings> = (props) => {
     <Container className="min-vh-100 p-0 border border-top-0">
       <Container className="study-page-head-block bg-light">
         <h2 className="study-page-head-text p-3">Настройки</h2>
-        <p>{"Пользователь - " +  username}</p>
+        <p>{"Пользователь - " + username}</p>
         <p>{"Количество слов в день - " + settings.wordsPerDay}</p>
+        <Nav variant="tabs" defaultActiveKey="#">
+          <Nav.Item>
+            <Nav.Link href="#">Active</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href="#">Active</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href="#">Active</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href="#">Active</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="link-1">Option 2</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="disabled" disabled>
+              Disabled
+            </Nav.Link>
+          </Nav.Item>
+        </Nav>
       </Container>
     </Container>
   );

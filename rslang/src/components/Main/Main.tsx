@@ -21,8 +21,6 @@ const Main: React.FC<InterfaceMain> = (props) => {
   const [learnedWords, setLearnedWords] = useLocalStorage("learnedWords", "");
   const [hardWords, setHardWords] = useLocalStorage("hardWords", "");
   const [deletedWords, setDeletedWords] = useLocalStorage("deletedWords", "");
-  // const [learnedWords, setLearnedWords] = useState<any>([]);
-  // const [hardWords, setHardWords] = useState<any>([]);
 
   async function getData(url: string, pref: string) {
     const fullUrl = url + pref;
