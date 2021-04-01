@@ -5,8 +5,7 @@ import { Container, Nav, Button } from "react-bootstrap";
 import getWords from "../../api/getWords";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import VocabularySections from "./VocabularySections/VocabularySections";
-
-interface InterfaceVocabulary {}
+import _ from "lodash";
 
 interface Word {
   id: string;
@@ -43,25 +42,58 @@ const wordExample = {
   wordTranslate: "лодка",
 };
 
-const url = `https://serene-falls-78086.herokuapp.com/words`;
+interface InterfaceVocabulary {
+  hardWords: any;
+  learnedWords: any;
+  deletedWords: any;
+  getHardWords(arr: any): void;
+  getLearnedWords(arr: any): void;
+  getDeletedWords(arr: any): void;
+}
+// const url = `https://serene-falls-78086.herokuapp.com/words`;
 
 const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
   const [selectedSection, setSelectedSection] = useState<string>(
     "studied-sections"
   );
-  const [userId, setUserId] = useLocalStorage("userId", "");
-  const [token, setToken] = useLocalStorage("token", "");
-  const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", "");
-  const [words, setWords] = useState<any>([]);
 
-  async function getData(url: string, pref: string) {
-    const fullUrl = url + pref;
-    const data: any = await getWords(fullUrl);
-    setWords(data);
-  }
+  const [hardWords, setHardWords] = useState<any>([]);
+  const [learnedWords, setLearnedWords] = useState<any>([]);
+  const [deletedWords, setDeletedWords] = useState<any>([]);
   useEffect(() => {
-    getData(url, "");
-  }, []);
+    props.getHardWords(hardWords);
+  }, [hardWords]);
+
+  useEffect(() => {
+    props.getLearnedWords(learnedWords);
+  }, [learnedWords]);
+
+  useEffect(() => {
+    props.getDeletedWords(deletedWords);
+  }, [deletedWords]);
+
+  const getHardWords = (arr: any) => {
+    setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
+  };
+  const getLearnedWords = (arr: any) => {
+    setLearnedWords(_.uniqWith(learnedWords.concat(arr), _.isEqual));
+  };
+  const getDeletedWords = (arr: any) => {
+    setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
+  };
+  // const [userId, setUserId] = useLocalStorage("userId", "");
+  // const [token, setToken] = useLocalStorage("token", "");
+  // const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", "");
+  // const [words, setWords] = useState<any>([]);
+
+  // async function getData(url: string, pref: string) {
+  //   const fullUrl = url + pref;
+  //   const data: any = await getWords(fullUrl);
+  //   setWords(data);
+  // }
+  // useEffect(() => {
+  //   getData(url, "");
+  // }, []);
 
   const switchSection = (section: string): void => {
     return setSelectedSection(section);
@@ -91,7 +123,7 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
             <Button
               variant="outline-success"
               className="p-3  vocabulary-page-link"
-              onClick={() => switchSection("complex-sections")}
+              onClick={() => switchSection("hard-sections")}
             >
               Сложные
             </Button>
@@ -107,7 +139,15 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
           </Nav.Item>
         </Nav>
       </Container>
-      <VocabularySections selectedSection={selectedSection} words={words} />
+      <VocabularySections
+        selectedSection={selectedSection}
+        hardWords={props.hardWords}
+        learnedWords={props.learnedWords}
+        deletedWords={props.deletedWords}
+        getHardWords={getHardWords}
+        getLearnedWords={getLearnedWords}
+        getDeletedWords={getDeletedWords}
+      />
     </Container>
   );
 };

@@ -7,23 +7,49 @@ import RepeatWords from "../../assets/img/repeat_words.jpg";
 import HardWords from "../../assets/img/hard_words.jpg";
 import getWords from "../../api/getWords";
 import NewWordsSection from "./StudySections/NewWordsSection";
-
+import RepeatWordsSection from "./StudySections/RepeatWordsSection";
+import HardWordsSection from "./StudySections/HardWordsSection";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import _ from "lodash";
 const url = `https://serene-falls-78086.herokuapp.com/words`;
 
-interface InterfaceStudy {}
+interface InterfaceStudy {
+  words: any;
+  hardWords: any;
+  learnedWords: any;
+  deletedWords: any;
+  getHardWords(arr: any): void;
+  getLearnedWords(arr: any): void;
+  getDeletedWords(arr: any): void;
+}
 
 const Study: React.FC<InterfaceStudy> = (props) => {
   const [larnNewWord, setlarnNewWord] = useState<string>("");
-  const [words, setWords] = useState<any>([]);
+  const [hardWords, setHardWords] = useState<any>([]);
+  const [learnedWords, setLearnedWords] = useState<any>([]);
+  const [deletedWords, setDeletedWords] = useState<any>([]);
 
-  async function getData(url: string, pref: string) {
-    const fullUrl = url + pref;
-    const data: any = await getWords(fullUrl);
-    setWords(data);
-  }
   useEffect(() => {
-    getData(url, "");
-  }, []);
+    props.getHardWords(hardWords);
+  }, [hardWords]);
+
+  useEffect(() => {
+    props.getLearnedWords(learnedWords);
+  }, [learnedWords]);
+
+  useEffect(() => {
+    props.getDeletedWords(deletedWords);
+  }, [deletedWords]);
+
+  const getHardWords = (arr: any) => {
+    setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
+  };
+  const getLearnedWords = (arr: any) => {
+    setLearnedWords(_.uniqWith(learnedWords.concat(arr), _.isEqual));
+  };
+  const getDeletedWords = (arr: any) => {
+    setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
+  };
 
   const startSectionWithWords = (section: string) => {
     setlarnNewWord(section);
@@ -51,7 +77,8 @@ const Study: React.FC<InterfaceStudy> = (props) => {
         <Container className="d-flex flex-wrap align-items-center justify-content-around">
           <h3 className="study-page-head m-0">Сегодня изучено</h3>
           <p className="study-page-head-text m-0">
-            Сегодня изучено: 0 из 20 слов
+            Сегодня изучено: {props.learnedWords.length} из {props.words.length}{" "}
+            слов
           </p>
         </Container>
         <Container className="d-flex justify-content-around flex-wrap mt-4 p-5 bg-light">
@@ -118,11 +145,32 @@ const Study: React.FC<InterfaceStudy> = (props) => {
   };
 
   if (larnNewWord === "NewWordsSection") {
-    return <NewWordsSection words={words} onClosePage={closePage} />;
+    return (
+      <NewWordsSection
+        words={props.words}
+        onClosePage={closePage}
+        onGetHardWords={getHardWords}
+        onGetLearnedWords={getLearnedWords}
+        onGetDeletedWords={getDeletedWords}
+      />
+    );
   } else if (larnNewWord === "HardWordsSection") {
-    return <NewWordsSection words={words} onClosePage={closePage} />;
+    return (
+      <HardWordsSection
+        words={props.hardWords}
+        onClosePage={closePage}
+        onGetDeletedWords={getDeletedWords}
+      />
+    );
   } else if (larnNewWord === "RepeatWordsSection") {
-    return <NewWordsSection words={words} onClosePage={closePage} />;
+    return (
+      <RepeatWordsSection
+        words={props.learnedWords}
+        onClosePage={closePage}
+        onGetHardWords={getHardWords}
+        onGetDeletedWords={getDeletedWords}
+      />
+    );
   } else {
     return showPageStudy();
   }

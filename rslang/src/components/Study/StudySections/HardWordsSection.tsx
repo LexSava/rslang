@@ -14,22 +14,23 @@ import {
   Card,
   ListGroup,
   ListGroupItem,
+  InputGroup,
+  FormControl,
   Jumbotron,
   Form,
   ProgressBar,
 } from "react-bootstrap";
 import EmptySection from "./EmptySection";
+
 const url = `https://serene-falls-78086.herokuapp.com/`;
 
-interface InterfaceNewWordsSection {
+interface InterfaceHardWordsSection {
   words: any;
   onClosePage(str: string): void;
-  onGetHardWords(arr: any): void;
-  onGetLearnedWords(arr: any): void;
   onGetDeletedWords(arr: any): void;
 }
 
-const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
+const HardWordsSection: React.FC<InterfaceHardWordsSection> = (props) => {
   const [newWords, setNewWord] = useState<any>(props.words);
   const [wordCard, setWordCard] = useState<any>(0);
   const [show, setShow] = useState(false);
@@ -44,22 +45,14 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
   let [progressPercentage, setProgressPercentage] = useState<number>(0);
   let [cardNumber, setCardNumber] = useState<number>(0);
 
-  useEffect(() => {
-    setNewWord(props.words);
-  }, [props.words]);
-
-  const getHardWord = () => {
-    props.onGetHardWords(newWords[cardNumber]);
-  };
   const getDeletedWords = () => {
     props.onGetDeletedWords(newWords[cardNumber]);
     setNewWord(newWords.filter((n: any) => n.id !== newWords[cardNumber].id));
   };
 
-  // const getLearnedWords = () => {
-  //   props.onGetLearnedWords(newWords[cardNumber]);
-  //   // console.log(newWords[cardNumber]);
-  // };
+  useEffect(() => {
+    setNewWord(props.words);
+  }, [props.words]);
 
   useEffect(() => {
     setTestButtonText("Проверить");
@@ -79,7 +72,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
             "[.....]"
           )
       );
-
       setTextExample(
         newWords[cardNumber].textExample
           .replace(`<b>${newWords[cardNumber].word}</b>`, "[.....]")
@@ -129,7 +121,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     if (inputText.toLowerCase() === newWords[cardNumber].word.toLowerCase()) {
       setTestButtonText("Следующее слово");
       setTestButtonArrow(BsArrowRight);
-      props.onGetLearnedWords(newWords[cardNumber]);
     } else {
       setTestButtonText("Проверить");
       setTestButtonArrow(BsArrowUp);
@@ -261,15 +252,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
             </Container>
             <Container className="d-flex justify-content-end">
               <Button
-                variant="warning"
-                className="mr-2"
-                onClick={() => {
-                  getHardWord();
-                }}
-              >
-                Сложные слова
-              </Button>
-              <Button
                 variant="danger"
                 onClick={() => {
                   getDeletedWords();
@@ -291,6 +273,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     testButtonText,
     textMeaning,
   ]);
+
   if (newWords.length === 0) {
     return <EmptySection onClosePage={closePage} />;
   } else {
@@ -320,4 +303,5 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     );
   }
 };
-export default NewWordsSection;
+
+export default HardWordsSection;

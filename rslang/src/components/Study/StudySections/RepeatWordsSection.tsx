@@ -14,6 +14,8 @@ import {
   Card,
   ListGroup,
   ListGroupItem,
+  InputGroup,
+  FormControl,
   Jumbotron,
   Form,
   ProgressBar,
@@ -21,15 +23,14 @@ import {
 import EmptySection from "./EmptySection";
 const url = `https://serene-falls-78086.herokuapp.com/`;
 
-interface InterfaceNewWordsSection {
+interface InterfaceRepeatWordsSection {
   words: any;
   onClosePage(str: string): void;
-  onGetHardWords(arr: any): void;
-  onGetLearnedWords(arr: any): void;
+  onGetHardWords(str: string): void;
   onGetDeletedWords(arr: any): void;
 }
 
-const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
+const RepeatWordsSection: React.FC<InterfaceRepeatWordsSection> = (props) => {
   const [newWords, setNewWord] = useState<any>(props.words);
   const [wordCard, setWordCard] = useState<any>(0);
   const [show, setShow] = useState(false);
@@ -47,19 +48,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
   useEffect(() => {
     setNewWord(props.words);
   }, [props.words]);
-
-  const getHardWord = () => {
-    props.onGetHardWords(newWords[cardNumber]);
-  };
-  const getDeletedWords = () => {
-    props.onGetDeletedWords(newWords[cardNumber]);
-    setNewWord(newWords.filter((n: any) => n.id !== newWords[cardNumber].id));
-  };
-
-  // const getLearnedWords = () => {
-  //   props.onGetLearnedWords(newWords[cardNumber]);
-  //   // console.log(newWords[cardNumber]);
-  // };
 
   useEffect(() => {
     setTestButtonText("Проверить");
@@ -129,7 +117,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     if (inputText.toLowerCase() === newWords[cardNumber].word.toLowerCase()) {
       setTestButtonText("Следующее слово");
       setTestButtonArrow(BsArrowRight);
-      props.onGetLearnedWords(newWords[cardNumber]);
     } else {
       setTestButtonText("Проверить");
       setTestButtonArrow(BsArrowUp);
@@ -156,11 +143,18 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     setHintButtonActivity(true);
     playAudioWord();
   };
-
   const closePage = () => {
     props.onClosePage("");
   };
 
+  const getHardWord = () => {
+    props.onGetHardWords(newWords[cardNumber]);
+  };
+
+  const getDeletedWords = () => {
+    props.onGetDeletedWords(newWords[cardNumber]);
+    setNewWord(newWords.filter((n: any) => n.id !== newWords[cardNumber].id));
+  };
   useEffect(() => {
     if (cardNumber > newWords.length - 1) {
       setCardNumber(0);
@@ -240,6 +234,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
                 disabled={testButtonActivity}
                 onClick={() => {
                   showNextCard();
+                  //   playAudioWord();
                   wordCheck();
                 }}
               >
@@ -307,7 +302,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
         </Button>
         <Container className="mb-4">
           <p className="study-page-head-text m-0 mb-3">
-            Сегодня изучено: {cardNumber} из {newWords.length} слов
+            Слов для повторения: {cardNumber} из {newWords.length} слов
           </p>
           <ProgressBar
             now={progressPercentage}
@@ -320,4 +315,5 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     );
   }
 };
-export default NewWordsSection;
+
+export default RepeatWordsSection;

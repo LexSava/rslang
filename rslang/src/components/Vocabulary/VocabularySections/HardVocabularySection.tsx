@@ -2,23 +2,26 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./VocabularySections.scss";
 import React, { useState, useEffect } from "react";
 import { Container, Button } from "react-bootstrap";
-interface InterfaceComplexSection {
-  words: any;
-  onGetSelectedWordsDeleteds(arr: any): void;
+interface InterfaceHardVocabularySection {
+  hardWords: any;
+  onGetLearnedWords(arr: any): void;
+  onGetDeletedWords(arr: any): void;
 }
 
-const ComplexSection: React.FC<InterfaceComplexSection> = (props) => {
-  const [allWords, setAllWord] = useState<any>([]);
+const HardVocabularySection: React.FC<InterfaceHardVocabularySection> = (
+  props
+) => {
+  const [allWords, setAllWords] = useState<any>(props.hardWords);
   const [wordList, setWordList] = useState<any>([]);
   const [selectedWords, setSelectedWords] = useState<any>([]);
   const [wordsToMove, setwordsToMove] = useState<any>([]);
 
   useEffect(() => {
-    setAllWord(allWords.concat(props.words));
-  }, []);
+    setAllWords(props.hardWords);
+  }, [props.hardWords]);
 
   const wordDistribution = () => {
-    setAllWord(
+    setAllWords(
       allWords.filter(
         (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
       )
@@ -26,14 +29,20 @@ const ComplexSection: React.FC<InterfaceComplexSection> = (props) => {
     setSelectedWords([]);
   };
 
-  const deleteWords = () => {
-    props.onGetSelectedWordsDeleteds(
+  const studiedtWords = () => {
+    props.onGetLearnedWords(
       wordsToMove.concat(
         allWords.filter((element: any) => selectedWords.includes(element.word))
       )
     );
   };
-
+  const deletedWords = () => {
+    props.onGetDeletedWords(
+      wordsToMove.concat(
+        allWords.filter((element: any) => selectedWords.includes(element.word))
+      )
+    );
+  };
   const handleChange = (e: any) => {
     if (e.target.checked) {
       setSelectedWords([...selectedWords, e.target.value]);
@@ -64,7 +73,15 @@ const ComplexSection: React.FC<InterfaceComplexSection> = (props) => {
   return (
     <Container className="bg-light mt-4 min-vh-100">
       <Container className="d-flex justify-content-end">
-        <Button variant="primary" className="pt-3 pb-3 pl-5 pr-5 mt-4 mr-4">
+        <Button
+          variant="primary"
+          className="pt-3 pb-3 pl-5 pr-5 mt-4 mr-4"
+          onClick={() => {
+            wordDistribution();
+            studiedtWords();
+            // deleteWords();
+          }}
+        >
           В изученные
         </Button>
         <Button
@@ -72,7 +89,7 @@ const ComplexSection: React.FC<InterfaceComplexSection> = (props) => {
           className="pt-3 pb-3 pl-5 pr-5 mt-4"
           onClick={() => {
             wordDistribution();
-            deleteWords();
+            deletedWords();
           }}
         >
           Удалить
@@ -89,4 +106,4 @@ const ComplexSection: React.FC<InterfaceComplexSection> = (props) => {
     </Container>
   );
 };
-export default ComplexSection;
+export default HardVocabularySection;
