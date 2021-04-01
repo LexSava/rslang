@@ -35,7 +35,6 @@ const Signin = (Props:SigninProps) => {
           <Register />
         </Tab>
         <Tab eventKey="login" title="Войти">
-                    <p>user@rslang.tk</p>
           <Login />
         </Tab>
         </Tabs>
