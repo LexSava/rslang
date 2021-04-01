@@ -61,6 +61,7 @@
   "devDependencies": {
     "@types/lodash": "^4.14.168",
     "@types/react-loadable": "^5.5.4",
-    "react-hook-form": "^6.15.5"
+    "react-hook-form": "^6.15.5",
+    "react-rating": "^2.0.5"
   }
 }

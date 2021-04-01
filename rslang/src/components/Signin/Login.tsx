@@ -11,15 +11,16 @@ import { url, defSettingsData, defStatisticsData } from "../../api/defData";
 
 const Login = () => {
   const { register, handleSubmit, errors } = useForm();
-
   const [message, setMessage] = useState<any>(null);
   const [token, setToken] = useLocalStorage("token", "");
   const [refToken, setRefToken] = useLocalStorage("refreshToken", "");
   const [userId, setUserId] = useLocalStorage("userId", "");
+  const [userpic, setUserPic] = useLocalStorage("userpic", "");
+  const [username, setUserName] = useLocalStorage("username", "");
   const [statistics, setStatistics] = useLocalStorage("statistics", "");
   const [settings, setSettings] = useLocalStorage("settings", "");
   const [isLoged, setLoged] = useState(false);
-  
+
   async function api<T>(url: string, data: any): Promise<T> {
    const init: RequestInit = {
      method: 'POST',
@@ -38,13 +39,52 @@ const Login = () => {
     return body
   }
 
+  const getStatistics = () => {
+        const fullUrl = `${url}users/${userId}/statistics`;
+
+    getUserData(fullUrl, token).then(( responseData:any ) => {
+    console.log(responseData)
+    setStatistics(responseData)
+  })
+  .catch(error => {
+      console.log(error.message);
+      setUserData(fullUrl, token, defStatisticsData).then(( responseData:any ) => {
+    console.log(responseData)
+    setStatistics(responseData)
+  })
+  .catch(error => {
+      console.log(error.message)
+      });
+    });
+    }
+
+  const getSettings = () => {
+    const fullUrl = `${url}users/${userId}/settings`;
+
+    getUserData(fullUrl, token).then(( responseData:any ) => {
+    console.log(responseData)
+    setSettings(responseData)
+  })
+  .catch(error => {
+    console.log(error.message);
+    setUserData(fullUrl, token, defSettingsData).then(( responseData:any ) => {
+    console.log(responseData)
+    setStatistics(responseData)
+  })
+  .catch(error => {
+      console.log(error.message)
+      });
+    });
+    }
+  
+
   const onSubmit = async (data: any): Promise<any> => {
     setMessage({
       data: `Выполняется вход...`,
       type: "none",
     });
 
-  const fullUrl = url + "/signin";
+  const fullUrl = url + "signin";
 
   api(fullUrl, data).then(( responseData:any ) => {
     setMessage({
@@ -56,9 +96,11 @@ const Login = () => {
     setToken(responseData.token)
     setRefToken(responseData.refreshToken)
     setUserId(responseData.userId)
-    getStatistics();
+    setUserName(responseData.username)
+    setUserPic(responseData.userpic)
     getSettings();
-    setTimeout(() => setLoged(true), 2000)
+    getStatistics();
+    setTimeout(() => setLoged(true), 5000)
   })
   .catch(error => {
       console.log(error.message);
@@ -82,43 +124,6 @@ const Login = () => {
   })
   };
 
-  const getStatistics = () => {
-        const fullUrl = `${url}/users/${userId}/statistics`;
-
-    getUserData(fullUrl, token).then(( responseData:any ) => {
-    console.log(responseData)
-    setStatistics(responseData)
-  })
-  .catch(error => {
-      console.log(error.message);
-      setUserData(fullUrl, token, defStatisticsData).then(( responseData:any ) => {
-    console.log(responseData)
-    setStatistics(responseData)
-  })
-  .catch(error => {
-      console.log(error.message)
-      });
-    });
-    }
-
-  const getSettings = () => {
-    const fullUrl = `${url}/users/${userId}/settings`;
-
-    getUserData(fullUrl, token).then(( responseData:any ) => {
-    console.log(responseData)
-    setSettings(responseData)
-  })
-  .catch(error => {
-    console.log(error.message);
-    setUserData(fullUrl, token, defSettingsData).then(( responseData:any ) => {
-    console.log(responseData)
-    setStatistics(responseData)
-  })
-  .catch(error => {
-      console.log(error.message)
-      });
-    });
-    }
 
   return (
     <>
@@ -150,7 +155,7 @@ const Login = () => {
                 ref={register({
                   required: {
                     value: true,
-                    message: "Please enter your email address",
+                    message: "Нужно ввести email",
                   },
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,

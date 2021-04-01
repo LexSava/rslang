@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { Button, Form, Modal } from "react-bootstrap";
 import { url } from "../../api/defData";
 
+const custom = 'custom';
+const defAvatar = 'avatars/defavatar.png'
 
 const Register = () => {
   const { register, handleSubmit, errors } = useForm();
@@ -12,7 +14,10 @@ const Register = () => {
   const [message, setMessage] = useState<any>(null);
   
   async function api<T>(url: string, userData: any): Promise<T> {
-   const init: RequestInit = {
+    console.log(userData.file.length)
+    if(userData.file.length === 0) {userData.userpic = defAvatar}
+      else {userData.userpic = custom}
+    const init: RequestInit = {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -30,21 +35,52 @@ const Register = () => {
     return body
   }
 
-  const onSubmit = async (userData: FormData): Promise<any> => {
+  async function avatar<T>(file: any, userId: string): Promise<any> {
+    const fullUrl = `${url}avatar`;
+    console.log(file)
+    const formData:any = new FormData();
+    const newFileName = userId + '.jpg';
+    formData.append("file", file[0], newFileName);
+    console.log(formData)
+    const init: RequestInit = {
+    mode: 'no-cors',
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json'
+    },
+    body: formData
+   };
+    const response = await fetch(fullUrl, init);
+    console.log(response)
+    if (!response.ok) {
+      const error = response.status + " " + response.statusText;
+        throw new Error(error)
+      }
+    return response
+  }
+
+  const onSubmit = async (userData: any): Promise<any> => {
     setMessage({
       data: `Выполняется регистрация...`,
       type: "none",
     });
 
-  // const url = 'http://127.0.0.1:4000/users';
+  const fullUrl = `${url}users`;
 
-  api<any>(url, userData).then(( responseData:any ) => {
+  api<any>(fullUrl, userData).then(( responseData:any ) => {
     setMessage({
       data: "Регистрация выполнена",
       type: "",
     });
     setTimeout(setMessage, 5000)
     console.log(responseData)
+    if (userData.userpic === custom) {
+    avatar<any>(userData.file, responseData.id).then(( res:any ) => {
+      console.log(res)
+      }).catch(error => {
+      console.log(error)
+      })
+    }
   })
   .catch(error => {
     console.log(error.message)
@@ -122,7 +158,7 @@ const Register = () => {
             ref={register({
               required: {
               value: false,
-              message: "Please enter your email address",
+              message: "Необходимо ввести email",
               },
               maxLength: {
                 value: 70,
@@ -170,7 +206,7 @@ const Register = () => {
             <Form.Group>
             <Form.File id="FormControlFile1"
               label="Выберите изображение профиля" 
-              name="userpic"
+              name="file"
               ref={register({
               required: {
               value: false,

@@ -5,6 +5,7 @@ import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Menu from "../Menu/Menu";
 import Main from "../Main/Main";
+import SignOut from "../Signin/SignOut";
 interface InterfaceTutorialPage {}
 
 const TutorialPage: React.FC<InterfaceTutorialPage> = (props) => {
@@ -14,6 +15,7 @@ const TutorialPage: React.FC<InterfaceTutorialPage> = (props) => {
         <Link to="/" className="link-logo-block text-primary">
           <h1 className="logo-tutorial-page text-dark m-0">RS Lang</h1>
         </Link>
+        <SignOut />
         <Link
           to="/"
           className="btn btn-primary rounded-pill border border-0 btn-lg mr-3 login-button"
