@@ -2,6 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Menu.scss";
 import React from "react";
 import { Container, Nav } from "react-bootstrap";
+import { Link, withRouter } from "react-router-dom";
 interface InterfaceMenu {}
 
 const Menu: React.FC<InterfaceMenu> = (props) => {
@@ -9,26 +10,40 @@ const Menu: React.FC<InterfaceMenu> = (props) => {
     <Container className="p-0">
       <Nav fill variant="tabs" defaultActiveKey="#">
         <Nav.Item>
-          <Nav.Link href="/tutorial-page" className="pt-4 pb-4 menu-elem">
+          <Nav.Link
+            eventKey="link-1"
+            as={Link}
+            to="/tutorial-page"
+            className="pt-4 pb-4 menu-elem"
+          >
             Изучение
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link
-            href="/tutorial-page/vocabulary"
+            eventKey="link-2"
+            as={Link}
+            to="/tutorial-page/vocabulary"
             className="pt-4 pb-4 menu-elem"
           >
             Словарь
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link href="/tutorial-page/games" className="pt-4 pb-4 menu-elem">
+          <Nav.Link
+            eventKey="link-3"
+            as={Link}
+            to="/tutorial-page/games"
+            className="pt-4 pb-4 menu-elem"
+          >
             Мини-игры
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link
-            href="/tutorial-page/statistics"
+            eventKey="link-4"
+            as={Link}
+            to="/tutorial-page/statistics"
             className="pt-4 pb-4 menu-elem"
           >
             Статистика
@@ -36,8 +51,9 @@ const Menu: React.FC<InterfaceMenu> = (props) => {
         </Nav.Item>
         <Nav.Item>
           <Nav.Link
-            eventKey="link-4"
-            href="/tutorial-page/settings"
+            eventKey="link-5"
+            as={Link}
+            to="/tutorial-page/settings"
             className="pt-4 pb-4 menu-elem"
           >
             Настройки
@@ -47,4 +63,4 @@ const Menu: React.FC<InterfaceMenu> = (props) => {
     </Container>
   );
 };
-export default Menu;
+export default withRouter(Menu);
