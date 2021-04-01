@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Settings.scss";
 import { useState } from "react";
-import { Container, Nav } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import getUserData from "../../api/getUserData";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { url } from "../../api/defData";
@@ -38,28 +38,6 @@ const Settings: React.FC<InterfaceSettings> = (props) => {
         <h2 className="study-page-head-text p-3">Настройки</h2>
         <p>{"Пользователь - " + username}</p>
         <p>{"Количество слов в день - " + settings.wordsPerDay}</p>
-        <Nav variant="tabs" defaultActiveKey="#">
-          <Nav.Item>
-            <Nav.Link href="#">Active</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href="#">Active</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href="#">Active</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href="#">Active</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="link-1">Option 2</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="disabled" disabled>
-              Disabled
-            </Nav.Link>
-          </Nav.Item>
-        </Nav>
       </Container>
     </Container>
   );

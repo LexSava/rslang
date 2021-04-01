@@ -79,7 +79,6 @@ const HardVocabularySection: React.FC<InterfaceHardVocabularySection> = (
           onClick={() => {
             wordDistribution();
             studiedtWords();
-            // deleteWords();
           }}
         >
           В изученные

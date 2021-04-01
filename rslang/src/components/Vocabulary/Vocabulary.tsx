@@ -50,7 +50,6 @@ interface InterfaceVocabulary {
   getLearnedWords(arr: any): void;
   getDeletedWords(arr: any): void;
 }
-// const url = `https://serene-falls-78086.herokuapp.com/words`;
 
 const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
   const [selectedSection, setSelectedSection] = useState<string>(
@@ -81,19 +80,6 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
   const getDeletedWords = (arr: any) => {
     setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
   };
-  // const [userId, setUserId] = useLocalStorage("userId", "");
-  // const [token, setToken] = useLocalStorage("token", "");
-  // const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", "");
-  // const [words, setWords] = useState<any>([]);
-
-  // async function getData(url: string, pref: string) {
-  //   const fullUrl = url + pref;
-  //   const data: any = await getWords(fullUrl);
-  //   setWords(data);
-  // }
-  // useEffect(() => {
-  //   getData(url, "");
-  // }, []);
 
   const switchSection = (section: string): void => {
     return setSelectedSection(section);
