@@ -43,37 +43,7 @@ const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
   const getDeletedWords = (arr: any) => {
     setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
   };
-  // const [words, setWords] = useState<any>([]);
-  // const [selectedWordsDeleted, setSelectedWordsDeleted] = useState<any>([]);
-  // const [selectedWordsComplex, setSelectedWordsComplex] = useState<any>([]);
-  // const [selectedWordsStudied, setSelectedWordsStudied] = useState<any>([]);
-
-  // console.log(selectedWordsDeleted);
-  // console.log(selectedWordsComplex);
-  // console.log(selectedWordsStudied);
-
-  // useEffect(() => {
-  //   setWords(props.learnedWords);
-  // }, [props.learnedWords]);
-
-  // const getSelectedWordsDeleteds = (arr: any) => {
-  //   setSelectedWordsDeleted(
-  //     _.uniqWith(selectedWordsDeleted.concat(arr), _.isEqual)
-  //   );
-  // };
-
-  // const getSelectedWordsComplex = (arr: any) => {
-  //   setSelectedWordsComplex(
-  //     _.uniqWith(selectedWordsComplex.concat(arr), _.isEqual)
-  //   );
-  // };
-
-  // const getSelectedWordsStudied = (arr: any) => {
-  //   setSelectedWordsComplex(
-  //     _.uniqWith(selectedWordsComplex.concat(arr), _.isEqual)
-  //   );
-  // };
-
+ 
   const showSelectedSection = () => {
     if (props.selectedSection === "hard-sections") {
       return (
