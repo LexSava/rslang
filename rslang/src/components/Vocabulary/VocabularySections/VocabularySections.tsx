@@ -12,11 +12,14 @@ interface InterfaceVocabularySections {
   deletedWords: any;
   getHardWords(arr: any): void;
   getLearnedWords(arr: any): void;
+  getDeletedWords(arr: any): void;
 }
 
 const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
   const [hardWords, setHardWords] = useState<any>([]);
   const [learnedWords, setLearnedWords] = useState<any>([]);
+  const [deletedWords, setDeletedWords] = useState<any>([]);
+
   useEffect(() => {
     props.getHardWords(hardWords);
   }, [hardWords]);
@@ -25,11 +28,20 @@ const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
     props.getLearnedWords(learnedWords);
   }, [learnedWords]);
 
+  useEffect(() => {
+    props.getDeletedWords(deletedWords);
+  }, [deletedWords]);
+
   const getHardWords = (arr: any) => {
     setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
   };
+
   const getLearnedWords = (arr: any) => {
     setLearnedWords(_.uniqWith(learnedWords.concat(arr), _.isEqual));
+  };
+
+  const getDeletedWords = (arr: any) => {
+    setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
   };
   // const [words, setWords] = useState<any>([]);
   // const [selectedWordsDeleted, setSelectedWordsDeleted] = useState<any>([]);
@@ -68,15 +80,15 @@ const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
         <HardVocabularySection
           hardWords={props.hardWords}
           onGetLearnedWords={getLearnedWords}
-          // onGetSelectedWordsDeleteds={getSelectedWordsDeleteds}
+          onGetDeletedWords={getDeletedWords}
         />
       );
     } else if (props.selectedSection === "deleted-sections") {
       return (
         <DeletedVocabularySection
-        deletedWords={props.deletedWords}
-          // onGetSelectedWordsComplex={getSelectedWordsComplex}
-          // onGetSelectedWordsDeleteds={getSelectedWordsDeleteds}
+          deletedWords={props.deletedWords}
+          onGetHardWords={getHardWords}
+          onGetLearnedWords={getLearnedWords}
         />
       );
     } else {
@@ -85,9 +97,7 @@ const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
           learnedWords={props.learnedWords}
           onGetHardWords={getHardWords}
           onGetLearnedWords={getLearnedWords}
-          // onGetSelectedWordsDeleteds={getSelectedWordsDeleteds}
-          // onGetSelectedWordsComplex={getSelectedWordsComplex}
-          // onGetSelectedWordsStudied={getSelectedWordsStudied}
+          onGetDeletedWords={getDeletedWords}
         />
       );
     }

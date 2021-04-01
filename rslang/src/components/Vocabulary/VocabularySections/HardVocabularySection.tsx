@@ -5,7 +5,7 @@ import { Container, Button } from "react-bootstrap";
 interface InterfaceHardVocabularySection {
   hardWords: any;
   onGetLearnedWords(arr: any): void;
-  // onGetSelectedWordsDeleteds(arr: any): void;
+  onGetDeletedWords(arr: any): void;
 }
 
 const HardVocabularySection: React.FC<InterfaceHardVocabularySection> = (
@@ -36,7 +36,13 @@ const HardVocabularySection: React.FC<InterfaceHardVocabularySection> = (
       )
     );
   };
-
+  const deletedWords = () => {
+    props.onGetDeletedWords(
+      wordsToMove.concat(
+        allWords.filter((element: any) => selectedWords.includes(element.word))
+      )
+    );
+  };
   const handleChange = (e: any) => {
     if (e.target.checked) {
       setSelectedWords([...selectedWords, e.target.value]);
@@ -82,8 +88,8 @@ const HardVocabularySection: React.FC<InterfaceHardVocabularySection> = (
           variant="danger"
           className="pt-3 pb-3 pl-5 pr-5 mt-4"
           onClick={() => {
-            // wordDistribution();
-            // deleteWords();
+            wordDistribution();
+            deletedWords();
           }}
         >
           Удалить

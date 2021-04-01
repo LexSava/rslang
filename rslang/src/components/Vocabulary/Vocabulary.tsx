@@ -59,7 +59,7 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
 
   const [hardWords, setHardWords] = useState<any>([]);
   const [learnedWords, setLearnedWords] = useState<any>([]);
-
+  const [deletedWords, setDeletedWords] = useState<any>([]);
   useEffect(() => {
     props.getHardWords(hardWords);
   }, [hardWords]);
@@ -68,11 +68,18 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
     props.getLearnedWords(learnedWords);
   }, [learnedWords]);
 
+  useEffect(() => {
+    props.getDeletedWords(deletedWords);
+  }, [deletedWords]);
+
   const getHardWords = (arr: any) => {
     setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
   };
   const getLearnedWords = (arr: any) => {
     setLearnedWords(_.uniqWith(learnedWords.concat(arr), _.isEqual));
+  };
+  const getDeletedWords = (arr: any) => {
+    setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
   };
   // const [userId, setUserId] = useLocalStorage("userId", "");
   // const [token, setToken] = useLocalStorage("token", "");
@@ -139,6 +146,7 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
         deletedWords={props.deletedWords}
         getHardWords={getHardWords}
         getLearnedWords={getLearnedWords}
+        getDeletedWords={getDeletedWords}
       />
     </Container>
   );

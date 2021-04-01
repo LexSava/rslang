@@ -7,9 +7,7 @@ interface InterfaceStudiedVocabularySection {
   learnedWords: any;
   onGetHardWords(arr: any): void;
   onGetLearnedWords(arr: any): void;
-  // onGetSelectedWordsComplex(arr: any): void;
-  // onGetSelectedWordsDeleteds(arr: any): void;
-  // onGetSelectedWordsStudied(arr: any): void;
+  onGetDeletedWords(arr: any): void;
 }
 
 const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
@@ -21,27 +19,15 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
   const [selectedWords, setSelectedWords] = useState<any>([]);
   const [wordsToMove, setwordsToMove] = useState<any>([]);
 
-  // async function getWeather() {
-  //   const url = `http://serene-falls-78086.herokuapp.com/words`;
-  //   const res = await fetch(url);
-  //   const data = await res.json();
-  //   setAllWord(data);
-  //   console.log(data);
-  // }
-  // useEffect(() => {
-  //   props.onGetLearnedWords(words);
-  // }, [words]);
-
-  // const deleteWords = () => {
-  //   props.onGetSelectedWordsDeleteds(
-  //     wordsToMove.concat(
-  //       allWords.filter((element: any) => selectedWords.includes(element.word))
-  //     )
-  //   );
-  // };
-
-  const difficultWords = () => {
+  const hardWords = () => {
     props.onGetHardWords(
+      wordsToMove.concat(
+        allWords.filter((element: any) => selectedWords.includes(element.word))
+      )
+    );
+  };
+  const deletedWords = () => {
+    props.onGetDeletedWords(
       wordsToMove.concat(
         allWords.filter((element: any) => selectedWords.includes(element.word))
       )
@@ -51,11 +37,6 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
   const studiedtWords = () => {
     console.log(allWords);
     console.log(words);
-    // props.onGetLearnedWords(
-    //   wordsToMove.concat(
-    //     allWords.filter((element: any) => selectedWords.includes(element.word))
-    //   )
-    // );
   };
 
   const wordDistribution = () => {
@@ -69,14 +50,7 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
         (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
       )
     );
-    // console.log(
-    //   allWords.filter(
-    //     (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
-    //   )
-    // );
-
     setSelectedWords([]);
-    // props.onGetLearnedWords(wordList);
   };
 
   const handleChange = (e: any) => {
@@ -114,7 +88,7 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
           className="pt-3 pb-3 pl-5 pr-5 mt-4 mr-4"
           onClick={() => {
             wordDistribution();
-            difficultWords();
+            hardWords();
             studiedtWords();
           }}
         >
@@ -125,8 +99,7 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
           className="pt-3 pb-3 pl-5 pr-5 mt-4"
           onClick={() => {
             wordDistribution();
-            // deleteWords();
-            // studiedtWords();
+            deletedWords();
           }}
         >
           Удалить
