@@ -73,7 +73,7 @@ const Main: React.FC<InterfaceMain> = (props) => {
         <Games />
       </Route>
       <Route path="/tutorial-page/statistics">
-        <Statistics />
+        <Statistics learnedWords={learnedWords} />
       </Route>
       <Route path="/tutorial-page/settings">
         <Settings />
