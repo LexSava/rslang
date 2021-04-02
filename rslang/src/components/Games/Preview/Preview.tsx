@@ -3,6 +3,8 @@ import "./Preview.scss";
 import React, { useState } from "react";
 import { Jumbotron, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Rating from "react-rating";
+import getWords from "../../../api/getWords";
+import { url, numOfPages } from "../../../api/defData";
 
 type PreviewProps = {
   backgroundImg: any;
@@ -20,14 +22,23 @@ const Preview = ({
   setUserWords,
 }: PreviewProps) => {
   const [levelRating, setLevelRating] = useState(level || 0);
+  const [wordsPage, setWordsPage] = useState(0);
 
   const onStarRatingPress = (newLevel: any) => {
     setLevelRating(newLevel);
+    const randPage = Math.floor(Math.random() * numOfPages)
+    setWordsPage(randPage)
   };
 
-  const uploadWords = () => {
+  const  uploadWords = async ():Promise<any> => {
+    const fullUrl = `${url}words?page=${wordsPage}&group=${levelRating-1}`;
+    getWords(fullUrl).then((wordsData:any) => {
+      setUserWords(wordsData);
+    }).catch(error => {
+      console.log(error.message)
+      });
     //TODO: add api call for getting words by levelRating
-    setUserWords("in progress...");
+    return 'data'
   };
 
   const startBtn =
