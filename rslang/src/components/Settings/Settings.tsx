@@ -13,21 +13,21 @@ interface dataInterface {
 }
 
 const Settings: React.FC<InterfaceSettings> = (props) => {
-  const [userId, setUserId] = useLocalStorage("userId", "");
-  const [token, setToken] = useLocalStorage("token", "");
+  // const [userId, setUserId] = useLocalStorage("userId", "");
+  // const [token, setToken] = useLocalStorage("token", "");
   const [username, setUserName] = useLocalStorage("username", "");
-  const [userpic, setUserPic] = useLocalStorage("userpic", "");
+  // const [userpic, setUserPic] = useLocalStorage("userpic", "");
   const [settings, setSettings] = useLocalStorage("settings", {});
 
-  async function getSettings(url: string, bearerToken: string) {
-    const fullUrl = `${url}users/${userId}/settings`;
-    await getUserData(fullUrl, bearerToken).then(( responseData:any ) => {
-    console.log(responseData)
-  })
-  .catch(error => {
-      console.log(error.message)
-    })
-  }
+  // async function getSettings(url: string, bearerToken: string) {
+  //   const fullUrl = `${url}users/${userId}/settings`;
+  //   await getUserData(fullUrl, bearerToken).then(( responseData:any ) => {
+  //   console.log(responseData)
+  // })
+  // .catch(error => {
+  //     console.log(error.message)
+  //   })
+  // }
 
   // getSettings(url, token)
 

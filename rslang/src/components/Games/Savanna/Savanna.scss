@@ -1,3 +1,68 @@
 .savanna {
   min-height: 70vh;
+  min-width: 100%;
+
+  .savanna-game {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  .menu {
+    margin: 10px;
+
+    .menu-wrapper {
+      display: flex;
+      justify-content: space-between;
+
+      .rating{
+        margin: 10px;
+        width: 200px;
+        height: 30px;
+        border-radius: 10px;
+        font-size: 1.5rem;
+      }
+
+      .btns-toolbar{
+        margin: 5px;
+
+        .btn-group {
+          margin: 0 10px;
+        }
+      }
+    }
+  }
+
+  .game-wrapper {
+    height: 100%;
+    width: 100%;
+
+    .answers-btns {
+      position: relative;
+      top: 45vh;
+      justify-content: space-around;
+
+      .word-answer{
+        width: 18%;
+        margin: 1% 1%;
+      }
+    }
+
+    .word-wrapper{
+
+
+      .word-quest{
+        width: 30%;
+        font-size: 2rem;
+        position: relative;
+        left: 40vw;
+        border-radius: 30px;
+      }
+    }
+
+  }
 }
