@@ -12,6 +12,7 @@ import Savanna from "../../assets/img/savanna.png";
 import SpeakIt from "../../assets/img/speak-it.png";
 
 import AudioCall from "./AudioCall/AudioCall";
+import Savannah from "./Savanna/Savanna";
 
 interface InterfaceGames {}
 
@@ -84,6 +85,9 @@ const Games: React.FC<InterfaceGames> = (props) => {
         <Switch>
           <Route path={`${basePathName}/speak-it`}>
             <AudioCall />
+          </Route>
+          <Route path={`${basePathName}/savanna`}>
+            <Savannah />
           </Route>
           <Route path={basePathName}>{gameCardElements}</Route>
         </Switch>
