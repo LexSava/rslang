@@ -9,7 +9,6 @@ import {
   ButtonGroup, 
   ToggleButton, 
   ProgressBar } from "react-bootstrap";
-import styled, { keyframes } from 'styled-components';
 import { BsVolumeMute, BsFillVolumeUpFill, BsFillHeartFill, BsHeart } from "react-icons/bs";
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
 import Preview from "../Preview/Preview";
@@ -51,6 +50,10 @@ const PREVIEW_HEADING = "Саванна";
 const PREVIEW__DESCRIPTION =
   "Слово прыгает с парашютом, предлагается 5 вариантов его перевода, правильный только один. Твоя задача выбрать правильный перевод слова раньше чем слово коснётся земли.";
 const NUM_OF_ANSWERS = 5;
+const defStatistics:{date: string, 
+  correctAnswers: number,
+  wrongAnswers: number,
+  words: Array<any>} = {date: '2021-04-03', correctAnswers: 0, wrongAnswers: 0, words: []}
 
 const Savannah = () => {
   const [words, setWords] = useState(null);
@@ -58,15 +61,20 @@ const Savannah = () => {
   const [level, setLevel] = useState(null); //TODO: get level from book page
   const [soundOff, setSoundOff] = useState(false);
   const [radioValue, setRadioValue] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const [showModal, setShowModal] = useState(false);
   const [lives, setLives] = useState(100);
   const [question, setQuestion] = useState('Question');
+  const [questionId, setQuestionId] = useState('');
   const [questionImage, setQuestionImage] = useState('Question');
+  const [questionAudio, setQuestionAudio] = useState('');
   const [answerTrue, setAnswerTrue] = useState('');
   const [answer, setAnswer] = useState('');
-  const [attempt, setAttempt] = useState<number>(0);
+  const [attempt, setAttempt] = useState(0);
+  const [statistics, setStatistics] = useState(defStatistics);
+  const [allStatistics, setAllStatistics] = useState({});
   const [buttons, setButtons] = useState(['word1', 'word2','word3','word4','word5']);
-
+  const [wrongAnswersWords, setWrongAnswersWords] = useState([]);
+  
   const radios = [
     { name: '1', value: 10 },
     { name: '2', value: 20 },
@@ -76,6 +84,14 @@ const Savannah = () => {
     { name: '6', value: 60 },
   ];
 
+  const handleClose = () => {
+    setStatistics(defStatistics);
+    setAttempt(0);
+    setLives(100);
+    setShowModal(false)
+    };
+  const handleShow = () => setShowModal(true);
+  
   const setUserWords = (words: any) => {
     setWords(words);
   };
@@ -99,38 +115,60 @@ const Savannah = () => {
 
   useEffect(() => {
     if(wordsSet) setAllArrays();
-    setProgress(attempt*5)
   }, [wordsSet, attempt]);
 
   useEffect(() => {
     if(answer) {
     console.log(answer, 'answer', answer === answerTrue)
       if(answer !== answerTrue) {
-        if (lives > 20) setLives(lives - 20)
-          else setLives(100)
-      }
-    if(attempt < 19) setAttempt(attempt + 1);
-      else setAttempt(0)
+        const words: Array<any> = statistics.words;
+        const wrongWord = new Array(question, answerTrue, questionId);
+        words.push(wrongWord);
+        statistics.wrongAnswers = statistics.wrongAnswers + 1;
+        statistics.words = words;
+        setLives(lives - 20)
+        setAnswer('')
+      } else {
+          statistics.correctAnswers = statistics.correctAnswers + 1;
+        }
+    setStatistics(statistics);
+    setAttempt(attempt + 1);
     }
   }, [answer])
 
+  useEffect(() => {
+    console.log(lives, attempt)
+    if(lives === 0 || attempt === 20) {
+      setModal()
+    }
+  }, [lives, attempt])
+
   const setAllArrays = () => {
-    const wordQuest = wordsSet[attempt];  
-    setQuestion(wordQuest.word);
-    setAnswerTrue(wordQuest.wordTranslate);
-    const randArr=[]
-    const randWords=[wordQuest.wordTranslate]
-    for(let i = 0; i < 4; i++) {
-      const rand = Math.floor(Math.random() * wordsSet.length);
-      const randWord = wordsSet[rand];
-      if (randArr.indexOf(rand) === -1 && rand !== attempt) {
-        randArr.push(rand);
-        randWords.push(randWord.wordTranslate);
-      } else i--
-      setButtons(shuffleWords(randWords));
+    if(attempt < 20) {
+      const wordQuest = wordsSet[attempt];  
+      setQuestion(wordQuest.word);
+      setQuestionId(wordQuest.id);
+      setQuestionAudio(wordQuest.audio);
+      setQuestionImage(wordQuest.image);
+      setAnswerTrue(wordQuest.wordTranslate);
+      const randArr=[];
+      const randWords=[wordQuest.wordTranslate]
+      for(let i = 0; i < 4; i++) {
+        const rand = Math.floor(Math.random() * wordsSet.length);
+        const randWord = wordsSet[rand];
+          if (randArr.indexOf(rand) === -1 && rand !== attempt) {
+            randArr.push(rand);
+            randWords.push(randWord.wordTranslate);
+          } else i--
+        setButtons(shuffleWords(randWords));
     }
     console.log(randArr, randWords, wordQuest.word, wordQuest.wordTranslate)
-  }
+    }
+  };
+
+const setModal = () => {
+  handleShow();
+};
 
 const buttonsBar = (
       <ButtonToolbar className="btns-toolbar">
@@ -152,7 +190,7 @@ const buttonsBar = (
             name="radio"
             value={radio.value}
             checked={radioValue === radio.value}
-            onChange={(e) => setProgress(Number(e.currentTarget.value))}
+            onChange={(e) => {}}
           >
             {radio.name}
           </ToggleButton>
@@ -160,7 +198,7 @@ const buttonsBar = (
       </ButtonGroup>
       </ButtonToolbar>
     )
-  const progressBar = <><ProgressBar variant="success" now={progress} label={`${progress}%`} /></>;
+  const progressBar = <><ProgressBar variant="success" now={(attempt) * 5} label={`${(attempt) * 5}%`} /></>;
   const attemptsBar = <><ProgressBar className="rating"  variant="danger" now={lives} label={`${lives / 20}`} /></>;
   
   const answersButtons = (<div className="answers-btns">
@@ -180,8 +218,12 @@ const buttonsBar = (
   </div>);
   
   const gameWrapper = (<div className="game-wrapper">
+    <div className="question-wrapper">
     {questionWord}
+    </div>
+    <div className="answers-wrapper">
     {answersButtons}
+    </div>
     </div>);
 
   const Game = (
@@ -198,9 +240,41 @@ const buttonsBar = (
   )
 
   return (
-    <div className="savanna">
-      <FullScreenWrapper>
-        {words === null ? (
+        <div className="savanna">
+        <FullScreenWrapper>
+        <Modal show={ showModal } onHide={handleClose} animation={false}>
+          <Modal.Header closeButton>
+            <Modal.Title>Игра окончена
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="results">
+              <h3 className="your-results">Ваш результат:</h3>
+              <div className="results-answers">
+              <h2 className="results-answers-category">Верных ответов:</h2>
+              <span className="result">{statistics.correctAnswers}</span>
+              <h2 className="results-answers-category">Неверных ответов:</h2>
+              <span className="result">{statistics.wrongAnswers}</span>
+              </div>
+              <h2 className="results-words">Необходимо повторить слова:</h2>
+              <div className="wrong-words">
+                {statistics.words}
+              </div>
+            </div> 
+          </Modal.Body>
+          <Modal.Footer>
+            <Button>
+            Другие Слова
+            </Button>
+            <Button>
+            Ещё раз
+            </Button>
+            <Button>
+            Выйти
+            </Button>
+          </Modal.Footer>
+        </Modal>
+          {words === null ? (
           <Preview
             heading={PREVIEW_HEADING}
             description={PREVIEW__DESCRIPTION}
@@ -209,15 +283,15 @@ const buttonsBar = (
             setUserWords={setUserWords}
           />
         ) : (
-          <div className="savanna-game"
+        <div className="savanna-game"
             style={{ backgroundImage: `url(${savannahImg})` }}
             >
             {!wordsSet && ('Набор слов отсутствует')}
             {wordsSet && Game}
           </div>
         )}
-      </FullScreenWrapper>
-    </div>
+        </FullScreenWrapper>
+      </div>
   );
 };
 

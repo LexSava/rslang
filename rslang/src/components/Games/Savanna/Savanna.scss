@@ -41,28 +41,46 @@
     height: 100%;
     width: 100%;
 
-    .answers-btns {
-      position: relative;
-      top: 45vh;
-      justify-content: space-around;
+    .question-wrapper{
 
-      .word-answer{
-        width: 18%;
-        margin: 1% 1%;
-      }
-    }
-
-    .word-wrapper{
-
+      display: flex;
+      height: 70%;
+      width: 100%;
 
       .word-quest{
-        width: 30%;
         font-size: 2rem;
         position: relative;
-        left: 40vw;
+        left: 60vw;
         border-radius: 30px;
+        text-transform: uppercase;
+        padding: 20px;
       }
     }
+
+
+    .answers-wrapper{
+      display: flex;
+      height: 15%;  
+      width: 100%;
+
+    .answers-btns {
+      display: flex;
+      position: relative;
+      justify-content: space-around;
+      width: 100%;
+
+      .word-answer{
+        height: fit-content;
+        min-width: fit-content;
+        text-transform: uppercase;
+        width: 15%;
+        margin: 1% 1%;
+        font-size: 1.3rem;
+        padding: 7px
+      }
+    }
+    }
+
 
   }
 }
