@@ -20,6 +20,7 @@ interface InterfaceStudy {
   getLearnedWords(arr: any): void;
   getDeletedWords(arr: any): void;
   getCorrectAnswer(arr: any): void;
+  getBestSeries(arr: any): void;
 }
 
 const Study: React.FC<InterfaceStudy> = (props) => {
@@ -152,6 +153,7 @@ const Study: React.FC<InterfaceStudy> = (props) => {
         onGetLearnedWords={getLearnedWords}
         onGetDeletedWords={getDeletedWords}
         onGetCorrectAnswer={props.getCorrectAnswer}
+        onGetBestSeries={props.getBestSeries}
       />
     );
   } else if (larnNewWord === "HardWordsSection") {

@@ -28,6 +28,7 @@ interface InterfaceNewWordsSection {
   onGetLearnedWords(arr: any): void;
   onGetDeletedWords(arr: any): void;
   onGetCorrectAnswer(arr: any): void;
+  onGetBestSeries(arr: any): void;
 }
 
 const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
@@ -44,6 +45,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
 
   const [correctAnswer, setCorrectAnswer] = useState<number>(0);
   let [wrongAnswer, setWrongAnswer] = useState<number>(0);
+  let [bestAnswerSeries, setBestAnswerSeries] = useState<number>(0);
 
   let [progressPercentage, setProgressPercentage] = useState<number>(0);
   let [cardNumber, setCardNumber] = useState<number>(0);
@@ -56,16 +58,30 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     ) {
       setWrongAnswer(++wrongAnswer);
     }
-
-    // console.log(Math.round(((cardNumber + 1) / wrongAnswer) * 100));
     return setCorrectAnswer(Math.round(((cardNumber + 1) / wrongAnswer) * 100));
-    // console.log(correctAnswer);
-    // return (correctAnswer * 100) / wrongAnswer;
+  };
+  const getBestAnswerSeries = () => {
+    if (
+      inputText.toLowerCase() === newWords[cardNumber].word.toLowerCase() &&
+      testButtonText !== "Следующее слово"
+    ) {
+      setBestAnswerSeries(++bestAnswerSeries);
+    } else if (
+      inputText.toLowerCase() !== newWords[cardNumber].word.toLowerCase() &&
+      testButtonText !== "Следующее слово"
+    ) {
+      setBestAnswerSeries(0);
+    }
+    return bestAnswerSeries;
   };
 
   useEffect(() => {
     props.onGetCorrectAnswer(correctAnswer);
   }, [correctAnswer]);
+
+  useEffect(() => {
+    props.onGetBestSeries(bestAnswerSeries);
+  }, [bestAnswerSeries]);
 
   useEffect(() => {
     setNewWord(props.words);
@@ -260,6 +276,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
                   showNextCard();
                   wordCheck();
                   correctAnswers();
+                  getBestAnswerSeries();
                 }}
               >
                 {testButtonText}

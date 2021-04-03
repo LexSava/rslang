@@ -25,6 +25,7 @@ const Main: React.FC<InterfaceMain> = (props) => {
     "correctAnswer",
     ""
   );
+  const [bestSeries, setBestSeries] = useLocalStorage("bestSeries", "");
 
   async function getData(url: string, pref: string) {
     const fullUrl = url + pref;
@@ -37,7 +38,8 @@ const Main: React.FC<InterfaceMain> = (props) => {
 
   useEffect(() => {
     console.log(correctAnswer);
-  }, [correctAnswer]);
+    console.log(bestSeries);
+  }, [correctAnswer, bestSeries]);
 
   const getHardWords = (arr: any) => {
     setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
@@ -50,6 +52,11 @@ const Main: React.FC<InterfaceMain> = (props) => {
   };
   const getCorrectAnswer = (arr: any) => {
     setCorrectAnswer(arr);
+  };
+  const getBestSeries = (arr: any) => {
+    if (arr > bestSeries) {
+      setBestSeries(arr);
+    }
   };
 
   return (
@@ -64,6 +71,7 @@ const Main: React.FC<InterfaceMain> = (props) => {
           getLearnedWords={getLearnedWords}
           getDeletedWords={getDeletedWords}
           getCorrectAnswer={getCorrectAnswer}
+          getBestSeries={getBestSeries}
         />
       </Route>
       <Route path="/tutorial-page/vocabulary">
@@ -80,8 +88,11 @@ const Main: React.FC<InterfaceMain> = (props) => {
         <Games />
       </Route>
       <Route path="/tutorial-page/statistics">
-        <Statistics learnedWords={learnedWords} 
-        correctAnswer={correctAnswer}/>
+        <Statistics
+          learnedWords={learnedWords}
+          correctAnswer={correctAnswer}
+          bestSeries={bestSeries}
+        />
       </Route>
       <Route path="/tutorial-page/settings">
         <Settings />

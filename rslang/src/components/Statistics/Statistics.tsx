@@ -9,7 +9,8 @@ import { Bar, Line } from "react-chartjs-2";
 
 interface InterfaceStatistics {
   learnedWords: any;
-  correctAnswer: any;
+  correctAnswer: number;
+  bestSeries: number;
 }
 interface dataInterface {
   id: string;
@@ -131,7 +132,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
             <tr>
               <td>2</td>
               <td>Лучшая серия</td>
-              <td>@twitter</td>
+              <td>{props.bestSeries}</td>
             </tr>
             <tr>
               <td>3</td>
