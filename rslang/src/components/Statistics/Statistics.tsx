@@ -32,7 +32,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
   );
 
   const ARRAY_OF_DATES: any = [];
-  const D = new Date("04/04/2021");
+  const D = new Date("04/03/2021");
   const Till = new Date();
 
   function pad(s: any) {
@@ -50,10 +50,8 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
 
   useEffect(() => {
     setWordsLearnedToday(
-      (wordsLearnedToday[ARRAY_OF_DATES.length] = props.learnedWords.length)
+      (wordsLearnedToday[ARRAY_OF_DATES.length - 1] = props.learnedWords.length)
     );
-    setArrWordsLearnedToday(wordsLearnedToday);
-    console.log(wordsLearnedToday);
   }, [props.learnedWords]);
 
   useEffect(() => {
@@ -67,7 +65,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
       datasets: [
         {
           label: "Выучено слов",
-          data: [0, props.learnedWords.length, 4],
+          data: wordsLearnedToday,
           backgroundColor: ["rgba(54, 162, 235, 0.6)"],
           borderWidth: 5,
         },
@@ -81,7 +79,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
       datasets: [
         {
           label: "Ежедневный прогресс",
-          data: [48, 35],
+          data: wordsLearnedToday,
           backgroundColor: [
             "rgba(255, 99, 132, 0.6)",
             "rgba(54, 162, 235, 0.6)",
