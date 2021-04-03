@@ -15,7 +15,7 @@ const DeletedVocabularySection: React.FC<InterfaceDeletedVocabularySection> = (
   const [allWords, setAllWords] = useState<any>([]);
   const [wordList, setWordList] = useState<any>([]);
   const [selectedWords, setSelectedWords] = useState<any>([]);
-  const [wordsToMove, setwordsToMove] = useState<any>([]);
+  const wordsToMove: any = [];
 
   useEffect(() => {
     setAllWords(props.deletedWords);
@@ -84,7 +84,7 @@ const DeletedVocabularySection: React.FC<InterfaceDeletedVocabularySection> = (
             studiedtWords();
           }}
         >
-          В изученные
+          Восстановить
         </Button>
         <Button
           variant="warning"

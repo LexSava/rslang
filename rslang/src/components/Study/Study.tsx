@@ -5,13 +5,11 @@ import { Container, Card, Button } from "react-bootstrap";
 import NewWords from "../../assets/img/new_words.jpg";
 import RepeatWords from "../../assets/img/repeat_words.jpg";
 import HardWords from "../../assets/img/hard_words.jpg";
-import getWords from "../../api/getWords";
 import NewWordsSection from "./StudySections/NewWordsSection";
 import RepeatWordsSection from "./StudySections/RepeatWordsSection";
 import HardWordsSection from "./StudySections/HardWordsSection";
-import useLocalStorage from "../../hooks/useLocalStorage";
+
 import _ from "lodash";
-const url = `https://serene-falls-78086.herokuapp.com/words`;
 
 interface InterfaceStudy {
   words: any;
@@ -21,6 +19,8 @@ interface InterfaceStudy {
   getHardWords(arr: any): void;
   getLearnedWords(arr: any): void;
   getDeletedWords(arr: any): void;
+  getCorrectAnswer(arr: any): void;
+  getBestSeries(arr: any): void;
 }
 
 const Study: React.FC<InterfaceStudy> = (props) => {
@@ -152,6 +152,8 @@ const Study: React.FC<InterfaceStudy> = (props) => {
         onGetHardWords={getHardWords}
         onGetLearnedWords={getLearnedWords}
         onGetDeletedWords={getDeletedWords}
+        onGetCorrectAnswer={props.getCorrectAnswer}
+        onGetBestSeries={props.getBestSeries}
       />
     );
   } else if (larnNewWord === "HardWordsSection") {
