@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./StudySections.scss";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Container, Jumbotron, Button } from "react-bootstrap";
 import { BsX } from "react-icons/bs";
 interface InterfaceEmptySection {

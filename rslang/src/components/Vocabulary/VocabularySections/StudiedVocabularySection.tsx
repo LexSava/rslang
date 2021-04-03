@@ -13,11 +13,11 @@ interface InterfaceStudiedVocabularySection {
 const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
   props
 ) => {
-  const [words, setWords] = useState<any>([]);
+  // const [words, setWords] = useState<any>([]);
   const [allWords, setAllWord] = useState<any>(props.learnedWords);
   const [wordList, setWordList] = useState<any>([]);
   const [selectedWords, setSelectedWords] = useState<any>([]);
-  const [wordsToMove, setwordsToMove] = useState<any>([]);
+  const wordsToMove: any = [];
 
   const hardWords = () => {
     props.onGetHardWords(
@@ -36,7 +36,6 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
 
   const studiedtWords = () => {
     console.log(allWords);
-    console.log(words);
   };
 
   const wordDistribution = () => {

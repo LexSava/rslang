@@ -5,10 +5,11 @@ import { Container, Table } from "react-bootstrap";
 import getUserData from "../../api/getUserData";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import { url } from "../../api/defData";
-import { Bar, Line, Pie } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 
 interface InterfaceStatistics {
   learnedWords: any;
+  correctAnswer: any;
 }
 interface dataInterface {
   id: string;
@@ -21,22 +22,17 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
   const [userpic, setUserPic] = useLocalStorage("userpic", "");
   const [statistics, setStatistics] = useLocalStorage("statistics", {});
   const [allWords, setAllWord] = useState<any>(props.learnedWords);
+  const [barData, setBarData] = useState<any>({});
+  const [lineData, setLineData] = useState<any>({});
+  const [wordsLearnedToday, setWordsLearnedToday] = useState<any>([]);
+  const [arrWordsLearnedToday, setArrWordsLearnedToday] = useLocalStorage(
+    "arrWordsLearnedToday",
+    ""
+  );
 
   const ARRAY_OF_DATES: any = [];
-  const D = new Date("04/01/2021");
+  const D = new Date("04/04/2021");
   const Till = new Date();
-
-  const [barData, setBarData] = useState({
-    labels: ARRAY_OF_DATES,
-    datasets: [
-      {
-        label: "Выучено слов",
-        data: [0, allWords.length],
-        backgroundColor: ["rgba(54, 162, 235, 0.6)"],
-        borderWidth: 5,
-      },
-    ],
-  });
 
   function pad(s: any) {
     return `00${s}`.slice(-2);
@@ -50,6 +46,52 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
       D.setDate(D.getDate() + 1);
     }
   }, [Till]);
+
+  useEffect(() => {
+    setWordsLearnedToday(
+      (wordsLearnedToday[ARRAY_OF_DATES.length] = props.learnedWords.length)
+    );
+    setArrWordsLearnedToday(wordsLearnedToday);
+    console.log(wordsLearnedToday);
+  }, [props.learnedWords]);
+
+  useEffect(() => {
+    setArrWordsLearnedToday(wordsLearnedToday);
+    console.log(arrWordsLearnedToday);
+  }, [wordsLearnedToday]);
+
+  useEffect(() => {
+    setLineData({
+      labels: ARRAY_OF_DATES,
+      datasets: [
+        {
+          label: "Выучено слов",
+          data: [0, props.learnedWords.length, 4],
+          backgroundColor: ["rgba(54, 162, 235, 0.6)"],
+          borderWidth: 5,
+        },
+      ],
+    });
+  }, [props.learnedWords]);
+
+  useEffect(() => {
+    setBarData({
+      labels: ARRAY_OF_DATES,
+      datasets: [
+        {
+          label: "Ежедневный прогресс",
+          data: [48, 35],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.6)",
+            "rgba(54, 162, 235, 0.6)",
+            "rgba(255, 206, 86, 0.6)",
+            "rgba(75, 192, 192, 0.6)",
+          ],
+          borderWidth: 3,
+        },
+      ],
+    });
+  }, [props.learnedWords]);
 
   async function getStatistic(url: string, bearerToken: string) {
     const fullUrl = `${url}users/${userId}/statistics`;
@@ -94,18 +136,59 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
             <tr>
               <td>3</td>
               <td>Процент правильных ответов</td>
-              <td>@twitter</td>
+              <td>{props.correctAnswer} %</td>
             </tr>
             <tr>
               <td>4</td>
               <td>Изучено новых слов</td>
-              <td>@twitter</td>
+              <td>{allWords.length}</td>
             </tr>
           </tbody>
         </Table>
       </Container>
       <Container className="BarExample">
         <Line
+          data={lineData}
+          options={{
+            scales: {
+              yAxes: [
+                {
+                  ticks: {
+                    min: 0,
+                    stepSize: 1,
+                  },
+                },
+              ],
+              xAxes: [
+                {
+                  ticks: {
+                    min: 0,
+                    stepSize: 1,
+                  },
+                  type: "time",
+                  distribution: "series",
+                  time: {
+                    minUnit: "week",
+                    unit: "week",
+                    unitStepSize: 1,
+                    min: "start",
+                    max: "end",
+                  },
+                },
+              ],
+            },
+            title: {
+              display: true,
+              text: "Статистика за весь период обучения",
+              fontSize: 25,
+            },
+            legend: {
+              display: true,
+              position: "top",
+            },
+          }}
+        />
+        <Bar
           data={barData}
           options={{
             scales: {
@@ -137,7 +220,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
             },
             title: {
               display: true,
-              text: "Изучено новых слов",
+              text: "Сегодня изучено новых слов",
               fontSize: 25,
             },
             legend: {

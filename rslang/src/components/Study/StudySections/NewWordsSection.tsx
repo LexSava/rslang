@@ -27,6 +27,7 @@ interface InterfaceNewWordsSection {
   onGetHardWords(arr: any): void;
   onGetLearnedWords(arr: any): void;
   onGetDeletedWords(arr: any): void;
+  onGetCorrectAnswer(arr: any): void;
 }
 
 const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
@@ -41,8 +42,30 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
   const [textMeaning, setTextMeaning] = useState<string>("");
   const [textExample, setTextExample] = useState<string>("");
 
+  const [correctAnswer, setCorrectAnswer] = useState<number>(0);
+  let [wrongAnswer, setWrongAnswer] = useState<number>(0);
+
   let [progressPercentage, setProgressPercentage] = useState<number>(0);
   let [cardNumber, setCardNumber] = useState<number>(0);
+
+  const correctAnswers = () => {
+    if (
+      (inputText.toLowerCase() !== newWords[cardNumber].word.toLowerCase() ||
+        inputText.toLowerCase() === newWords[cardNumber].word.toLowerCase()) &&
+      testButtonText !== "Следующее слово"
+    ) {
+      setWrongAnswer(++wrongAnswer);
+    }
+
+    // console.log(Math.round(((cardNumber + 1) / wrongAnswer) * 100));
+    return setCorrectAnswer(Math.round(((cardNumber + 1) / wrongAnswer) * 100));
+    // console.log(correctAnswer);
+    // return (correctAnswer * 100) / wrongAnswer;
+  };
+
+  useEffect(() => {
+    props.onGetCorrectAnswer(correctAnswer);
+  }, [correctAnswer]);
 
   useEffect(() => {
     setNewWord(props.words);
@@ -55,11 +78,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     props.onGetDeletedWords(newWords[cardNumber]);
     setNewWord(newWords.filter((n: any) => n.id !== newWords[cardNumber].id));
   };
-
-  // const getLearnedWords = () => {
-  //   props.onGetLearnedWords(newWords[cardNumber]);
-  //   // console.log(newWords[cardNumber]);
-  // };
 
   useEffect(() => {
     setTestButtonText("Проверить");
@@ -241,6 +259,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
                 onClick={() => {
                   showNextCard();
                   wordCheck();
+                  correctAnswers();
                 }}
               >
                 {testButtonText}
