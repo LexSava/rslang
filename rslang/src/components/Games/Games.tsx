@@ -83,7 +83,7 @@ const Games: React.FC<InterfaceGames> = (props) => {
     <Container className="min-vh-100 p-0 border border-top-0">
       <Container className="d-flex justify-content-around flex-wrap mt-4 p-5 bg-light">
         <Switch>
-          <Route path={`${basePathName}/speak-it`}>
+          <Route path={`${basePathName}/call`}>
             <AudioCall />
           </Route>
           <Route path={`${basePathName}/savanna`}>

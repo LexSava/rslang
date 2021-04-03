@@ -1,6 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AudioCall.scss";
 import React, { useState } from "react";
+import { VolumeUp } from "react-bootstrap-icons";
+import { Button } from "react-bootstrap";
 
 import FullScreenWrapper from "./../../FullScreenWrapper/FullScreenWrapper";
 import Preview from "./../Preview/Preview";
@@ -32,7 +34,11 @@ const AudioCall = () => {
           />
         ) : (
           <div className="audio-call-game">
-            <p>{words}</p>
+            <div className="audio-call-game__wrapper">
+              <Button className="audio-call__listen-btn">
+                <VolumeUp className="audio-call__listen-btn_icon" />
+              </Button>
+            </div>
           </div>
         )}
       </FullScreenWrapper>
