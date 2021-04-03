@@ -31,7 +31,7 @@ const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
   useEffect(() => {
     props.getDeletedWords(deletedWords);
   }, [deletedWords]);
-
+ 
   const getHardWords = (arr: any) => {
     setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
   };
@@ -43,7 +43,7 @@ const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
   const getDeletedWords = (arr: any) => {
     setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
   };
- 
+
   const showSelectedSection = () => {
     if (props.selectedSection === "hard-sections") {
       return (

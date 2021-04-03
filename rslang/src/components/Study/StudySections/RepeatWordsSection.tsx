@@ -14,8 +14,6 @@ import {
   Card,
   ListGroup,
   ListGroupItem,
-  InputGroup,
-  FormControl,
   Jumbotron,
   Form,
   ProgressBar,
@@ -234,7 +232,6 @@ const RepeatWordsSection: React.FC<InterfaceRepeatWordsSection> = (props) => {
                 disabled={testButtonActivity}
                 onClick={() => {
                   showNextCard();
-                  //   playAudioWord();
                   wordCheck();
                 }}
               >

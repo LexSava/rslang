@@ -14,7 +14,7 @@ const HardVocabularySection: React.FC<InterfaceHardVocabularySection> = (
   const [allWords, setAllWords] = useState<any>(props.hardWords);
   const [wordList, setWordList] = useState<any>([]);
   const [selectedWords, setSelectedWords] = useState<any>([]);
-  const [wordsToMove, setwordsToMove] = useState<any>([]);
+  const wordsToMove: any = [];
 
   useEffect(() => {
     setAllWords(props.hardWords);
