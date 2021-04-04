@@ -2,10 +2,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Sprint.scss";
 import SprintImg from "../../../assets/img/games/sprintGame.jpg";
 import { Button } from "react-bootstrap";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
 import Preview from "../Preview/Preview";
+import WordComponent from "../Sprint/WordComponent";
 
 const PREVIEW_HEADING = "Спринт";
 const PREVIEW__DESCRIPTION =
@@ -13,21 +14,30 @@ const PREVIEW__DESCRIPTION =
 
 const SprintGame = () => {
   const [words, setWords] = useState(null);
+  const [count, setCount] = useState(60);
+  const [countStart, setCountStart] = useState(false);
   const level = null; //TODO: get level from book page
-  const [allWords, setAllWords] = useState(null);
+  const [word, changeWord] = useState(null);
+  const [wordTranslate, changeWordTranslate] = useState(null);
+  const [indexWord, changeIndexWord] = useState(0);
 
   const setUserWords = (words: any) => {
     setWords(words);
-    console.log(words[0]);
-    setAllWords(words.map((word: any, index: number) => {
-      return (
-        <p key = {index}>
-          <span>{word.word}</span><span> - {word.wordTranslate}</span>
-        </p>
-      )
-    })
-    );
+    setCountStart(true);
+    const kindResponse = Math.floor(Math.random() * 10) < 5 ? false : true;
+    changeWord(words[indexWord].word);
+    if(kindResponse){
+      
+    }
+    changeWordTranslate(words[indexWord].wordTranslate);
+    changeIndexWord(indexWord + 1);
   };
+
+  useEffect(() => {
+    if(count !== 0 && countStart){
+      setTimeout(() => {setCount(count - 1);}, 1000);
+    }
+  }, [count, countStart])
 
   return (
     <div className="sprint-game">
@@ -41,8 +51,13 @@ const SprintGame = () => {
             setUserWords={setUserWords}
           />
         ) : (
-          <div>
-            {allWords}
+          <div className="area-game">
+            <span>Time {count}</span>
+            <p>Очки: 0</p>
+            <p>Кругляши</p>
+            <p>{word} - {wordTranslate}</p>
+            <button>Верно</button>
+            <button>Не верно</button>
           </div>
         )}
       </FullScreenWrapper>
