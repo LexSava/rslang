@@ -7,12 +7,17 @@ import {
   Modal, 
   ButtonToolbar, 
   ButtonGroup, 
-  ToggleButton, 
   ProgressBar } from "react-bootstrap";
-import { BsVolumeMute, BsFillVolumeUpFill, BsFillHeartFill, BsHeart } from "react-icons/bs";
+import { BsVolumeMute, BsFillVolumeUpFill } from "react-icons/bs";
+import { BiBell, BiBellOff } from "react-icons/bi";
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
+import { Redirect } from 'react-router';
 import Preview from "../Preview/Preview";
-import savannahImg from "../../../assets/img/games/savannah.jpg";
+import useLocalStorage from "../../../hooks/useLocalStorage";
+import getUserData from "../../../api/getUserData";
+import setUserData from "../../../api/setUserData";
+import SavannahImg from "../../../assets/img/games/savannah.jpg";
+import { url } from "../../../api/defData";
 
 type word = {
   audio: string,
@@ -31,61 +36,46 @@ type word = {
   wordTranslate: string,
 }
 
-// audio: "files/22_1633.mp3"
-// audioExample: "files/22_1633_example.mp3"
-// audioMeaning: "files/22_1633_meaning.mp3"
-// group: 2
-// id: "5e9f5ee35eb9e72bc21afb00"
-// image: "files/22_1633.jpg"
-// page: 21
-// textExample: "She <b>peered</b> at people through the window."
-// textExampleTranslate: "Она смотрела на людей через окно"
-// textMeaning: "To <i>peer</i> at something is to watch it carefully."
-// textMeaningTranslate: "Вглядываться во что-то - значит внимательно наблюдать за этим"
-// transcription: "[piər]"
-// word: "peer"
-// wordTranslate: "равный"
+type Statistics = {correctAnswers: number, wrongAnswers: number};
+type AllStatistics = {[index:number]: Statistics};
 
 const PREVIEW_HEADING = "Саванна";
 const PREVIEW__DESCRIPTION =
-  "Слово прыгает с парашютом, предлагается 5 вариантов его перевода, правильный только один. Твоя задача выбрать правильный перевод слова раньше чем слово коснётся земли.";
+  "Слово спускается в саванну, предлагается 5 вариантов его перевода, правильный только один. Твоя задача выбрать правильный перевод слова раньше чем слово коснётся земли.";
 const NUM_OF_ANSWERS = 5;
-const defStatistics:{date: string, 
-  correctAnswers: number,
-  wrongAnswers: number,
-  words: Array<any>} = {date: '2021-04-03', correctAnswers: 0, wrongAnswers: 0, words: []}
+const dateNow = new Date().getDate();
+const defStatistics:Statistics = {correctAnswers: 0, wrongAnswers: 0};
+const defAllStatistics:AllStatistics = {[dateNow]: {correctAnswers: 0, wrongAnswers: 0}};
 
 const Savannah = () => {
+  const defButtonsVariants = ["primary", "primary", "primary", "primary", "primary"];
   const [words, setWords] = useState(null);
   const [wordsSet, setWordsSet] = useState<any>(null);
   const [level, setLevel] = useState(null); //TODO: get level from book page
-  const [soundOff, setSoundOff] = useState(false);
-  const [radioValue, setRadioValue] = useState(0);
+  const [soundOff, setSoundOff] = useState(true);
+  const [isSpeak, setIsSpeak] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [lives, setLives] = useState(100);
   const [question, setQuestion] = useState('Question');
   const [questionId, setQuestionId] = useState('');
   const [questionImage, setQuestionImage] = useState('Question');
-  const [questionAudio, setQuestionAudio] = useState('');
   const [answerTrue, setAnswerTrue] = useState('');
   const [answer, setAnswer] = useState('');
   const [attempt, setAttempt] = useState(0);
-  const [statistics, setStatistics] = useState(defStatistics);
-  const [allStatistics, setAllStatistics] = useState({});
-  const [buttons, setButtons] = useState(['word1', 'word2','word3','word4','word5']);
-  const [wrongAnswersWords, setWrongAnswersWords] = useState([]);
-  
-  const radios = [
-    { name: '1', value: 10 },
-    { name: '2', value: 20 },
-    { name: '3', value: 30 },
-    { name: '4', value: 40 },
-    { name: '5', value: 50 },
-    { name: '6', value: 60 },
-  ];
+  const [statistics, setStatistics] = useLocalStorage("savanna", defStatistics);
+  const [allStatistics, setAllStatistics] = useState(defAllStatistics);
+  const [buttonsVariants, setButtonsVariants] = useState(defButtonsVariants);
+  const [buttons, setButtons] = useState(['Ошибка', 'получения','слов','с','сервера']);
+  const [wrongAnswersWords, setWrongAnswersWords] = useState<Array<any>>([]);
+  const [wrongWords, setWrongWords] = useState<Array<any>>([]);
+  const [exit, setExit] = useState(false);
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
   const handleClose = () => {
+    allStatisticsCompare(statistics);
     setStatistics(defStatistics);
+    setWrongWords([]);
     setAttempt(0);
     setLives(100);
     setShowModal(false)
@@ -94,6 +84,7 @@ const Savannah = () => {
   
   const setUserWords = (words: any) => {
     setWords(words);
+    getUserStatistics();
   };
 
   const shuffleWords = (words: any) => {
@@ -108,7 +99,11 @@ const Savannah = () => {
     return words
     }
   }
-   
+  
+  useEffect(() => {
+
+  }, [buttons])
+
   useEffect(() => {
     setWordsSet(shuffleWords(words));
   }, [words]);
@@ -119,25 +114,34 @@ const Savannah = () => {
 
   useEffect(() => {
     if(answer) {
-    console.log(answer, 'answer', answer === answerTrue)
-      if(answer !== answerTrue) {
-        const words: Array<any> = statistics.words;
+        let answerSound = 'correct.mp3';
+        const trueAnswerIdx = buttons.indexOf(answerTrue);
+        buttonsVariants[trueAnswerIdx] = "success";
+      if(answer !== answerTrue || answer === "wrong") {
+        const wrongAnswerIdx = buttons.indexOf(answer);
+        if (wrongAnswerIdx !== -1) buttonsVariants[wrongAnswerIdx] = "danger";
+        answerSound = 'error.mp3';
+        const words: Array<any> = wrongWords;
         const wrongWord = new Array(question, answerTrue, questionId);
         words.push(wrongWord);
         statistics.wrongAnswers = statistics.wrongAnswers + 1;
-        statistics.words = words;
+        setWrongWords(words);
         setLives(lives - 20)
         setAnswer('')
       } else {
           statistics.correctAnswers = statistics.correctAnswers + 1;
         }
     setStatistics(statistics);
-    setAttempt(attempt + 1);
+    setButtonsVariants(buttonsVariants);
+    if (soundOff) {
+      const audio = new Audio(`${url}files/${answerSound}`);
+      audio.play();
+      };
+    setTimeout(() => {setAttempt(attempt + 1)}, 2000);
     }
   }, [answer])
 
   useEffect(() => {
-    console.log(lives, attempt)
     if(lives === 0 || attempt === 20) {
       setModal()
     }
@@ -145,10 +149,14 @@ const Savannah = () => {
 
   const setAllArrays = () => {
     if(attempt < 20) {
+      setButtonsVariants(defButtonsVariants);
       const wordQuest = wordsSet[attempt];  
+      if (isSpeak) {
+        const audio = new Audio(url + wordQuest.audio);
+        audio.play();
+      };
       setQuestion(wordQuest.word);
       setQuestionId(wordQuest.id);
-      setQuestionAudio(wordQuest.audio);
       setQuestionImage(wordQuest.image);
       setAnswerTrue(wordQuest.wordTranslate);
       const randArr=[];
@@ -161,40 +169,71 @@ const Savannah = () => {
             randWords.push(randWord.wordTranslate);
           } else i--
         setButtons(shuffleWords(randWords));
-    }
-    console.log(randArr, randWords, wordQuest.word, wordQuest.wordTranslate)
-    }
+      }
+    };
   };
 
-const setModal = () => {
-  handleShow();
-};
+  const setModal = () => {
+    const modalWrongWords:Array<any> = []
+    wrongWords.forEach((el:Array<any>) => {
+      const word = (<p key={el[0]}>{el[0]} - {el[1]}</p>);
+      if(wrongWords.indexOf(word) === -1) modalWrongWords.push(word);
+    })
+    setWrongAnswersWords(modalWrongWords)
+    handleShow();
+  };
 
-const buttonsBar = (
+  async function getUserStatistics() {
+    if(token && userId) {
+      const fullUrl = `${url}users/${JSON.parse(userId)}/statistics`;
+      const bearerToken = JSON.parse(token);
+      await getUserData(fullUrl, bearerToken).then(( responseData:any ) => {
+        if(responseData.savanna) setAllStatistics(responseData.savanna);
+      }).catch(error => {
+        console.log(error.message)
+        })
+    }
+  }
+
+  async function setUserStatistics() {
+    if(token && userId && allStatistics) {
+      const newStatistics = {savanna: allStatistics}
+      const fullUrl = `${url}users/${JSON.parse(userId)}/statistics`;
+      const bearerToken = JSON.parse(token);
+      await setUserData(fullUrl, bearerToken, newStatistics).then(( responseData:any ) => {
+      }).catch(error => {
+        console.log(error.message)
+        })
+    }
+  }
+
+  const allStatisticsCompare = (statistics: Statistics) => {
+    if (!allStatistics[dateNow]) allStatistics[dateNow] = statistics;
+      else {
+        allStatistics[dateNow].correctAnswers = allStatistics[dateNow].correctAnswers + statistics.correctAnswers;
+        allStatistics[dateNow].wrongAnswers = allStatistics[dateNow].wrongAnswers + statistics.wrongAnswers;
+      }
+    setAllStatistics(allStatistics);
+    setUserStatistics();
+  };
+
+  const buttonsBar = (
       <ButtonToolbar className="btns-toolbar">
        <ButtonGroup toggle className="btn-group" aria-label="First group">
         <Button
           type="checkbox"
-          value="1"
           onClick={() => setSoundOff(!soundOff)}
         >
-       {soundOff ? <BsVolumeMute size="2.2rem" /> : <BsFillVolumeUpFill size="2.2rem" />}
+       {soundOff ? <BiBell size="2.2rem" /> : <BiBellOff size="2.2rem" />}
         </Button>
       </ButtonGroup>
-      <ButtonGroup toggle className="btn-group" aria-label="Second group" >
-        {radios.map((radio, idx) => (
-          <ToggleButton
-            key={idx}
-            type="radio"
-            variant="secondary"
-            name="radio"
-            value={radio.value}
-            checked={radioValue === radio.value}
-            onChange={(e) => {}}
-          >
-            {radio.name}
-          </ToggleButton>
-        ))}
+       <ButtonGroup toggle className="btn-group" aria-label="First group">
+        <Button
+          type="checkbox"
+          onClick={() => setIsSpeak(!isSpeak)}
+        >
+       {isSpeak ? <BsFillVolumeUpFill size="2.2rem" /> : <BsVolumeMute size="2.2rem" />}
+        </Button>
       </ButtonGroup>
       </ButtonToolbar>
     )
@@ -202,11 +241,40 @@ const buttonsBar = (
   const attemptsBar = <><ProgressBar className="rating"  variant="danger" now={lives} label={`${lives / 20}`} /></>;
   
   const answersButtons = (<div className="answers-btns">
-      <Button onClick={(e) => setAnswer(buttons[0])} className="word-answer" name={buttons[0]} value={buttons[0]}>{buttons[0]}</Button>
-      <Button onClick={(e) => setAnswer(buttons[1])} className="word-answer" name={buttons[1]} value={buttons[1]}>{buttons[1]}</Button>
-      <Button onClick={(e) => setAnswer(buttons[2])} className="word-answer" name={buttons[2]} value={buttons[2]}>{buttons[2]}</Button>
-      <Button onClick={(e) => setAnswer(buttons[3])} className="word-answer" name={buttons[3]} value={buttons[3]}>{buttons[3]}</Button>
-      <Button onClick={(e) => setAnswer(buttons[4])} className="word-answer">{buttons[4]}</Button>
+      <Button onClick={(e) => setAnswer(buttons[0])} 
+        className="word-answer" 
+        name={buttons[0]} 
+        value={buttons[0]}
+        variant={buttonsVariants[0]}
+        >{buttons[0]}
+      </Button>
+      <Button onClick={(e) => setAnswer(buttons[1])}
+        className="word-answer"
+        name={buttons[1]}
+        value={buttons[1]}
+        variant={buttonsVariants[1]}
+        >
+        {buttons[1]}</Button>
+      <Button onClick={(e) => setAnswer(buttons[2])}
+        className="word-answer" name={buttons[2]}
+        value={buttons[2]}
+        variant={buttonsVariants[2]}
+        >
+        {buttons[2]}</Button>
+      <Button onClick={(e) => setAnswer(buttons[3])}
+        className="word-answer"
+        name={buttons[3]}
+        value={buttons[3]}
+        variant={buttonsVariants[3]}
+        >
+        {buttons[3]}</Button>
+      <Button onClick={(e) => setAnswer(buttons[4])}
+        className="word-answer"
+        name={buttons[4]}
+        value={buttons[4]}
+        variant={buttonsVariants[4]}
+        >
+        {buttons[4]}</Button>
     </div>);
 
   const questionWord = (<div className="question-word">
@@ -218,12 +286,12 @@ const buttonsBar = (
   </div>);
   
   const gameWrapper = (<div className="game-wrapper">
-    <div className="question-wrapper">
-    {questionWord}
-    </div>
-    <div className="answers-wrapper">
-    {answersButtons}
-    </div>
+      <div className="answers-wrapper">
+        {answersButtons}
+      </div>
+      <div className="question-wrapper">
+        {questionWord}
+      </div>
     </div>);
 
   const Game = (
@@ -242,7 +310,13 @@ const buttonsBar = (
   return (
         <div className="savanna">
         <FullScreenWrapper>
-        <Modal show={ showModal } onHide={handleClose} animation={false}>
+        {exit && <Redirect to="/tutorial-page/games" />}
+        <Modal 
+          show={ showModal }
+           onHide={handleClose}
+            animation={false}
+            centered={ true }
+            scrollable={ true }>
           <Modal.Header closeButton>
             <Modal.Title>Игра окончена
             </Modal.Title>
@@ -251,25 +325,34 @@ const buttonsBar = (
             <div className="results">
               <h3 className="your-results">Ваш результат:</h3>
               <div className="results-answers">
-              <h2 className="results-answers-category">Верных ответов:</h2>
-              <span className="result">{statistics.correctAnswers}</span>
-              <h2 className="results-answers-category">Неверных ответов:</h2>
-              <span className="result">{statistics.wrongAnswers}</span>
+                <h4 className="results-answers-category">Верных ответов:</h4>
+                <span className="result">{statistics.correctAnswers}</span>
+                <h4 className="results-answers-category">Неверных ответов:</h4>
+                <span className="result">{statistics.wrongAnswers}</span>
               </div>
-              <h2 className="results-words">Необходимо повторить слова:</h2>
+              <h4 className="results-words">Необходимо повторить слова:</h4>
               <div className="wrong-words">
-                {statistics.words}
+                {wrongAnswersWords}
               </div>
             </div> 
           </Modal.Body>
           <Modal.Footer>
-            <Button>
+            <Button
+            onClick={() => {
+              handleClose();
+              setTimeout(() => {setWords(null)}, 2000)
+              }
+            }>
             Другие Слова
             </Button>
-            <Button>
+            <Button
+              variant="success"
+              onClick={handleClose}>
             Ещё раз
             </Button>
-            <Button>
+            <Button
+              variant="danger"
+              onClick={() => {setExit(true)}}>
             Выйти
             </Button>
           </Modal.Footer>
@@ -278,13 +361,13 @@ const buttonsBar = (
           <Preview
             heading={PREVIEW_HEADING}
             description={PREVIEW__DESCRIPTION}
-            backgroundImg={savannahImg}
+            backgroundImg={SavannahImg}
             level={level}
             setUserWords={setUserWords}
           />
         ) : (
         <div className="savanna-game"
-            style={{ backgroundImage: `url(${savannahImg})` }}
+            style={{ backgroundImage: `url(${SavannahImg})` }}
             >
             {!wordsSet && ('Набор слов отсутствует')}
             {wordsSet && Game}

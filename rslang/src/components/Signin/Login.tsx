@@ -111,7 +111,7 @@ const Login = () => {
     })
     } else if (error.message) {
     setMessage({
-      data: "Ошибка регистрации",
+      data: "Ошибка входа",
       type: "alert-warning",
     });
     }
