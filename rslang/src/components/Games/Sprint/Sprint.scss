@@ -6,29 +6,7 @@
     display: flex;
     align-items: center;
     color: black;
-    /*div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        height: 70%;
-        background: rgba(0, 0, 0, 0.5);
-    }*/
 }
-
-/*.sprint-title {
-    display: inline;
-    font-size: 70px;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.sprint-description {
-    text-align: center;
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin: 0px 0.6rem 1.5rem;
-}*/
 
 .area-game {
     width: 700px;
@@ -38,4 +16,56 @@
     align-items: center;
     justify-content: center;
     background-color: white;
+}
+
+.timer {
+    font-size: 25px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.score {
+    font-size: 25px;
+    font-weight: 500;
+    color: #4516d5;
+    margin-bottom: 25px;
+}
+
+.wordTranslate {
+    font-size: 30px;
+    font-weight: 500;
+    margin-bottom: 25px;
+}
+
+.wrapBtn {
+    width: 200px;
+    display: flex;
+    justify-content: space-between;
+    button {
+        font-size: 16px;
+        color: white;
+        background-color: #007bff;
+        padding: 10px;
+        border-radius: 5px;
+        outline: none;
+    }
+}
+
+.wrapCircles {
+    width: 150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    span {
+        display: block;
+        width: 25px;
+        height: 25px;
+        background-color: rgb(219, 217, 217);
+        border-radius: 50%;
+    }
+}
+
+.circle {
+    background-color: rgb(0, 189, 0) !important;
 }
