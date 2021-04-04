@@ -35,7 +35,7 @@ const Register = () => {
     return body
   }
 
-  async function avatar<T>(file: any, userId: string): Promise<any> {
+  async function avatar<T>(file: any, userId: string): Promise<T> {
     const fullUrl = `${url}avatar`;
     console.log(file)
     const formData:any = new FormData();
@@ -56,7 +56,10 @@ const Register = () => {
       const error = response.status + " " + response.statusText;
         throw new Error(error)
       }
-    return response
+    
+    const body = await response.json();
+
+    return body
   }
 
   const onSubmit = async (userData: any): Promise<any> => {
@@ -226,7 +229,8 @@ const Register = () => {
       <Modal.Footer>
         <Button variant="primary"
           type="submit"
-          onClick={handleSubmit(onSubmit)}>
+          onClick={handleSubmit(onSubmit)} 
+          active>
           Зарегистрироваться
         </Button>
       </Modal.Footer>
