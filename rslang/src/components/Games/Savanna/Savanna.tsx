@@ -256,37 +256,19 @@ const Savannah = () => {
   const progressBar = <><ProgressBar variant="success" now={(attempt) * 5} label={`${(attempt) * 5}%`} /></>;
   const attemptsBar = <><ProgressBar className="rating"  variant="danger" now={lives} label={`${lives / 20}`} /></>;
   
-   const answersButtons = (<div className="answers-btns">
-      <Button onClick={() => setAnswer(buttons[0])} 
+  const answersButtons = () => {
+    const buttonsArr: JSX.Element[] = [];
+    buttons.forEach((button:any, i) => {
+      buttonsArr.push(<>
+      <Button onClick={() => setAnswer(button)} 
         className="word-answer" 
-        name={buttons[0]} 
-        value={buttons[0]}
-        variant={buttonsVariants[0]}>
-      [ 1 ] {buttons[0]}</Button>
-      <Button onClick={() => setAnswer(buttons[1])}
-        className="word-answer"
-        name={buttons[1]}
-        value={buttons[1]}
-        variant={buttonsVariants[1]}>
-      [ 2 ] {buttons[1]}</Button>
-      <Button onClick={() => setAnswer(buttons[2])}
-        className="word-answer" name={buttons[2]}
-        value={buttons[2]}
-        variant={buttonsVariants[2]}>
-      [ 3 ] {buttons[2]}</Button>
-      <Button onClick={() => setAnswer(buttons[3])}
-        className="word-answer"
-        name={buttons[3]}
-        value={buttons[3]}
-        variant={buttonsVariants[3]}>
-      [ 4 ] {buttons[3]}</Button>
-      <Button onClick={() => setAnswer(buttons[4])}
-        className="word-answer"
-        name={buttons[4]}
-        value={buttons[4]}
-        variant={buttonsVariants[4]}>
-      [ 5 ] {buttons[4]}</Button>
-    </div>);
+        name={button} 
+        value={button}
+        variant={buttonsVariants[i]}>
+      [ {i + 1} ] {button}</Button></>)
+    });
+    return buttonsArr;
+  };
 
   const questionWord = (<div className="question-word">
     <div className="word-image" >
@@ -298,7 +280,9 @@ const Savannah = () => {
   
   const gameWrapper = (<div className="game-wrapper">
       <div className="answers-wrapper">
-        {answersButtons}
+        <div className="answers-btns">
+        {answersButtons()}
+        </div>
       </div>
       <div className="question-wrapper">
         {questionWord}
