@@ -175,7 +175,7 @@ const Speakit = () => {
       const fullUrl = `${url}users/${JSON.parse(userId)}/statistics`;
       const bearerToken = JSON.parse(token);
       await getUserData(fullUrl, bearerToken).then(( responseData:any ) => {
-        if(responseData.savanna) setAllStatistics(responseData.savanna);
+        if(responseData.speakit) setAllStatistics(responseData.speakit);
       }).catch(error => {
         console.log(error.message)
         })
@@ -184,7 +184,7 @@ const Speakit = () => {
 
   async function setUserStatistics() {
     if(token && userId && allStatistics) {
-      const newStatistics = {savanna: allStatistics}
+      const newStatistics = {speakit: allStatistics}
       const fullUrl = `${url}users/${JSON.parse(userId)}/statistics`;
       const bearerToken = JSON.parse(token);
       await setUserData(fullUrl, bearerToken, newStatistics).then(( _responseData:any ) => {
