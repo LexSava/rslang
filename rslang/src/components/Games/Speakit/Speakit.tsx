@@ -1,15 +1,10 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Savanna.scss";
+import "./Speakit.scss";
 import React, { useState, useEffect } from "react";
-import { 
-  Button, 
-  Badge, 
-  Modal, 
-  ButtonToolbar, 
-  ButtonGroup, 
-  ProgressBar } from "react-bootstrap";
+import { Badge, Button, ButtonGroup, ButtonToolbar, Card, 
+  ListGroup, ListGroupItem, Modal, ProgressBar, Toast } from "react-bootstrap";
 import { BsVolumeMute, BsFillVolumeUpFill, BsArrowRepeat } from "react-icons/bs";
-import { BiBell, BiBellOff, BiExit } from "react-icons/bi";
+import { BiBell, BiBellOff, BiExit, BiMicrophone, BiMicrophoneOff } from "react-icons/bi";
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
 import { Redirect } from 'react-router';
 import Preview from "../Preview/Preview";
@@ -36,25 +31,36 @@ type word = {
   wordTranslate: string,
 }
 
+type card = { 
+  word: string,
+  wordTranslate: string,
+  transcription: string,
+  audio: string,
+  image: string
+}
+
 type Statistics = {correctAnswers: number, wrongAnswers: number};
 type AllStatistics = {[index:number]: Statistics};
 
-const PREVIEW_HEADING = "Саванна";
+const PREVIEW_HEADING = "Скажи это";
 const PREVIEW__DESCRIPTION =
-  "Слово спускается в саванну, предлагается 5 вариантов его перевода, правильный только один. Твоя задача выбрать правильный перевод слова раньше чем слово коснётся земли.";
-const NUM_OF_ANSWERS = 5;
+  "Нажмите на карточку со словом, чтобы увидеть его перевод и услышать звучание. Нажмите на кнопку 'Тренировка произношения' и произнесите слово в микрофон.";
+const NUM_OF_ANSWERS = 10;
 const dateNow = new Date().getDate();
 const defStatistics:Statistics = {correctAnswers: 0, wrongAnswers: 0};
 const defAllStatistics:AllStatistics = {[dateNow]: {correctAnswers: 0, wrongAnswers: 0}};
+const outLn= "outline-primary";
 
-const Savannah = () => {
-  const defButtonsVariants = ["primary", "primary", "primary", "primary", "primary"];
+const Speakit = () => {
+  const defButtonsVariants = [outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn];
   const [words, setWords] = useState(null);
   const [wordsSet, setWordsSet] = useState<any>(null);
   const [level, setLevel] = useState(null); //TODO: get level from book page
-  const [soundOff, setSoundOff] = useState(true);
-  const [isSpeak, setIsSpeak] = useState(true);
+  const [isSound, setSound] = useState(true);
+  const [isSpeak, setSpeak] = useState(true);
+  const [isMic, setMic] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [isTraining, setTraining] = useState(false);
   const [lives, setLives] = useState(100);
   const [question, setQuestion] = useState('Question');
   const [questionId, setQuestionId] = useState('');
@@ -65,9 +71,11 @@ const Savannah = () => {
   const [statistics, setStatistics] = useLocalStorage("savanna", defStatistics);
   const [allStatistics, setAllStatistics] = useState(defAllStatistics);
   const [buttonsVariants, setButtonsVariants] = useState(defButtonsVariants);
-  const [buttons, setButtons] = useState(['Ошибка', 'получения','слов','с','сервера']);
+  const [buttons, setButtons] = useState([['Ошибка'], ['получения'],['слов'],['с'],['сервера']]);
   const [wrongAnswersWords, setWrongAnswersWords] = useState<Array<any>>([]);
   const [wrongWords, setWrongWords] = useState<Array<any>>([]);
+  const [activeCard, setActiveCard] = useState<card>({word: "", wordTranslate: "", 
+    transcription: "", audio: "", image: ""});
   const [exit, setExit] = useState(false);
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
@@ -99,10 +107,6 @@ const Savannah = () => {
     return words
     }
   }
-  
-  useEffect(() => {
-
-  }, [buttons])
 
   useEffect(() => {
     setWordsSet(shuffleWords(words));
@@ -112,34 +116,8 @@ const Savannah = () => {
     if(wordsSet) setAllArrays();
   }, [wordsSet, attempt]);
 
-  useEffect(() => {
-    if(answer) {
-        let answerSound = 'correct.mp3';
-        const trueAnswerIdx = buttons.indexOf(answerTrue);
-        buttonsVariants[trueAnswerIdx] = "success";
-      if(answer !== answerTrue || answer === "wrong") {
-        const wrongAnswerIdx = buttons.indexOf(answer);
-        if (wrongAnswerIdx !== -1) buttonsVariants[wrongAnswerIdx] = "danger";
-        answerSound = 'error.mp3';
-        const words: Array<any> = wrongWords;
-        const wrongWord = new Array(question, answerTrue, questionId);
-        words.push(wrongWord);
-        statistics.wrongAnswers = statistics.wrongAnswers + 1;
-        setWrongWords(words);
-        setLives(lives - 20)
-        setAnswer('')
-      } else {
-          statistics.correctAnswers = statistics.correctAnswers + 1;
-        }
-    setStatistics(statistics);
-    setButtonsVariants(buttonsVariants);
-    if (soundOff) {
-      const audio = new Audio(`${url}files/${answerSound}`);
-      audio.play();
-      };
-    setTimeout(() => {setAttempt(attempt + 1)}, 2000);
-    }
-  }, [answer])
+   useEffect(() => {
+  }, [activeCard])
 
   useEffect(() => {
     if(lives === 0 || attempt === 20) {
@@ -151,26 +129,35 @@ const Savannah = () => {
     if(attempt < 20) {
       setButtonsVariants(defButtonsVariants);
       const wordQuest = wordsSet[attempt];  
-      if (isSpeak) {
-        const audio = new Audio(url + wordQuest.audio);
-        audio.play();
-      };
       setQuestion(wordQuest.word);
       setQuestionId(wordQuest.id);
       setQuestionImage(wordQuest.image);
       setAnswerTrue(wordQuest.wordTranslate);
       const randArr=[];
-      const randWords=[wordQuest.wordTranslate]
+      const randWords=[];
+
       for(let i = 0; i < NUM_OF_ANSWERS; i++) {
         const rand = Math.floor(Math.random() * wordsSet.length);
         const randWord = wordsSet[rand];
           if (randArr.indexOf(rand) === -1 && rand !== attempt) {
+            const word = {word: randWord.word,
+        wordTranslate: randWord.wordTranslate,
+        transcription: randWord.transcription,
+        audio: randWord.audio,
+        image: randWord.image};
             randArr.push(rand);
-            randWords.push(randWord.wordTranslate);
+            randWords.push(word);
           } else i--
         setButtons(shuffleWords(randWords));
       }
     };
+  };
+
+  const speakWord = (wordUrl: string) => {
+     if (isSpeak) {
+        const audio = new Audio(url + wordUrl);
+        audio.play();
+      };
   };
 
   const setModal = () => {
@@ -200,7 +187,7 @@ const Savannah = () => {
       const newStatistics = {savanna: allStatistics}
       const fullUrl = `${url}users/${JSON.parse(userId)}/statistics`;
       const bearerToken = JSON.parse(token);
-      await setUserData(fullUrl, bearerToken, newStatistics).then(( responseData:any ) => {
+      await setUserData(fullUrl, bearerToken, newStatistics).then(( _responseData:any ) => {
       }).catch(error => {
         console.log(error.message)
         })
@@ -217,9 +204,48 @@ const Savannah = () => {
     setUserStatistics();
   };
 
+  const modalRender = (<Modal 
+          show={ showModal }
+           onHide={handleClose}
+            animation={false}
+            centered={ true }
+            scrollable={ true }>
+          <Modal.Header closeButton>
+            <Modal.Title>Игра окончена</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="results">
+              <h3 className="your-results">Ваш результат:</h3>
+              <div className="results-answers">
+                <h4 className="results-answers-category">Верных ответов:</h4>
+                <span className="result">{statistics.correctAnswers}</span>
+                <h4 className="results-answers-category">Неверных ответов:</h4>
+                <span className="result">{statistics.wrongAnswers}</span>
+              </div>
+              <h4 className="results-words">Необходимо повторить слова:</h4>
+              <div className="wrong-words">
+                {wrongAnswersWords}
+              </div>
+            </div> 
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={() => {
+              handleClose();
+              setTimeout(() => {setWords(null)}, 2000)
+              }}>
+              Другие Слова</Button>
+            <Button variant="success" onClick={handleClose}>
+            Ещё раз
+            </Button>
+            <Button variant="danger" onClick={() => {setExit(true)}}>
+            Выйти
+            </Button>
+          </Modal.Footer>
+        </Modal>)
+
   const buttonsBar = (
       <ButtonToolbar className="btns-toolbar">
-        <ButtonGroup toggle className="btn-group" aria-label="First group">
+       <ButtonGroup toggle className="btn-group" aria-label="First group">
         <Button
           type="checkbox"
           onClick={() => {setExit(true)}}
@@ -238,17 +264,24 @@ const Savannah = () => {
        <ButtonGroup toggle className="btn-group" aria-label="First group">
         <Button
           type="checkbox"
-          onClick={() => setSoundOff(!soundOff)}
-        >
-       {soundOff ? <BiBell size="2.2rem" /> : <BiBellOff size="2.2rem" />}
+          onClick={() => setSound(!isSound)}>
+       {isSound ? <BiBell size="2.2rem" /> : <BiBellOff size="2.2rem" />}
         </Button>
       </ButtonGroup>
        <ButtonGroup toggle className="btn-group" aria-label="First group">
         <Button
           type="checkbox"
-          onClick={() => setIsSpeak(!isSpeak)}
+          onClick={() => setSpeak(!isSpeak)}
         >
        {isSpeak ? <BsFillVolumeUpFill size="2.2rem" /> : <BsVolumeMute size="2.2rem" />}
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup toggle className="btn-group" aria-label="First group">
+        <Button
+          type="checkbox"
+          onClick={() => setMic(!isMic)}
+        >
+       {isMic ? <BiMicrophone size="2.2rem" /> : <BiMicrophoneOff size="2.2rem" />}
         </Button>
       </ButtonGroup>
       </ButtonToolbar>
@@ -256,54 +289,76 @@ const Savannah = () => {
   const progressBar = <><ProgressBar variant="success" now={(attempt) * 5} label={`${(attempt) * 5}%`} /></>;
   const attemptsBar = <><ProgressBar className="rating"  variant="danger" now={lives} label={`${lives / 20}`} /></>;
   
-   const answersButtons = (<div className="answers-btns">
-      <Button onClick={() => setAnswer(buttons[0])} 
-        className="word-answer" 
-        name={buttons[0]} 
-        value={buttons[0]}
-        variant={buttonsVariants[0]}>
-      [ 1 ] {buttons[0]}</Button>
-      <Button onClick={() => setAnswer(buttons[1])}
-        className="word-answer"
-        name={buttons[1]}
-        value={buttons[1]}
-        variant={buttonsVariants[1]}>
-      [ 2 ] {buttons[1]}</Button>
-      <Button onClick={() => setAnswer(buttons[2])}
-        className="word-answer" name={buttons[2]}
-        value={buttons[2]}
-        variant={buttonsVariants[2]}>
-      [ 3 ] {buttons[2]}</Button>
-      <Button onClick={() => setAnswer(buttons[3])}
-        className="word-answer"
-        name={buttons[3]}
-        value={buttons[3]}
-        variant={buttonsVariants[3]}>
-      [ 4 ] {buttons[3]}</Button>
-      <Button onClick={() => setAnswer(buttons[4])}
-        className="word-answer"
-        name={buttons[4]}
-        value={buttons[4]}
-        variant={buttonsVariants[4]}>
-      [ 5 ] {buttons[4]}</Button>
-    </div>);
+  const wordsButtons = () => {
+    const buttonsArr: JSX.Element[] = [];
+    buttons.forEach((button:any) => {
+      buttonsArr.push(
+        <Toast onClick={() => {
+          speakWord(button.audio)
+          setActiveCard(button)}}>
+          <Toast.Body>
+            <BsFillVolumeUpFill size="2rem"/>
+            {button.transcription} - 
+            <strong className="mr-auto"> {button.word}</strong>          </Toast.Body>
+        </Toast>
+      );
+    });
+    return (buttonsArr);
+  };
 
-  const questionWord = (<div className="question-word">
-    <div className="word-image" >
-    </div>
-    <div className="word-wrapper">
-    <Badge className="word-quest" variant="warning">{question}</Badge>  
-    </div>
-  </div>);
+  const wordCard = (
+    <Card style={{ width: '28rem' }} className="info-card">
+      <Card.Body>
+        <Card.Img variant="top" src={url + activeCard.image} />
+        <Card.Text>
+          {activeCard.wordTranslate}
+        </Card.Text>
+      </Card.Body>
+    </Card>
+  );
+  
+  const trainingButton = (<Button className="training-button" variant="info" size="lg" block
+    onClick={()=>{setTraining(true)}}>
+    Начать тренировку</Button>
+  );
   
   const gameWrapper = (<div className="game-wrapper">
-      <div className="answers-wrapper">
-        {answersButtons}
+      <div className="info-wrapper">
+        {wordCard}
       </div>
-      <div className="question-wrapper">
-        {questionWord}
+        {trainingButton}
+      <div className="words-wrapper">
+        {wordsButtons()}
       </div>
-    </div>);
+    </div>
+  );
+
+  const speaking = (
+    <div className="speaking">
+
+    </div>    
+  );
+
+    const trainingBlock = (<>
+      <div className="training-wrapper">
+        <Button onClick={()=>{setTraining(false)}} variant="danger">
+          Назад
+        </Button>
+        <Card style={{ width: '30rem' }} className="training-card">
+          <Card.Body>
+            <Card.Img variant="top" src={url + activeCard.image} />
+            <Card.Text>
+              {activeCard.word}
+              {activeCard.transcription}
+              {activeCard.wordTranslate}
+            </Card.Text>
+          </Card.Body>
+        </Card>
+        {speaking}
+        <Button onClick={()=>{setAttempt(attempt + 1)}} variant="succes">
+          Пропустить
+        </Button>
+      </div></>);
 
   const Game = (
     <>
@@ -314,60 +369,15 @@ const Savannah = () => {
       {attemptsBar}
       </div>
     </div>
-      {gameWrapper}
+      {isTraining ? trainingBlock : gameWrapper}
     </>
   )
 
   return (
-        <div className="savanna">
+      <div className="speak-it">
         <FullScreenWrapper>
         {exit && <Redirect to="/tutorial-page/games" />}
-        <Modal 
-          show={ showModal }
-           onHide={handleClose}
-            animation={false}
-            centered={ true }
-            scrollable={ true }>
-          <Modal.Header closeButton>
-            <Modal.Title>Игра окончена
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="results">
-              <h3 className="your-results">Ваш результат:</h3>
-              <div className="results-answers">
-                <h4 className="results-answers-category">Верных ответов:</h4>
-                <span className="result">{statistics.correctAnswers}</span>
-                <h4 className="results-answers-category">Неверных ответов:</h4>
-                <span className="result">{statistics.wrongAnswers}</span>
-              </div>
-              <h4 className="results-words">Необходимо повторить слова:</h4>
-              <div className="wrong-words">
-                {wrongAnswersWords}
-              </div>
-            </div> 
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-            onClick={() => {
-              handleClose();
-              setTimeout(() => {setWords(null)}, 2000)
-              }
-            }>
-            Другие Слова
-            </Button>
-            <Button
-              variant="success"
-              onClick={handleClose}>
-            Ещё раз
-            </Button>
-            <Button
-              variant="danger"
-              onClick={() => {setExit(true)}}>
-            Выйти
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        {modalRender}
           {words === null ? (
           <Preview
             heading={PREVIEW_HEADING}
@@ -377,7 +387,7 @@ const Savannah = () => {
             setUserWords={setUserWords}
           />
         ) : (
-        <div className="savanna-game"
+        <div className="speak-it-game"
             style={{ backgroundImage: `url(${SavannahImg})` }}
             >
             {!wordsSet && ('Набор слов отсутствует')}
@@ -389,4 +399,4 @@ const Savannah = () => {
   );
 };
 
-export default Savannah;
+export default Speakit;
