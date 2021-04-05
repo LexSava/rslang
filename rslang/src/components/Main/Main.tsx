@@ -8,6 +8,7 @@ import Statistics from "../Statistics/Statistics";
 import Settings from "../Settings/Settings";
 import { Route, Switch } from "react-router-dom";
 import getWords from "../../api/getWords";
+import setUserData from "../../api/setUserData";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 import _ from "lodash";
@@ -18,6 +19,7 @@ interface InterfaceMain {}
 
 const Main: React.FC<InterfaceMain> = (props) => {
   const [words, setWords] = useState<any>([]);
+  const [statistics, setStatistics] = useState<any>([]);
   const [learnedWords, setLearnedWords] = useLocalStorage("learnedWords", "");
   const [hardWords, setHardWords] = useLocalStorage("hardWords", "");
   const [deletedWords, setDeletedWords] = useLocalStorage("deletedWords", "");
@@ -37,9 +39,8 @@ const Main: React.FC<InterfaceMain> = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log(correctAnswer);
-    console.log(bestSeries);
-  }, [correctAnswer, bestSeries]);
+    console.log(statistics);
+  }, [statistics]);
 
   const getHardWords = (arr: any) => {
     setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
