@@ -9,9 +9,11 @@
 }
 
 .area-game {
-    width: 700px;
-    height: 65vh;
+    width: 100%;
+    min-width: 700px;
+    height: 100%;
     display: flex;
+    position: relative;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -26,9 +28,20 @@
 
 .score {
     font-size: 25px;
+    margin-left: 45px;
     font-weight: 500;
     color: #4516d5;
     margin-bottom: 25px;
+}
+
+.bonus-score {
+    color: green;
+    opacity: 0;
+    transition: all 0.1s;
+}
+
+.active-bonus-score {
+    opacity: 1;
 }
 
 .wordTranslate {
@@ -38,7 +51,7 @@
 }
 
 .wrapBtn {
-    width: 200px;
+    width: 280px;
     display: flex;
     justify-content: space-between;
     button {
@@ -68,4 +81,36 @@
 
 .circle {
     background-color: rgb(0, 189, 0) !important;
+}
+
+.sound-btn {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    cursor: pointer;
+    transition: all 0.2s;
+    top: 10px;
+    left: 10px;
+    background-size: 100%;
+    background-image: url('../../../assets/img/soundOn.jpg');
+}
+
+.sound-btn:hover {
+    transform: scale(1.1);
+}
+
+.sound-off {
+    background-image: url('../../../assets/img/soundOff.jpg');
+}
+
+@media screen and (max-width: 991px) {
+    .area-game {
+        min-width: 500px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .area-game {
+        min-width: 300px;
+    }
 }
