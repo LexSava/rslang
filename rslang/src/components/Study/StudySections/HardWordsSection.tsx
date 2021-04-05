@@ -14,8 +14,6 @@ import {
   Card,
   ListGroup,
   ListGroupItem,
-  InputGroup,
-  FormControl,
   Jumbotron,
   Form,
   ProgressBar,

@@ -13,11 +13,13 @@
     "@types/react-router-dom": "^5.1.7",
     "bootstrap": "^4.6.0",
     "bootstrap-icons": "^1.4.0",
+    "chart.js": "^2.9.4",
     "lodash": "^4.17.21",
     "node-sass": "^5.0.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.1",
     "react-bootstrap-icons": "^1.4.0",
+    "react-chartjs-2": "^2.11.1",
     "react-datetime": "^3.0.4",
     "react-dom": "^17.0.1",
     "react-hook-form": "^6.15.5",
@@ -25,6 +27,7 @@
     "react-loadable": "^5.5.0",
     "react-loadable-ssr-addon": "^1.0.1",
     "react-moment": "^1.1.1",
+    "react-overlays": "^5.0.0",
     "react-player": "^2.9.0",
     "react-rating": "^2.0.5",
     "react-router": "^5.2.0",
@@ -61,7 +64,10 @@
   "devDependencies": {
     "@types/lodash": "^4.14.168",
     "@types/react-loadable": "^5.5.4",
+    "@types/styled-components": "^5.1.9",
+    "react-animations": "^1.0.0",
     "react-hook-form": "^6.15.5",
-    "react-rating": "^2.0.5"
+    "react-rating": "^2.0.5",
+    "styled-components": "^5.2.3"
   }
 }

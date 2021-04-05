@@ -21,8 +21,11 @@ const Main: React.FC<InterfaceMain> = (props) => {
   const [learnedWords, setLearnedWords] = useLocalStorage("learnedWords", "");
   const [hardWords, setHardWords] = useLocalStorage("hardWords", "");
   const [deletedWords, setDeletedWords] = useLocalStorage("deletedWords", "");
-  // const [learnedWords, setLearnedWords] = useState<any>([]);
-  // const [hardWords, setHardWords] = useState<any>([]);
+  const [correctAnswer, setCorrectAnswer] = useLocalStorage(
+    "correctAnswer",
+    ""
+  );
+  const [bestSeries, setBestSeries] = useLocalStorage("bestSeries", "");
 
   async function getData(url: string, pref: string) {
     const fullUrl = url + pref;
@@ -34,9 +37,9 @@ const Main: React.FC<InterfaceMain> = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log(hardWords);
-    console.log(learnedWords);
-  }, [hardWords, learnedWords]);
+    console.log(correctAnswer);
+    console.log(bestSeries);
+  }, [correctAnswer, bestSeries]);
 
   const getHardWords = (arr: any) => {
     setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
@@ -46,6 +49,14 @@ const Main: React.FC<InterfaceMain> = (props) => {
   };
   const getDeletedWords = (arr: any) => {
     setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
+  };
+  const getCorrectAnswer = (arr: any) => {
+    setCorrectAnswer(arr);
+  };
+  const getBestSeries = (arr: any) => {
+    if (arr > bestSeries) {
+      setBestSeries(arr);
+    }
   };
 
   return (
@@ -59,6 +70,8 @@ const Main: React.FC<InterfaceMain> = (props) => {
           getHardWords={getHardWords}
           getLearnedWords={getLearnedWords}
           getDeletedWords={getDeletedWords}
+          getCorrectAnswer={getCorrectAnswer}
+          getBestSeries={getBestSeries}
         />
       </Route>
       <Route path="/tutorial-page/vocabulary">
@@ -75,7 +88,11 @@ const Main: React.FC<InterfaceMain> = (props) => {
         <Games />
       </Route>
       <Route path="/tutorial-page/statistics">
-        <Statistics />
+        <Statistics
+          learnedWords={learnedWords}
+          correctAnswer={correctAnswer}
+          bestSeries={bestSeries}
+        />
       </Route>
       <Route path="/tutorial-page/settings">
         <Settings />
