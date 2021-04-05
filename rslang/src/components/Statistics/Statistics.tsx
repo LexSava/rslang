@@ -32,7 +32,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
   );
 
   const ARRAY_OF_DATES: any = [];
-  const D = new Date("04/03/2021");
+  const D = new Date("04/04/2021");
   const Till = new Date();
 
   function pad(s: any) {
