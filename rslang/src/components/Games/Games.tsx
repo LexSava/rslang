@@ -13,6 +13,7 @@ import SpeakIt from "../../assets/img/speak-it.png";
 
 import AudioCall from "./AudioCall/AudioCall";
 import Savannah from "./Savanna/Savanna";
+import Speakit from "./Speakit/Speakit";
 
 interface InterfaceGames {}
 
@@ -80,14 +81,17 @@ const Games: React.FC<InterfaceGames> = (props) => {
   });
 
   return (
-    <Container className="min-vh-100 p-0 border border-top-0">
-      <Container className="d-flex justify-content-around flex-wrap mt-4 p-5 bg-light">
+    <Container className="min-vh-100 p-0 border border-top-0 m-0">
+      <Container className="d-flex justify-content-around flex-wrap  p-5 bg-light m-0">
         <Switch>
-          <Route path={`${basePathName}/speak-it`}>
+          <Route path={`${basePathName}/call`}>
             <AudioCall />
           </Route>
           <Route path={`${basePathName}/savanna`}>
             <Savannah />
+          </Route>
+          <Route path={`${basePathName}/speak-it`}>
+            <Speakit />
           </Route>
           <Route path={basePathName}>{gameCardElements}</Route>
         </Switch>
