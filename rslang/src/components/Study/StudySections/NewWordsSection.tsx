@@ -43,7 +43,6 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
   const [textMeaning, setTextMeaning] = useState<string>("");
   const [textExample, setTextExample] = useState<string>("");
   const [audio] = useState(new Audio("./sound/error.mp3"));
-  const [playing, setPlaying] = useState(false);
 
   const [correctAnswer, setCorrectAnswer] = useState<number>(0);
   let [wrongAnswer, setWrongAnswer] = useState<number>(0);
