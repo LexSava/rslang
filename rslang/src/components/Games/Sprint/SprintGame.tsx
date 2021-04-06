@@ -14,7 +14,7 @@ const PREVIEW__DESCRIPTION =
 const SprintGame = () => {
   const [words, setWords] = useState(null);
   const level = null; //TODO: get level from book page
-  const [count, setCount] = useState(6);
+  const [count, setCount] = useState(60);
   const [countStart, setCountStart] = useState(false);
   const [word, changeWord] = useState(null);
   const [wordTranslate, changeWordTranslate] = useState(null);
@@ -101,17 +101,6 @@ const SprintGame = () => {
     checkEndGame();
   }, [count, countStart])
 
-  /*useEffect(() => {
-    document.addEventListener('keypress', (e) => {
-      if(+e.key === 1){
-        checkAnswer(true);
-      } if(+e.key === 2){
-        checkAnswer(false);
-      }
-    });
-
-  }, []);*/
-
   const blockCircles = (countTrueAnswers: number) => {
     const amountCircles = 4;
     const arr = [0,0,0,0];
@@ -126,7 +115,7 @@ const SprintGame = () => {
   };
 
   return (
-    <div className="sprint-game">
+    <div className="sprint-game" >
       <FullScreenWrapper>
         {words === null ? (
           <Preview
@@ -157,13 +146,14 @@ const SprintGame = () => {
             <p className = "wordTranslate">{word} - {wordTranslate}</p>
             <div className = "wrapBtn">
               <button
-              onClick={(event: any) => {
-                checkAnswer(true);
-              }}>Верно(1)</button>
+                onClick={(event: any) => {
+                  checkAnswer(true);
+                }}>Верно(1)</button>
               <button
               onClick={(event: any) => {
                 checkAnswer(false);
-              }}>Не верно(2)</button>
+              }}
+              >Не верно(2)</button>
             </div>
           </div>
         )}
