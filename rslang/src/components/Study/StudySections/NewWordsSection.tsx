@@ -69,7 +69,9 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
       testButtonText !== "Следующее слово"
     ) {
       setBestAnswerSeries(++bestAnswerSeries);
-      playAudioWord();
+      if (!show) {
+        playAudioWord();
+      }
     } else if (
       inputText.toLowerCase() !== newWords[cardNumber].word.toLowerCase() &&
       testButtonText !== "Следующее слово"
