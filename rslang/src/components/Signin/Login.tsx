@@ -13,12 +13,7 @@ const Login = () => {
   const { register, handleSubmit, errors } = useForm();
   const [message, setMessage] = useState<any>(null);
   const [token, setToken] = useLocalStorage("token", "");
-  const [refToken, setRefToken] = useLocalStorage("refreshToken", "");
   const [userId, setUserId] = useLocalStorage("userId", "");
-  const [userpic, setUserPic] = useLocalStorage("userpic", "");
-  const [username, setUserName] = useLocalStorage("username", "");
-  const [statistics, setStatistics] = useLocalStorage("statistics", "");
-  const [settings, setSettings] = useLocalStorage("settings", "");
   const [isLoged, setLoged] = useState(false);
 
   async function api<T>(url: string, data: any): Promise<T> {
@@ -43,14 +38,13 @@ const Login = () => {
         const fullUrl = `${url}users/${userId}/statistics`;
 
     getUserData(fullUrl, token).then(( responseData:any ) => {
-    console.log(responseData)
-    setStatistics(responseData)
+    localStorage.setItem("statistics", JSON.stringify(responseData))
   })
   .catch(error => {
-      console.log(error.message);
-      setUserData(fullUrl, token, defStatisticsData).then(( responseData:any ) => {
-    console.log(responseData)
-    setStatistics(responseData)
+    const dateNow = new Date().toLocaleString("ru-Ru", { year: "numeric", month: "numeric", day: "numeric" });
+    defStatisticsData.optional = {regDate: dateNow};
+    setUserData(fullUrl, token, defStatisticsData).then(( responseData:any ) => {
+    localStorage.setItem("statistics", JSON.stringify(responseData))
   })
   .catch(error => {
       console.log(error.message)
@@ -59,23 +53,20 @@ const Login = () => {
     }
 
   const getSettings = () => {
+    if(userId && token) {
+    console.log(userId, token)
     const fullUrl = `${url}users/${userId}/settings`;
-
     getUserData(fullUrl, token).then(( responseData:any ) => {
-    console.log(responseData)
-    setSettings(responseData)
-  })
-  .catch(error => {
-    console.log(error.message);
-    setUserData(fullUrl, token, defSettingsData).then(( responseData:any ) => {
-    console.log(responseData)
-    setStatistics(responseData)
-  })
-  .catch(error => {
+    localStorage.setItem("settings", JSON.stringify(responseData))
+    }).catch(error => {
+      setUserData(fullUrl, token, defSettingsData).then(( responseData:any ) => {
+      localStorage.setItem("settings", JSON.stringify(responseData))
+    }).catch(error => {
       console.log(error.message)
       });
     });
     }
+  }
   
 
   const onSubmit = async (data: any): Promise<any> => {
@@ -91,13 +82,13 @@ const Login = () => {
       data: "Вход выполнен",
       type: "",
     });
-    setTimeout(setMessage, 5000)
-    console.log(responseData)
-    setToken(responseData.token)
-    setRefToken(responseData.refreshToken)
-    setUserId(responseData.userId)
-    setUserName(responseData.username)
-    setUserPic(responseData.userpic)
+    setTimeout(setMessage, 5000);
+    console.log(responseData);
+    setToken(responseData.token);
+    setUserId(responseData.userId);
+    localStorage.setItem("refreshToken", JSON.stringify(responseData.refreshToken));
+    localStorage.setItem("username", JSON.stringify(responseData.username));
+    localStorage.setItem("userpic", JSON.stringify(responseData.userpic));
     getSettings();
     getStatistics();
     setTimeout(() => setLoged(true), 5000)
@@ -116,7 +107,7 @@ const Login = () => {
     })
     } else if (error.message) {
     setMessage({
-      data: "Ошибка регистрации",
+      data: "Ошибка входа",
       type: "alert-warning",
     });
     }
@@ -215,7 +206,7 @@ const Login = () => {
       <Button variant="primary"
       type="submit"
       onClick={handleSubmit(onSubmit)}
-      >
+      active>
         Войти
       </Button>
     </Modal.Footer>

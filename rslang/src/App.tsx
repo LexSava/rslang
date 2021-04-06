@@ -25,7 +25,7 @@ function App() {
         <Switch>
           <React.Fragment>
             <Route path="/" exact component={LoadableComponent} />
-            <Route path="/tutorial-page/" component={LoadableTutorialPage} />
+            <Route path="/tutorial-page" component={LoadableTutorialPage} />
           </React.Fragment>
         </Switch>
       </div>
