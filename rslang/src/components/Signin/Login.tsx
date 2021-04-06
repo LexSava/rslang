@@ -38,13 +38,12 @@ const Login = () => {
         const fullUrl = `${url}users/${userId}/statistics`;
 
     getUserData(fullUrl, token).then(( responseData:any ) => {
-    console.log(responseData)
     localStorage.setItem("statistics", JSON.stringify(responseData))
   })
   .catch(error => {
-      console.log(error.message);
-      setUserData(fullUrl, token, defStatisticsData).then(( responseData:any ) => {
-    console.log(responseData)
+    const dateNow = new Date().toLocaleString("ru-Ru", { year: "numeric", month: "numeric", day: "numeric" });
+    defStatisticsData.optional = {regDate: dateNow};
+    setUserData(fullUrl, token, defStatisticsData).then(( responseData:any ) => {
     localStorage.setItem("statistics", JSON.stringify(responseData))
   })
   .catch(error => {
@@ -54,23 +53,20 @@ const Login = () => {
     }
 
   const getSettings = () => {
+    if(userId && token) {
+    console.log(userId, token)
     const fullUrl = `${url}users/${userId}/settings`;
-
     getUserData(fullUrl, token).then(( responseData:any ) => {
-    console.log(responseData)
     localStorage.setItem("settings", JSON.stringify(responseData))
-  })
-  .catch(error => {
-    console.log(error.message);
-    setUserData(fullUrl, token, defSettingsData).then(( responseData:any ) => {
-    console.log(responseData)
-    localStorage.setItem("settings", JSON.stringify(responseData))
-  })
-  .catch(error => {
+    }).catch(error => {
+      setUserData(fullUrl, token, defSettingsData).then(( responseData:any ) => {
+      localStorage.setItem("settings", JSON.stringify(responseData))
+    }).catch(error => {
       console.log(error.message)
       });
     });
     }
+  }
   
 
   const onSubmit = async (data: any): Promise<any> => {

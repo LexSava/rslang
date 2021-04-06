@@ -10,7 +10,7 @@ import SignOut from "../Signin/SignOut";
 interface InterfaceTutorialPage {}
 
 const TutorialPage: React.FC<InterfaceTutorialPage> = (props) => {
-  const avatar:string | null = localStorage.getItem("userpic") || "";
+  const avatar: string | null = localStorage.getItem("userpic") || "";
   const avatarUrl = `${url}${JSON.parse(avatar)}`;
 
   return (
@@ -19,14 +19,8 @@ const TutorialPage: React.FC<InterfaceTutorialPage> = (props) => {
         <Link to="/" className="link-logo-block text-primary">
           <h1 className="logo-tutorial-page text-dark m-0">RS Lang</h1>
         </Link>
+        {avatar && <img className="avatar" src={avatarUrl} alt="avatar" />}
         <SignOut />
-        {avatar && (<img className="avatar" src={avatarUrl} alt="avatar"/>)}
-        <Link
-          to="/"
-          className="btn btn-primary rounded-pill border border-0 btn-lg mr-3 login-button"
-        >
-          Выход
-        </Link>
       </Container>
       <Menu />
       <Main />
