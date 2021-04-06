@@ -16,7 +16,7 @@ export const defSettingsData = {
     "speakit": {}
 };
 
-export const defStatisticsData = {
+export let defStatisticsData = {
     "learnedWords": 0,
     "optional": {},
     "vocabulary": {},
