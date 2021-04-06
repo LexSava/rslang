@@ -33,8 +33,7 @@ const DeletedVocabularySection: React.FC<InterfaceDeletedVocabularySection> = (
       )
     );
   };
-
-
+  
   const handleChange = (e: any) => {
     if (e.target.checked) {
       setSelectedWords([...selectedWords, e.target.value]);

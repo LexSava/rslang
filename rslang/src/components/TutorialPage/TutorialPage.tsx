@@ -19,14 +19,8 @@ const TutorialPage: React.FC<InterfaceTutorialPage> = (props) => {
         <Link to="/" className="link-logo-block text-primary">
           <h1 className="logo-tutorial-page text-dark m-0">RS Lang</h1>
         </Link>
-        <SignOut />
         {avatar && <img className="avatar" src={avatarUrl} alt="avatar" />}
-        <Link
-          to="/"
-          className="btn btn-primary rounded-pill border border-0 btn-lg mr-3 login-button"
-        >
-          Выход
-        </Link>
+        <SignOut />
       </Container>
       <Menu />
       <Main />

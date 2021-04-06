@@ -62,12 +62,6 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item className="">
-                <Nav.Link
-                  href="/tutorial-page"
-                  className="btn btn-primary rounded-pill border border-4 btn-lg mr-3 login-button"
-                >
-                  Войти
-                </Nav.Link>
                 <Signin tab={"login"} />
               </Nav.Item>
             </Nav>
@@ -222,9 +216,10 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
                       <small className="text-muted">Front-end Developer</small>
                     </p>
                     <p className="card-text">
-                      This is a wider card with supporting text below as a
-                      natural lead-in to additional content. This content is a
-                      little bit longer.
+                      Разработал дизайн проекта. Реализовал "Стартовую
+                      страницу", страницы:  "Электронного учебника",  
+                      "Словаря",  "Статистики", "Загрузки" их функционал и 
+                      адаптивность.
                     </p>
                   </div>
                 </div>
