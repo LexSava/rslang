@@ -19,7 +19,6 @@ import Ava_4 from "../../assets/img/ava_4.jpg";
 interface InterfaceHomePage {}
 
 const HomePage: React.FC<InterfaceHomePage> = (props) => {
-
   return (
     <Container>
       <Container className="d-flex main-block">
@@ -63,13 +62,7 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item className="">
-                <Nav.Link
-                  href="/tutorial-page"
-                  className="btn btn-primary rounded-pill border border-4 btn-lg mr-3 login-button"
-                >
-                  Войти
-                </Nav.Link>
-                <Signin tab={'login'}/>
+                <Signin tab={"login"} />
               </Nav.Item>
             </Nav>
           </header>
@@ -95,7 +88,7 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
               т.д. И вуаля: вы на всю жизнь запомните, что за словом «cat»
               скрывается некто пушистый и мурлыкающий.{" "}
             </p>
-            <Signin tab={'register'}/>
+            <Signin tab={"register"} />
           </div>
         </Container>
       </Container>
@@ -116,7 +109,9 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
           >
             <Card.Img variant="top" src={Words} />
             <Card.Body>
-              <Card.Title className="">Слова и готовый фразы</Card.Title>
+              <Card.Title className="text-center">
+                Слова и готовый фразы
+              </Card.Title>
               <Card.Text>
                 Расширяй свой словарный запас и учи популярные фразы. Они
                 выручат в любой ситуации, помогут поддержать разговор, сделают
@@ -131,7 +126,7 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
           >
             <Card.Img variant="top" src={Articles} />
             <Card.Body>
-              <Card.Title className="">Рассказы и статьи</Card.Title>
+              <Card.Title className="text-center">Рассказы и статьи</Card.Title>
               <Card.Text>
                 Если вы регулярно читаете художественные произведения
                 англоязычных писателей, вы осваиваете «правильный» английский
@@ -146,7 +141,7 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
           >
             <Card.Img variant="top" src={Tests} />
             <Card.Body>
-              <Card.Title className="">Тесты</Card.Title>
+              <Card.Title className="text-center">Тесты</Card.Title>
               <Card.Text>
                 Тесты благоприятно влияют на быстрое изучение нового материала и
                 закрепление уже пройденного, они могут заменить Вам учителя при
@@ -160,7 +155,7 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
           >
             <Card.Img variant="top" src={Games} />
             <Card.Body>
-              <Card.Title className="">Мини-игры</Card.Title>
+              <Card.Title className="text-center">Мини-игры</Card.Title>
               <Card.Text>
                 Игры помогут вам не просто приятно провести время, но и
                 расширить словарный запас, подтянуть знание грамматики и
@@ -174,7 +169,9 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
           >
             <Card.Img variant="top" src={Progress} />
             <Card.Body>
-              <Card.Title className="">Статистика прогресса</Card.Title>
+              <Card.Title className="text-center">
+                Статистика прогресса
+              </Card.Title>
               <Card.Text>
                 Вне зависимости от того, играете ли вы или тренируете слова -
                 статистика по изученным словам обновляется и всегда доступна в
@@ -211,14 +208,18 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
                 </div>
                 <div className="col-md-8">
                   <div className="card-body">
-                    <h5 className="card-title"> Aliaksei Savastsyanau</h5>
+                    <h5 className="card-title card-team-tilte">
+                      {" "}
+                      Aliaksei Savastsyanau
+                    </h5>
                     <p className="card-text team-card-profession-text">
                       <small className="text-muted">Front-end Developer</small>
                     </p>
                     <p className="card-text">
-                      This is a wider card with supporting text below as a
-                      natural lead-in to additional content. This content is a
-                      little bit longer.
+                      Разработал дизайн проекта. Реализовал "Стартовую
+                      страницу", страницы:  "Электронного учебника",  
+                      "Словаря",  "Статистики", "Загрузки" их функционал и 
+                      адаптивность.
                     </p>
                   </div>
                 </div>
@@ -241,7 +242,9 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
                 </div>
                 <div className="col-md-8">
                   <div className="card-body">
-                    <h5 className="card-title">Mitry Nayezzhy</h5>
+                    <h5 className="card-title card-team-tilte">
+                      Mitry Nayezzhy
+                    </h5>
                     <p className="card-text team-card-profession-text">
                       <small className="text-muted">Front-end Developer</small>
                     </p>
@@ -271,7 +274,9 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
                 </div>
                 <div className="col-md-8">
                   <div className="card-body">
-                    <h5 className="card-title">Anastasiya Ivanova </h5>
+                    <h5 className="card-title card-team-tilte">
+                      Anastasiya Ivanova{" "}
+                    </h5>
                     <p className="card-text team-card-profession-text">
                       <small className="text-muted">Front-end Developer</small>
                     </p>
@@ -301,7 +306,7 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
                 </div>
                 <div className="col-md-8">
                   <div className="card-body">
-                    <h5 className="card-title">Stas Tom</h5>
+                    <h5 className="card-title card-team-tilte">Stas Tom</h5>
                     <p className="card-text team-card-profession-text">
                       <small className="text-muted">Front-end Developer</small>
                     </p>

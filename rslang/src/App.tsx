@@ -3,8 +3,6 @@ import "./App.scss";
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Loadable from "react-loadable";
-import HomePage from "./components/HomePage/HomePage";
-import TutorialPage from "./components/TutorialPage/TutorialPage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 
 function App() {

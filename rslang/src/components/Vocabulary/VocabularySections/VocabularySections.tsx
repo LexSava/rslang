@@ -10,6 +10,7 @@ interface InterfaceVocabularySections {
   hardWords: any;
   learnedWords: any;
   deletedWords: any;
+  sortingDeletedWords: any;
   getHardWords(arr: any): void;
   getLearnedWords(arr: any): void;
   getDeletedWords(arr: any): void;
@@ -31,7 +32,7 @@ const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
   useEffect(() => {
     props.getDeletedWords(deletedWords);
   }, [deletedWords]);
- 
+
   const getHardWords = (arr: any) => {
     setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
   };
@@ -65,6 +66,7 @@ const VocabularySections: React.FC<InterfaceVocabularySections> = (props) => {
       return (
         <StudiedVocabularySection
           learnedWords={props.learnedWords}
+          sortingDeletedWords={props.sortingDeletedWords}
           onGetHardWords={getHardWords}
           onGetLearnedWords={getLearnedWords}
           onGetDeletedWords={getDeletedWords}

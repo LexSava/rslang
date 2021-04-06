@@ -12,14 +12,10 @@ interface InterfaceDeletedVocabularySection {
 const DeletedVocabularySection: React.FC<InterfaceDeletedVocabularySection> = (
   props
 ) => {
-  const [allWords, setAllWords] = useState<any>([]);
+  const [allWords, setAllWords] = useState<any>(props.deletedWords);
   const [wordList, setWordList] = useState<any>([]);
   const [selectedWords, setSelectedWords] = useState<any>([]);
   const wordsToMove: any = [];
-
-  useEffect(() => {
-    setAllWords(props.deletedWords);
-  }, [props.deletedWords]);
 
   const wordDistribution = () => {
     setAllWords(
@@ -37,15 +33,7 @@ const DeletedVocabularySection: React.FC<InterfaceDeletedVocabularySection> = (
       )
     );
   };
-
-  const hardWords = () => {
-    props.onGetHardWords(
-      wordsToMove.concat(
-        allWords.filter((element: any) => selectedWords.includes(element.word))
-      )
-    );
-  };
-
+  
   const handleChange = (e: any) => {
     if (e.target.checked) {
       setSelectedWords([...selectedWords, e.target.value]);
@@ -85,16 +73,6 @@ const DeletedVocabularySection: React.FC<InterfaceDeletedVocabularySection> = (
           }}
         >
           Восстановить
-        </Button>
-        <Button
-          variant="warning"
-          className="pt-3 pb-3 pl-5 pr-5 mt-4"
-          onClick={() => {
-            wordDistribution();
-            hardWords();
-          }}
-        >
-          В сложные
         </Button>
       </Container>
       <Container>
