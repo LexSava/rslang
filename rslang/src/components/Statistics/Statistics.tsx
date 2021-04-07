@@ -3,8 +3,6 @@ import "./Statistics.scss";
 import React, { useState, useEffect } from "react";
 import { Container, Table } from "react-bootstrap";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import getUserData from "../../api/getUserData";
-import setUserData from "../../api/setUserData";
 import { url } from "../../api/defData";
 import { Bar, Line } from "react-chartjs-2";
 
@@ -25,6 +23,16 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
     "arrWordsLearnedToday",
     ""
   );
+  const [learnedWords, setLearnedWords] = useLocalStorage(
+    "learnedWordsStatistic",
+    0
+  );
+  const [bestSeries, setBestSeries] = useLocalStorage("bestSeriesStatistic", 0);
+  const [correctAnswer, setCorrectAnswer] = useLocalStorage(
+    "correctAnswerStatistic",
+    0
+  );
+
   console.log(statisticUser);
   console.log(statisticUser.optional.regDate);
 
@@ -50,11 +58,13 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
       (wordsLearnedToday[ARRAY_OF_DATES.length - 1] =
         statisticUser.learnedWords)
     );
+    setLearnedWords(props.allStatistics.vocabulary.learnedWords);
+    setBestSeries(props.allStatistics.vocabulary.bestSeries);
+    setCorrectAnswer(props.allStatistics.vocabulary.correctAnswer);
   }, [statisticUser]);
 
   useEffect(() => {
     setArrWordsLearnedToday(wordsLearnedToday);
-    console.log(arrWordsLearnedToday);
   }, [wordsLearnedToday]);
 
   useEffect(() => {
@@ -110,22 +120,22 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
             <tr>
               <td>1</td>
               <td>Пройдено карточек за все время</td>
-              <td>{statisticUser.vocabulary.learnedWords}</td>
+              <td>{learnedWords}</td>
             </tr>
             <tr>
               <td>2</td>
               <td>Лучшая серия</td>
-              <td>{statisticUser.vocabulary.bestSeries}</td>
+              <td>{bestSeries}</td>
             </tr>
             <tr>
               <td>3</td>
               <td>Процент правильных ответов</td>
-              <td>{statisticUser.vocabulary.correctAnswer} %</td>
+              <td>{correctAnswer} %</td>
             </tr>
             <tr>
               <td>4</td>
               <td>Изучено новых слов</td>
-              <td>{statisticUser.vocabulary.learnedWords}</td>
+              <td>{learnedWords}</td>
             </tr>
           </tbody>
         </Table>
