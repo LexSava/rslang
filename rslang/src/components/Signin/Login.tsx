@@ -12,9 +12,10 @@ import { url, defSettingsData, defStatisticsData } from "../../api/defData";
 const Login = () => {
   const { register, handleSubmit, errors } = useForm();
   const [message, setMessage] = useState<any>(null);
-  const [token, setToken] = useLocalStorage("token", "");
-  const [userId, setUserId] = useLocalStorage("userId", "");
   const [isLoged, setLoged] = useState(false);
+  
+  let token = "";
+  let userId = "";
 
   async function api<T>(url: string, data: any): Promise<T> {
    const init: RequestInit = {
@@ -35,14 +36,17 @@ const Login = () => {
   }
 
   const getStatistics = () => {
-        const fullUrl = `${url}users/${userId}/statistics`;
-
+    const fullUrl = `${url}users/${userId}/statistics`;
     getUserData(fullUrl, token).then(( responseData:any ) => {
     localStorage.setItem("statistics", JSON.stringify(responseData))
   })
   .catch(error => {
+      setMessage({
+        data: "Создание новых данных",
+        type: "",
+      });
     const dateNow = new Date().toLocaleString("ru-Ru", { year: "numeric", month: "numeric", day: "numeric" });
-    defStatisticsData.optional = {regDate: dateNow};
+    defStatisticsData.optional = {"regDate": dateNow};
     setUserData(fullUrl, token, defStatisticsData).then(( responseData:any ) => {
     localStorage.setItem("statistics", JSON.stringify(responseData))
   })
@@ -50,7 +54,7 @@ const Login = () => {
       console.log(error.message)
       });
     });
-    }
+  }
 
   const getSettings = () => {
     if(userId && token) {
@@ -59,6 +63,10 @@ const Login = () => {
     getUserData(fullUrl, token).then(( responseData:any ) => {
     localStorage.setItem("settings", JSON.stringify(responseData))
     }).catch(error => {
+      setMessage({
+        data: "Создание новых данных",
+        type: "",
+      });
       setUserData(fullUrl, token, defSettingsData).then(( responseData:any ) => {
       localStorage.setItem("settings", JSON.stringify(responseData))
     }).catch(error => {
@@ -82,13 +90,19 @@ const Login = () => {
       data: "Вход выполнен",
       type: "",
     });
-    setTimeout(setMessage, 5000);
-    console.log(responseData);
-    setToken(responseData.token);
-    setUserId(responseData.userId);
+    console.log(responseData)
+    token = responseData.token;
+    userId = responseData.userId;
+    setTimeout(setMessage, 4000);
     localStorage.setItem("refreshToken", JSON.stringify(responseData.refreshToken));
     localStorage.setItem("username", JSON.stringify(responseData.username));
     localStorage.setItem("userpic", JSON.stringify(responseData.userpic));
+    localStorage.setItem("token", JSON.stringify(token));
+    localStorage.setItem("userId", JSON.stringify(userId));
+      setMessage({
+      data: "Получение данных пользователя",
+      type: "",
+    });
     getSettings();
     getStatistics();
     setTimeout(() => setLoged(true), 5000)

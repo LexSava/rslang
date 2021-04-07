@@ -1,0 +1,108 @@
+.speak-it {
+  min-height: 70vh;
+  min-width: 100%;
+
+  .speak-it-game {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  .menu {
+    margin: 10px;
+
+    .menu-wrapper {
+      display: flex;
+      justify-content: space-between;
+
+      .rating{
+        margin: 10px;
+        width: 200px;
+        height: 30px;
+        border-radius: 10px;
+        font-size: 1.5rem;
+      }
+
+      .btns-toolbar{
+        margin: 5px;
+
+        .btn-group {
+          margin: 0 10px;
+        }
+      }
+    }
+  }
+
+  .game-wrapper {
+    display: block;
+    height: 85%;
+    width: 100%;
+    
+    .info-wrapper{
+      display: flex;
+      height: 400px;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+
+      margin: 0 auto;
+      .card-info:hover {
+        cursor: none;
+      }
+
+      p {
+        font-size: 20px;
+        font-weight: 700;
+        width: fit-content;
+        height: fit-content;
+        vertical-align: middle;
+        background-color: #aeaeae;
+        border-radius: 20px;
+        padding: 8px 30px;
+        margin: 20px auto 0 auto;
+      }
+    }
+  
+    .training-button {
+      display: block;
+      width: 60%;
+      margin: 10px auto;
+    }
+
+    .words-wrapper{
+      height: fit-content;  
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+
+
+      .toast:hover {
+        cursor: pointer;
+      }
+
+      .toast {
+        font-size: 18px;
+        width: 150px;
+        height: 50px;
+        border-radius: 10px;
+        justify-content: space-between;
+        margin: 0 10px 0.5rem 10px;
+
+      }
+
+      .toast-body {
+        text-align: center;
+      }
+    }
+  }
+
+}
+
+

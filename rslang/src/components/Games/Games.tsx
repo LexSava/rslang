@@ -14,6 +14,7 @@ import SpeakIt from "../../assets/img/speak-it.png";
 import AudioCall from "./AudioCall/AudioCall";
 import Savannah from "./Savanna/Savanna";
 import SprintGame from "./Sprint/SprintGame";
+import Speakit from "./Speakit/Speakit";
 
 interface InterfaceGames {}
 
@@ -92,6 +93,9 @@ const Games: React.FC<InterfaceGames> = (props) => {
           </Route>
           <Route path={`${basePathName}/sprint`}>
             <SprintGame />
+          </Route>
+          <Route path={`${basePathName}/speak-it`}>
+            <Speakit />
           </Route>
           <Route path={basePathName}>{gameCardElements}</Route>
         </Switch>
