@@ -1,16 +1,16 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Savanna.scss";
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Badge,
-  Modal,
-  ButtonToolbar,
-  ButtonGroup,
-  ProgressBar,
-} from "react-bootstrap";
-import { BsVolumeMute, BsFillVolumeUpFill } from "react-icons/bs";
-import { BiBell, BiBellOff } from "react-icons/bi";
+import { 
+  Button, 
+  Badge, 
+  Modal, 
+  ButtonToolbar, 
+  ButtonGroup, 
+  ProgressBar } from "react-bootstrap";
+import { BsVolumeMute, BsFillVolumeUpFill, BsArrowRepeat } from "react-icons/bs";
+import { BiBell, BiBellOff, BiExit } from "react-icons/bi";
+
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
 import { Redirect } from "react-router";
 import Preview from "../Preview/Preview";
@@ -43,7 +43,7 @@ type AllStatistics = { [index: number]: Statistics };
 const PREVIEW_HEADING = "Саванна";
 const PREVIEW__DESCRIPTION =
   "Слово спускается в саванну, предлагается 5 вариантов его перевода, правильный только один. Твоя задача выбрать правильный перевод слова раньше чем слово коснётся земли.";
-const NUM_OF_ANSWERS = 5;
+const NUM_OF_ANSWERS = 4;
 const dateNow = new Date().getDate();
 const defStatistics: Statistics = { correctAnswers: 0, wrongAnswers: 0 };
 const defAllStatistics: AllStatistics = {
@@ -113,9 +113,22 @@ const Savannah = () => {
       }
       return words;
     }
-  };
 
-  useEffect(() => {}, [buttons]);
+  }
+  
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [buttons]);
+  
+  const keyCodes = ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"];
+
+  const handleKeyDown:any = (event:any) => {
+    console.log('A key was pressed', event.code, keyCodes.indexOf(event.code), buttons[keyCodes.indexOf(event.code)]);
+    if (keyCodes.indexOf(event.code) !== -1) setAnswer(buttons[keyCodes.indexOf(event.code)])
+  };
 
   useEffect(() => {
     setWordsSet(shuffleWords(words));
@@ -174,9 +187,10 @@ const Savannah = () => {
       setQuestionId(wordQuest.id);
       setQuestionImage(wordQuest.image);
       setAnswerTrue(wordQuest.wordTranslate);
-      const randArr = [];
-      const randWords = [wordQuest.wordTranslate];
-      for (let i = 0; i < 4; i++) {
+      const randArr=[];
+      const randWords=[wordQuest.wordTranslate]
+      for(let i = 0; i < NUM_OF_ANSWERS; i++) {
+
         const rand = Math.floor(Math.random() * wordsSet.length);
         const randWord = wordsSet[rand];
         if (randArr.indexOf(rand) === -1 && rand !== attempt) {
@@ -242,10 +256,29 @@ const Savannah = () => {
   };
 
   const buttonsBar = (
-    <ButtonToolbar className="btns-toolbar">
-      <ButtonGroup toggle className="btn-group" aria-label="First group">
-        <Button type="checkbox" onClick={() => setSoundOff(!soundOff)}>
-          {soundOff ? <BiBell size="2.2rem" /> : <BiBellOff size="2.2rem" />}
+      <ButtonToolbar className="btns-toolbar">
+        <ButtonGroup toggle className="btn-group" aria-label="First group">
+        <Button
+          type="checkbox"
+          onClick={() => {setExit(true)}}
+        >
+       {<BiExit size="2.2rem" />}
+        </Button>
+      </ButtonGroup>
+       <ButtonGroup toggle className="btn-group" aria-label="First group">
+        <Button
+          type="checkbox"
+          onClick={() => {setAttempt(0)}}
+        >
+       {<BsArrowRepeat size="2.1rem" />}
+        </Button>
+      </ButtonGroup>
+       <ButtonGroup toggle className="btn-group" aria-label="First group">
+        <Button
+          type="checkbox"
+          onClick={() => setSoundOff(!soundOff)}
+        >
+       {soundOff ? <BiBell size="2.2rem" /> : <BiBellOff size="2.2rem" />}
         </Button>
       </ButtonGroup>
       <ButtonGroup toggle className="btn-group" aria-label="First group">
@@ -257,78 +290,24 @@ const Savannah = () => {
           )}
         </Button>
       </ButtonGroup>
-    </ButtonToolbar>
-  );
-  const progressBar = (
-    <>
-      <ProgressBar
-        variant="success"
-        now={attempt * 5}
-        label={`${attempt * 5}%`}
-      />
-    </>
-  );
-  const attemptsBar = (
-    <>
-      <ProgressBar
-        className="rating"
-        variant="danger"
-        now={lives}
-        label={`${lives / 20}`}
-      />
-    </>
-  );
-
-  const answersButtons = (
-    <div className="answers-btns">
-      <Button
-        onClick={(e) => setAnswer(buttons[0])}
-        className="word-answer"
-        name={buttons[0]}
-        value={buttons[0]}
-        variant={buttonsVariants[0]}
-      >
-        {buttons[0]}
-      </Button>
-      <Button
-        onClick={(e) => setAnswer(buttons[1])}
-        className="word-answer"
-        name={buttons[1]}
-        value={buttons[1]}
-        variant={buttonsVariants[1]}
-      >
-        {buttons[1]}
-      </Button>
-      <Button
-        onClick={(e) => setAnswer(buttons[2])}
-        className="word-answer"
-        name={buttons[2]}
-        value={buttons[2]}
-        variant={buttonsVariants[2]}
-      >
-        {buttons[2]}
-      </Button>
-      <Button
-        onClick={(e) => setAnswer(buttons[3])}
-        className="word-answer"
-        name={buttons[3]}
-        value={buttons[3]}
-        variant={buttonsVariants[3]}
-      >
-        {buttons[3]}
-      </Button>
-      <Button
-        onClick={(e) => setAnswer(buttons[4])}
-        className="word-answer"
-        name={buttons[4]}
-        value={buttons[4]}
-        variant={buttonsVariants[4]}
-      >
-        {buttons[4]}
-      </Button>
-    </div>
-  );
-
+      </ButtonToolbar>
+    )
+  const progressBar = <><ProgressBar variant="success" now={(attempt) * 5} label={`${(attempt) * 5}%`} /></>;
+  const attemptsBar = <><ProgressBar className="rating"  variant="danger" now={lives} label={`${lives / 20}`} /></>;
+  
+  const answersButtons = () => {
+    const buttonsArr: JSX.Element[] = [];
+    buttons.forEach((button:any, i) => {
+      buttonsArr.push(<>
+      <Button onClick={() => setAnswer(button)} 
+        className="word-answer" 
+        name={button} 
+        value={button}
+        variant={buttonsVariants[i]}>
+      [ {i + 1} ] {button}</Button></>)
+    });
+    return buttonsArr;
+  };
   const questionWord = (
     <div className="question-word">
       <div className="word-image"></div>
@@ -340,12 +319,17 @@ const Savannah = () => {
     </div>
   );
 
-  const gameWrapper = (
-    <div className="game-wrapper">
-      <div className="answers-wrapper">{answersButtons}</div>
-      <div className="question-wrapper">{questionWord}</div>
-    </div>
-  );
+  const gameWrapper = (<div className="game-wrapper">
+      <div className="answers-wrapper">
+        <div className="answers-btns">
+        {answersButtons()}
+        </div>
+      </div>
+      <div className="question-wrapper">
+        {questionWord}
+      </div>
+    </div>);
+
 
   const Game = (
     <>
