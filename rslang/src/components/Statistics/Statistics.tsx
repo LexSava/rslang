@@ -3,8 +3,6 @@ import "./Statistics.scss";
 import React, { useState, useEffect } from "react";
 import { Container, Table } from "react-bootstrap";
 import useLocalStorage from "../../hooks/useLocalStorage";
-import getUserData from "../../api/getUserData";
-import setUserData from "../../api/setUserData";
 import { url } from "../../api/defData";
 import { Bar, Line } from "react-chartjs-2";
 
