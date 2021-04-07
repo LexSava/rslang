@@ -1,0 +1,194 @@
+.sprint-game {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    color: black;
+}
+
+.area-game {
+    width: 100%;
+    min-width: 700px;
+    height: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+}
+
+.timer {
+    font-size: 25px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.score {
+    font-size: 25px;
+    margin-left: 45px;
+    font-weight: 500;
+    color: #4516d5;
+    margin-bottom: 25px;
+}
+
+.bonus-score {
+    color: green;
+    opacity: 0;
+    transition: all 0.1s;
+}
+
+.active-bonus-score {
+    opacity: 1;
+}
+
+.wordTranslate {
+    font-size: 30px;
+    font-weight: 500;
+    margin-bottom: 25px;
+}
+
+.wrapBtn {
+    width: 280px;
+    display: flex;
+    justify-content: space-between;
+    button {
+        font-size: 16px;
+        color: white;
+        background-color: #007bff;
+        padding: 10px;
+        border-radius: 5px;
+        outline: none;
+    }
+}
+
+.wrapCircles {
+    width: 150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    span {
+        display: block;
+        width: 25px;
+        height: 25px;
+        background-color: rgb(219, 217, 217);
+        border-radius: 50%;
+    }
+}
+
+.circle {
+    background-color: rgb(0, 189, 0) !important;
+}
+
+.sound-btn {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    cursor: pointer;
+    transition: all 0.2s;
+    top: 10px;
+    left: 10px;
+    background-size: 100%;
+    background-image: url('../../../assets/img/soundOn.jpg');
+}
+
+.sound-btn:hover {
+    transform: scale(1.1);
+}
+
+.sound-off {
+    background-image: url('../../../assets/img/soundOff.jpg');
+}
+
+.statistic-sprint {
+    width: 90%;
+    height: 90%;
+    display: none;
+    flex-direction: column;
+    padding: 30px;
+    font-size: 16px;
+    position: absolute;
+    border-radius: 10px;
+    overflow-y: scroll;
+    background-color: rgb(227, 223, 231);
+    div {
+        font-size: 14px;
+    }
+    h4 {
+        margin: auto;
+    }
+}
+
+.statistic-sprint-active {
+    display: flex;
+}
+
+.statistic-sprint::-webkit-scrollbar {
+    width: 10px;
+    background-color: #f9f9fd;
+  }
+  
+  .statistic-sprint::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #18aaaa;
+  }
+  
+  .statistic-sprint::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    background-color: #f9f9fd;
+  }
+
+  .wrap-btns-statistic {
+    display: flex;
+    position: sticky;
+    justify-content: space-between;
+    width: 300px;
+    margin: 0px 0px 0px auto;
+    bottom: 0px;
+    button {
+        font-size: 14px;
+        color: white;
+        background-color: #007bff;
+        padding: 10px;
+        border-radius: 5px;
+        outline: none;
+        transition: all 0.1s;
+    }
+
+    button:hover {
+        transform: scale(1.03);
+    }
+  }
+
+  .btn-close-statistic {
+    width: 20px;
+    height: 20px;
+    background-image: url("../../../assets/img/close.png");
+    background-size: 100%;
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transition: all 0.1s;
+    cursor: pointer;
+  }
+
+  .btn-close-statistic:hover {
+      transform: scale(1.1);
+  }
+
+@media screen and (max-width: 991px) {
+    .area-game {
+        min-width: 500px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .area-game {
+        min-width: 300px;
+    }
+}
