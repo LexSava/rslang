@@ -37,20 +37,21 @@
     }
   }
 
+  .training-wrapper,
   .game-wrapper {
     display: block;
     height: 85%;
     width: 100%;
     
-    .info-wrapper{
+    .info-wrapper {
       display: flex;
-      height: 400px;
+      // height: 400px;
       width: 100%;
       align-items: center;
       justify-content: center;
       text-align: center;
-
       margin: 0 auto;
+
       .card-info:hover {
         cursor: none;
       }
@@ -66,11 +67,25 @@
         padding: 8px 30px;
         margin: 20px auto 0 auto;
       }
+      .card-body {
+        cursor: default;
+        max-height: 450px;
+        max-width: 400px;
+      }
+
+      .card-img-top {
+        max-height: 280px;
+        max-width: 350px;
+      }
+
+      .card-text {
+        cursor: pointer;
+      }
     }
   
     .training-button {
       display: block;
-      width: 60%;
+      width: 30rem;
       margin: 10px auto;
     }
 
@@ -81,7 +96,6 @@
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-
 
       .toast:hover {
         cursor: pointer;

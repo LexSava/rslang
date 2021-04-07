@@ -7,6 +7,7 @@ import { BsVolumeMute, BsFillVolumeUpFill, BsArrowRepeat } from "react-icons/bs"
 import { BiBell, BiBellOff, BiExit, BiMicrophone, BiMicrophoneOff } from "react-icons/bi";
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
 import { Redirect } from 'react-router';
+import  { playAudioWord, playAudio } from "../../../utils/AudioWord";
 import Preview from "../Preview/Preview";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import getUserData from "../../../api/getUserData";
@@ -50,47 +51,50 @@ const dateNow = new Date().getDate();
 const defStatistics:Statistics = {correctAnswers: 0, wrongAnswers: 0};
 const defAllStatistics:AllStatistics = {[dateNow]: {correctAnswers: 0, wrongAnswers: 0}};
 const outLn= "outline-primary";
+const defButtonsVariants = [outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn];
+const defActiveCard = {
+  word: "",
+  wordTranslate: "", 
+  transcription: "",
+  audio: "",
+  image: "files/02_0628.jpg"
+};
 
 const Speakit = () => {
-  const defButtonsVariants = [outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn];
   const [words, setWords] = useState(null);
-  const [wordsSet, setWordsSet] = useState<any>(null);
+  const [wordsSet, setWordsSet] = useState<any>([]);
   const [level, setLevel] = useState(null); //TODO: get level from book page
   const [isSound, setSound] = useState(true);
   const [isSpeak, setSpeak] = useState(true);
   const [isMic, setMic] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isTraining, setTraining] = useState(false);
-  const [lives, setLives] = useState(100);
-  const [question, setQuestion] = useState('Question');
-  const [questionId, setQuestionId] = useState('');
-  const [questionImage, setQuestionImage] = useState('Question');
-  const [answerTrue, setAnswerTrue] = useState('');
+  const [isStatistics, setIsStatistics] = useState(false);
   const [answer, setAnswer] = useState('');
   const [attempt, setAttempt] = useState(0);
   const [statistics, setStatistics] = useLocalStorage("savanna", defStatistics);
   const [allStatistics, setAllStatistics] = useState(defAllStatistics);
-  const [buttonsVariants, setButtonsVariants] = useState(defButtonsVariants);
-  const [buttons, setButtons] = useState([['Ошибка'], ['получения'],['слов'],['с'],['сервера']]);
+  const [buttons, setButtons] = useState([]);
   const [wrongAnswersWords, setWrongAnswersWords] = useState<Array<any>>([]);
   const [wrongWords, setWrongWords] = useState<Array<any>>([]);
-  const [activeCard, setActiveCard] = useState<card>({word: "", wordTranslate: "", 
-    transcription: "", audio: "", image: ""});
+  const [activeCard, setActiveCard] = useState<card>(defActiveCard);
   const [exit, setExit] = useState(false);
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
 
+    
+  const handleShow = () => setShowModal(true);
+  
   const handleClose = () => {
     allStatisticsCompare(statistics);
     setStatistics(defStatistics);
     setWrongWords([]);
     setAttempt(0);
-    setLives(100);
     setShowModal(false)
-    };
-  const handleShow = () => setShowModal(true);
+  };
   
   const setUserWords = (words: any) => {
+    words.splice(NUM_OF_ANSWERS);
     setWords(words);
     getUserStatistics();
   };
@@ -113,52 +117,37 @@ const Speakit = () => {
   }, [words]);
 
   useEffect(() => {
-    if(wordsSet) setAllArrays();
-  }, [wordsSet, attempt]);
-
-   useEffect(() => {
-  }, [activeCard])
+    setButtons(wordsSet);
+  }, [wordsSet])
 
   useEffect(() => {
-    if(lives === 0 || attempt === 20) {
-      setModal()
-    }
-  }, [lives, attempt])
-
-  const setAllArrays = () => {
-    if(attempt < 20) {
-      setButtonsVariants(defButtonsVariants);
-      const wordQuest = wordsSet[attempt];  
-      setQuestion(wordQuest.word);
-      setQuestionId(wordQuest.id);
-      setQuestionImage(wordQuest.image);
-      setAnswerTrue(wordQuest.wordTranslate);
-      const randArr=[];
-      const randWords=[];
-
-      for(let i = 0; i < NUM_OF_ANSWERS; i++) {
-        const rand = Math.floor(Math.random() * wordsSet.length);
-        const randWord = wordsSet[rand];
-          if (randArr.indexOf(rand) === -1 && rand !== attempt) {
-            const word = {word: randWord.word,
-        wordTranslate: randWord.wordTranslate,
-        transcription: randWord.transcription,
-        audio: randWord.audio,
-        image: randWord.image};
-            randArr.push(rand);
-            randWords.push(word);
-          } else i--
-        setButtons(shuffleWords(randWords));
+    if (isTraining) {
+      setAttempt(0);
+      setActiveCard(wordsSet[0]); 
+    } else { 
+        setActiveCard(defActiveCard); 
+        setAttempt(0);
       }
-    };
-  };
+  }, [isTraining])
 
-  const speakWord = (wordUrl: string) => {
-     if (isSpeak) {
-        const audio = new Audio(url + wordUrl);
-        audio.play();
-      };
-  };
+  useEffect(() => {
+    if (wordsSet && isTraining) setActiveCard(wordsSet[attempt+1]);
+      else {setActiveCard(defActiveCard)}
+  }, [attempt])
+
+  useEffect(() => {
+    if (isTraining) {
+      let answerSound = "files/correct.mp3";
+      if (!answer.match(activeCard.word)) {
+        answerSound = "files/error.mp3";
+      }
+      if(attempt === NUM_OF_ANSWERS) {
+        setModal()
+      }
+      setAttempt(attempt+1);
+      if (isSound) playAudioWord(answerSound);
+    }
+  }, [answer])
 
   const setModal = () => {
     const modalWrongWords:Array<any> = []
@@ -204,45 +193,56 @@ const Speakit = () => {
     setUserStatistics();
   };
 
-  const modalRender = (<Modal 
-          show={ showModal }
-           onHide={handleClose}
-            animation={false}
-            centered={ true }
-            scrollable={ true }>
-          <Modal.Header closeButton>
-            <Modal.Title>Игра окончена</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="results">
-              <h3 className="your-results">Ваш результат:</h3>
-              <div className="results-answers">
-                <h4 className="results-answers-category">Верных ответов:</h4>
-                <span className="result">{statistics.correctAnswers}</span>
-                <h4 className="results-answers-category">Неверных ответов:</h4>
-                <span className="result">{statistics.wrongAnswers}</span>
-              </div>
-              <h4 className="results-words">Необходимо повторить слова:</h4>
-              <div className="wrong-words">
-                {wrongAnswersWords}
-              </div>
-            </div> 
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={() => {
-              handleClose();
-              setTimeout(() => {setWords(null)}, 2000)
-              }}>
-              Другие Слова</Button>
-            <Button variant="success" onClick={handleClose}>
-            Ещё раз
-            </Button>
-            <Button variant="danger" onClick={() => {setExit(true)}}>
-            Выйти
-            </Button>
-          </Modal.Footer>
-        </Modal>)
+  const modalRender = (
+    <Modal 
+      show={ showModal }
+      onHide={handleClose}
+      animation={false}
+      centered={ true }
+      scrollable={ true }>
+      <Modal.Header closeButton>
+        <Modal.Title>Игра окончена</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="results">
+            <h3 className="your-results">Ваш результат:</h3>
+          <div className="results-answers">
+            <h4 className="results-answers-category">Верных ответов:</h4>
+            <span className="result">{statistics.correctAnswers}</span>
+            <h4 className="results-answers-category">Неверных ответов:</h4>
+            <span className="result">{statistics.wrongAnswers}</span>
+          </div>
+          <h4 className="results-words">Необходимо повторить слова:</h4>
+          <div className="wrong-words">
+            {wrongAnswersWords}
+          </div>
+        </div> 
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={() => {
+          handleClose();
+          setTimeout(() => {setWords(null)}, 2000)
+          }}>
+          Другие Слова
+        </Button>
+        <Button variant="success" onClick={handleClose}>
+          Ещё раз
+        </Button>
+        <Button variant="danger" onClick={() => {setExit(true)}}>
+          Выйти
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 
+  const trainingButton = (
+    <Button className="training-button"
+      variant={isTraining ? 'danger' : 'info' } size="lg" block
+      onClick={()=>{setTraining(!isTraining)}}>
+      {isTraining ? 'Закончить тренировку' : 'Начать тренировку' }
+    </Button>
+  );
+  
   const buttonsBar = (
       <ButtonToolbar className="btns-toolbar">
        <ButtonGroup toggle className="btn-group" aria-label="First group">
@@ -256,7 +256,7 @@ const Speakit = () => {
        <ButtonGroup toggle className="btn-group" aria-label="First group">
         <Button
           type="checkbox"
-          onClick={() => {setAttempt(0)}}
+          onClick={() => {setWords(null)}}
         >
        {<BsArrowRepeat size="2.1rem" />}
         </Button>
@@ -284,49 +284,68 @@ const Speakit = () => {
        {isMic ? <BiMicrophone size="2.2rem" /> : <BiMicrophoneOff size="2.2rem" />}
         </Button>
       </ButtonGroup>
+      <ButtonGroup>
+        {trainingButton}
+      </ButtonGroup>
       </ButtonToolbar>
     )
-  const progressBar = <><ProgressBar variant="success" now={(attempt) * 5} label={`${(attempt) * 5}%`} /></>;
-  const attemptsBar = <><ProgressBar className="rating"  variant="danger" now={lives} label={`${lives / 20}`} /></>;
+  const progressBar = <>
+  <ProgressBar
+   variant="success"
+   now={(attempt) * (100 / (NUM_OF_ANSWERS))}
+   label={`${(attempt) * (100 / (NUM_OF_ANSWERS))}%`}
+  /></>;
   
   const wordsButtons = () => {
     const buttonsArr: JSX.Element[] = [];
+    if (!buttons) return [];
     buttons.forEach((button:any) => {
       buttonsArr.push(
         <Toast onClick={() => {
-          speakWord(button.audio)
+          playAudioWord(button.audio);
           setActiveCard(button)}}>
           <Toast.Body>
             <BsFillVolumeUpFill size="2rem"/>
             {button.transcription} - 
-            <strong className="mr-auto"> {button.word}</strong>          </Toast.Body>
+            <strong className="mr-auto">{ button.word }</strong>
+          </Toast.Body>
         </Toast>
       );
     });
     return (buttonsArr);
   };
 
-  const wordCard = (
-    <Card style={{ width: '28rem' }} className="info-card">
+  const wordCard = activeCard ? (
+    <div className="info-wrapper">
+    <Card style={isTraining ? { width: '30rem' } : { width: '28rem' }} className="info-card">
       <Card.Body>
         <Card.Img variant="top" src={url + activeCard.image} />
-        <Card.Text>
-          {activeCard.wordTranslate}
-        </Card.Text>
+        {!isTraining &&  
+          (<Card.Text style={{ backgroundColor: '#dda', fontSize: '2rem', fontWeight: 500 }}>
+            {activeCard.wordTranslate}
+          </Card.Text>
+        )}
+        {isTraining &&  
+          (<Card.Text style={activeCard.word.toUpperCase() 
+          ? {backgroundColor: '#dd1'} 
+          : {backgroundColor: '#fff'}}
+          onClick={() => { playAudioWord(activeCard.audio) }}
+          >  
+            {activeCard.word.toUpperCase()}
+          <Card.Text style={activeCard.word.toUpperCase() 
+            ? {backgroundColor: '#add', letterSpacing: '2px', fontWeight: 500 } 
+            : {backgroundColor: '#fff'}}>
+            {activeCard.transcription}
+          </Card.Text>
+          </Card.Text> 
+        )}
       </Card.Body>
     </Card>
-  );
-  
-  const trainingButton = (<Button className="training-button" variant="info" size="lg" block
-    onClick={()=>{setTraining(true)}}>
-    Начать тренировку</Button>
-  );
+    </div>
+  ) : (<></>);
   
   const gameWrapper = (<div className="game-wrapper">
-      <div className="info-wrapper">
         {wordCard}
-      </div>
-        {trainingButton}
       <div className="words-wrapper">
         {wordsButtons()}
       </div>
@@ -335,30 +354,23 @@ const Speakit = () => {
 
   const speaking = (
     <div className="speaking">
-
+      
     </div>    
   );
 
-    const trainingBlock = (<>
-      <div className="training-wrapper">
-        <Button onClick={()=>{setTraining(false)}} variant="danger">
-          Назад
-        </Button>
-        <Card style={{ width: '30rem' }} className="training-card">
-          <Card.Body>
-            <Card.Img variant="top" src={url + activeCard.image} />
-            <Card.Text>
-              {activeCard.word}
-              {activeCard.transcription}
-              {activeCard.wordTranslate}
-            </Card.Text>
-          </Card.Body>
-        </Card>
-        {speaking}
-        <Button onClick={()=>{setAttempt(attempt + 1)}} variant="succes">
-          Пропустить
-        </Button>
-      </div></>);
+  const trainingeWrapper = (
+    <>
+    <div className="training-wrapper">
+      { wordCard }
+      { speaking }
+      <Button className="training-button"
+        variant={'info'} size="lg" block
+        onClick={()=>{setAttempt(attempt+1)}}>
+      Следующее слово
+      </Button>
+    </div>
+    </>
+  );
 
   const Game = (
     <>
@@ -366,10 +378,9 @@ const Speakit = () => {
       {progressBar}
       <div className="menu-wrapper">
       {buttonsBar}
-      {attemptsBar}
       </div>
     </div>
-      {isTraining ? trainingBlock : gameWrapper}
+      {isTraining ? trainingeWrapper : gameWrapper}
     </>
   )
 
