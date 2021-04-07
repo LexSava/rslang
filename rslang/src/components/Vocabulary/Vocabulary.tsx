@@ -5,28 +5,11 @@ import { Container, Nav, Button } from "react-bootstrap";
 import VocabularySections from "./VocabularySections/VocabularySections";
 import _ from "lodash";
 
-// interface Word {
-//   id: string;
-//   group: number;
-//   page: number;
-//   word: string;
-//   image: string;
-//   audio: string;
-//   audioMeaning: string;
-//   audioExample: string;
-//   textMeaning: string;
-//   textExample: string;
-//   transcription: string;
-//   textExampleTranslate: string;
-//   textMeaningTranslate: string;
-//   wordTranslate: string;
-// }
-
-
 interface InterfaceVocabulary {
   hardWords: any;
   learnedWords: any;
   deletedWords: any;
+  sortingDeletedWords: any;
   getHardWords(arr: any): void;
   getLearnedWords(arr: any): void;
   getDeletedWords(arr: any): void;
@@ -39,7 +22,7 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
   const [hardWords, setHardWords] = useState<any>([]);
   const [learnedWords, setLearnedWords] = useState<any>([]);
   const [deletedWords, setDeletedWords] = useState<any>([]);
-  
+
   useEffect(() => {
     props.getHardWords(hardWords);
   }, [hardWords]);
@@ -111,6 +94,7 @@ const Vocabulary: React.FC<InterfaceVocabulary> = (props) => {
         hardWords={props.hardWords}
         learnedWords={props.learnedWords}
         deletedWords={props.deletedWords}
+        sortingDeletedWords={props.sortingDeletedWords}
         getHardWords={getHardWords}
         getLearnedWords={getLearnedWords}
         getDeletedWords={getDeletedWords}

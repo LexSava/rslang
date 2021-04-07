@@ -5,6 +5,7 @@ import { Container, Button } from "react-bootstrap";
 
 interface InterfaceStudiedVocabularySection {
   learnedWords: any;
+  sortingDeletedWords: any;
   onGetHardWords(arr: any): void;
   onGetLearnedWords(arr: any): void;
   onGetDeletedWords(arr: any): void;
@@ -13,11 +14,15 @@ interface InterfaceStudiedVocabularySection {
 const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
   props
 ) => {
-  // const [words, setWords] = useState<any>([]);
-  const [allWords, setAllWord] = useState<any>(props.learnedWords);
+
+  const [allWords, setAllWords] = useState<any>(props.sortingDeletedWords);
   const [wordList, setWordList] = useState<any>([]);
   const [selectedWords, setSelectedWords] = useState<any>([]);
   const wordsToMove: any = [];
+
+  useEffect(() => {
+    setAllWords(props.sortingDeletedWords);
+  }, [props.sortingDeletedWords]);
 
   const hardWords = () => {
     props.onGetHardWords(
@@ -34,21 +39,13 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
     );
   };
 
-  const studiedtWords = () => {
-    console.log(allWords);
-  };
-
   const wordDistribution = () => {
-    setAllWord(
+    setAllWords(
       allWords.filter(
         (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
       )
     );
-    props.onGetLearnedWords(
-      allWords.filter(
-        (e: any) => selectedWords.findIndex((i: any) => i === e.word) === -1
-      )
-    );
+
     setSelectedWords([]);
   };
 
@@ -88,7 +85,6 @@ const StudiedVocabularySection: React.FC<InterfaceStudiedVocabularySection> = (
           onClick={() => {
             wordDistribution();
             hardWords();
-            studiedtWords();
           }}
         >
           В сложные
