@@ -246,11 +246,11 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
                       Mitry Nayezzhy
                     </h5>
                     <p className="card-text team-card-profession-text">
-                      <small className="text-muted">Front-end Developer</small>
+                      <small className="text-muted">Front-end, Back-end Developer, DevOps</small>
                     </p>
                     <p className="card-text">
-                      Реализовал игры Саванна и Скажи это,
-                      Реализовал авторизацию и разавторизацию.
+                      Реализовал игры "Саванна" и "Скажи это",
+                      Авторизация и разавторизация пользователя.
                       Расширил функционал Бэкэнда.
                       Размещение и поддержка проекта.
                     </p>
