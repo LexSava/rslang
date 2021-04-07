@@ -24,14 +24,11 @@ const Main: React.FC<InterfaceMain> = (props) => {
     "allStatistics",
     ""
   );
-  const [learnedWords, setLearnedWords] = useLocalStorage("learnedWords", "");
+  const [learnedWords, setLearnedWords] = useLocalStorage("learnedWords", []);
   const [hardWords, setHardWords] = useLocalStorage("hardWords", "");
   const [deletedWords, setDeletedWords] = useLocalStorage("deletedWords", "");
-  const [correctAnswer, setCorrectAnswer] = useLocalStorage(
-    "correctAnswer",
-    ""
-  );
-  const [bestSeries, setBestSeries] = useLocalStorage("bestSeries", "");
+  const [correctAnswer, setCorrectAnswer] = useLocalStorage("correctAnswer", 0);
+  const [bestSeries, setBestSeries] = useLocalStorage("bestSeries", 0);
   const [sortingDeletedWords, setSortingDeletedWords] = useLocalStorage(
     "sortingDeletedWords",
     ""
