@@ -14,7 +14,10 @@ const SignOut = (Props:SigninProps) => {
   const [isLoged, setLoged] = useState(true);
 
   const handleSignOut = () => {
-    localStorage.clear();
+    localStorage.removeItem('token');
+    localStorage.removeItem('userpic');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('refreshToken');
     setLoged(false)
   };
 

@@ -42,6 +42,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
   const [hintButtonActivity, setHintButtonActivity] = useState<boolean>(false);
   const [textMeaning, setTextMeaning] = useState<string>("");
   const [textExample, setTextExample] = useState<string>("");
+  const [audio] = useState(new Audio("./sound/error.mp3"));
 
   const [correctAnswer, setCorrectAnswer] = useState<number>(0);
   let [wrongAnswer, setWrongAnswer] = useState<number>(0);
@@ -60,17 +61,22 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
     }
     return setCorrectAnswer(Math.round(((cardNumber + 1) / wrongAnswer) * 100));
   };
+
   const getBestAnswerSeries = () => {
     if (
       inputText.toLowerCase() === newWords[cardNumber].word.toLowerCase() &&
       testButtonText !== "Следующее слово"
     ) {
       setBestAnswerSeries(++bestAnswerSeries);
+      if (!show) {
+        playAudioWord();
+      }
     } else if (
       inputText.toLowerCase() !== newWords[cardNumber].word.toLowerCase() &&
       testButtonText !== "Следующее слово"
     ) {
       setBestAnswerSeries(0);
+      audio.play();
     }
     return bestAnswerSeries;
   };
@@ -211,7 +217,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
           <Card.Body>
             <Card.Title
               style={show ? { display: "block" } : { display: "none" }}
-              className="text-primary font-weight-bold"
+              className="text-primary font-weight-bold text-start"
             >
               {newWords[cardNumber].word}
               <Button
@@ -227,11 +233,11 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
             </Card.Title>
             <Card.Title
               style={show ? { display: "block" } : { display: "none" }}
-              className="font-weight-light"
+              className="font-weight-light text-start"
             >
               {newWords[cardNumber].transcription}
             </Card.Title>
-            <Card.Title className="font-weight-bold">
+            <Card.Title className="font-weight-bold text-start">
               {newWords[cardNumber].wordTranslate}
             </Card.Title>
           </Card.Body>
