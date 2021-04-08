@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AudioCall.scss";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { VolumeUp, CheckCircleFill, ArrowRight } from "react-bootstrap-icons";
 import { Button, Image, ProgressBar } from "react-bootstrap";
 
@@ -100,6 +100,53 @@ const AudioCall = () => {
       playAudio(errorAudio.default);
     }
   };
+
+  useEffect(() => {
+    const handleUserKeyPress = (e: any) => {
+      switch (e.code) {
+        case "Digit1": {
+          setAnswerWord(currentWord?.displayedWords[0]);
+          break;
+        }
+        case "Digit2": {
+          setAnswerWord(currentWord?.displayedWords[1]);
+          break;
+        }
+        case "Digit3": {
+          setAnswerWord(currentWord?.displayedWords[2]);
+          break;
+        }
+        case "Digit4": {
+          setAnswerWord(currentWord?.displayedWords[3]);
+          break;
+        }
+        case "Digit5": {
+          setAnswerWord(currentWord?.displayedWords[4]);
+          break;
+        }
+        case "Enter": {
+          if (currentWord?.isCorrect === null) {
+            setDefeatWord();
+          } else {
+            switchNextWord();
+          }
+          break;
+        }
+        case "Space": {
+          if (currentWord) playAudioWord(currentWord.word.audio);
+          break;
+        }
+        default:
+          console.log(`${e.code} isn't supported for AudioCall game.`);
+      }
+    };
+
+    window.addEventListener("keydown", handleUserKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleUserKeyPress);
+    };
+  }, [words]);
 
   const switchNextWord = () => {
     if (typeof words === undefined || words === null) return;
