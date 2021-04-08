@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Sprint.scss";
-import SprintImg from "../../../assets/img/games/sprintGame.jpg";
+import SprintImg from "../../../assets/img/Run.jpg";
 import React, { useState, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -30,6 +30,7 @@ const SprintGame = () => {
   const [classBonusScore, changeClassBonusScore] = useState('bonus-score');
   const [classStatistic, changeClassStatistic] = useState('statistic-sprint');
   const [arrWrongAnswer, changeArrWrongAnswer] = useState<any[]>([]);
+  const [timerTimeOut, changeTimeOut] = useState<any>(null)
 
   const setUserWords = (words: any) => {
     setWords(words);
@@ -39,20 +40,20 @@ const SprintGame = () => {
 
   const checkEndGame = () => {
     if(indexWord === 20 || count === 0) {
-      console.log('Finish')
-      console.log(arrWrongAnswer)
       changeClassStatistic('statistic-sprint statistic-sprint-active');
+      setCount(60)
     }
   }
 
   const changeWordAndTranslate = (words: any) => {
     checkEndGame();
 
-    if(indexWord !==20){
+    if(indexWord !== 20){
       const randomResponse = Math.floor(Math.random() * 10) < 5 ? false : true;
       changeValueResponse(randomResponse);
       changeWord(words[indexWord].word);
       setTrueTranslate(words[indexWord].wordTranslate);
+      console.log(words, word, trueTranslate)
       if(randomResponse){
         changeWordTranslate(words[indexWord].wordTranslate);
       } else {
@@ -66,7 +67,6 @@ const SprintGame = () => {
         }
       }
       changeIndexWord(indexWord + 1);
-      console.log(indexWord)
     }
   }
 
@@ -75,6 +75,7 @@ const SprintGame = () => {
     if(value === valueResponse && !!indexWord){
       sound = "correct.mp3";
       changeScore(score + 10 * bonusScore);
+
       if(countTrueAnswers < 3) {
         changeCountTrueAnswers(countTrueAnswers + 1);
       } else {
@@ -83,6 +84,7 @@ const SprintGame = () => {
       }
       changeClassBonusScore('bonus-score active-bonus-score');
       setTimeout(() => {changeClassBonusScore('bonus-score')}, 500);
+
     } else {
       sound = "error.mp3";
       let newArr = arrWrongAnswer.slice();
@@ -90,7 +92,6 @@ const SprintGame = () => {
       changeArrWrongAnswer(newArr);
       changeCountTrueAnswers(0);
       changeBonusScore(1);
-      console.log(arrWrongAnswer)
     }
     if(soundOn){
       const audio = new Audio(`${url}files/${sound}`);
@@ -106,21 +107,49 @@ const SprintGame = () => {
   }
 
   const gameAgain = () => {
-    setCount(60);
+    changeIndexWord(0)
+    changeScore(0);
+    changeBonusScore(1);
+    changeCountTrueAnswers(0)
     changeArrWrongAnswer([]);
-    changeIndexWord(0);
     changeWordAndTranslate(words);
+    changeClassStatistic('statistic-sprint');
   }
 
 
 
 
   useEffect(() => {
+    let timer=null
     if(count !== 0 && countStart){
-      setTimeout(() => {setCount(count - 1);}, 1000);
+        timer = setTimeout(() => {
+          const newCount = count - 1;
+          setCount(newCount);
+      }, 1000);
+    } if(classStatistic === 'statistic-sprint statistic-sprint-active'){
+      setCount(60)
+      clearTimeout(timerTimeOut)
     }
     checkEndGame();
+    changeTimeOut(timer);
   }, [count, countStart])
+
+  const handleUserKeyPress = (event: any) => {
+    console.log(words, indexWord, word, wordTranslate)
+    if(event.code === "Digit1"){
+      checkAnswer(true);
+    } if(event.code === "Digit2"){
+      checkAnswer(false);
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleUserKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleUserKeyPress);
+    };
+  }, [words, indexWord]);
 
   const blockCircles = (countTrueAnswers: number) => {
     const arr = [0,0,0,0];
@@ -137,10 +166,10 @@ const SprintGame = () => {
   const wrongAnswers = 
     arrWrongAnswer.map((elem, index) => {
       return (<p>{elem[0]} - {elem[1]}</p>)
-    });
+  });
 
   return (
-    <div className="sprint-game" >
+    <div className="sprint-game">
       <FullScreenWrapper>
         {words === null ? (
           <Preview
@@ -185,13 +214,16 @@ const SprintGame = () => {
               <span className="btn-close-statistic"></span>
             </Link>
               <h4>Игра окончена</h4>
-              <p>Ваш результат:</p>
+              <p>Ваш результат: {score}</p>
               <p>Верных ответов - {indexWord - arrWrongAnswer.length}</p>
               <p>Неверных ответов - {arrWrongAnswer.length}</p>
               <p>Необходимо повторить слова:</p>
               <div>{wrongAnswers}</div>
               <div className="wrap-btns-statistic">
-                <button>Другие слова</button>
+                <button onClick={(event:any) => {gameAgain();
+                  setCountStart(false)
+                  setWords(null)}}>
+                  Другие слова</button>
                 <button onClick={(event:any) => {gameAgain()}}>Еще раз</button>
                 <Link to={`/tutorial-page/games`}>
                   <button>Выйти</button>  

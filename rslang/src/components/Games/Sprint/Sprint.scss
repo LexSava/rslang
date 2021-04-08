@@ -9,6 +9,10 @@
 }
 
 .area-game {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url("../../../assets/img/Run.jpg");
     width: 100%;
     min-width: 700px;
     height: 100%;
@@ -24,18 +28,22 @@
     font-size: 25px;
     font-weight: 700;
     margin-bottom: 25px;
+    color: white;
+    text-shadow: 4px -2px 5px black;
 }
 
 .score {
     font-size: 25px;
     margin-left: 45px;
     font-weight: 500;
-    color: #4516d5;
+    color: #d3b2ff;
+    text-shadow: 4px -2px 5px black;
     margin-bottom: 25px;
 }
 
 .bonus-score {
-    color: green;
+    color: rgb(78, 180, 78);
+    text-shadow: 4px -2px 5px black;
     opacity: 0;
     transition: all 0.1s;
 }
@@ -48,6 +56,8 @@
     font-size: 30px;
     font-weight: 500;
     margin-bottom: 25px;
+    color: white;
+    text-shadow: 4px -2px 5px black;
 }
 
 .wrapBtn {
@@ -80,7 +90,7 @@
 }
 
 .circle {
-    background-color: rgb(0, 189, 0) !important;
+    background-color: #ff0000 !important;
 }
 
 .sound-btn {
