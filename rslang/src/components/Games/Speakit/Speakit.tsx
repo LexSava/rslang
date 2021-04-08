@@ -7,12 +7,13 @@ import { BsVolumeMute, BsFillVolumeUpFill, BsArrowRepeat } from "react-icons/bs"
 import { BiBell, BiBellOff, BiExit, BiMicrophone, BiMicrophoneOff } from "react-icons/bi";
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
 import { Redirect } from 'react-router';
-import  { playAudioWord, playAudio } from "../../../utils/AudioWord";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import  { playAudioWord } from "../../../utils/AudioWord";
 import Preview from "../Preview/Preview";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import getUserData from "../../../api/getUserData";
 import setUserData from "../../../api/setUserData";
-import SavannahImg from "../../../assets/img/games/savannah.jpg";
+import SpeakitImg from "../../../assets/img/games/speakitImg.png";
 import { url } from "../../../api/defData";
 
 type word = {
@@ -46,12 +47,11 @@ type AllStatistics = {[index:number]: Statistics};
 const PREVIEW_HEADING = "Скажи это";
 const PREVIEW__DESCRIPTION =
   "Нажмите на карточку со словом, чтобы увидеть его перевод и услышать звучание. Нажмите на кнопку 'Тренировка произношения' и произнесите слово в микрофон.";
-const NUM_OF_ANSWERS = 10;
+const NUM_OF_ANSWERS = 20;
 const dateNow = new Date().getDate();
 const defStatistics:Statistics = {correctAnswers: 0, wrongAnswers: 0};
 const defAllStatistics:AllStatistics = {[dateNow]: {correctAnswers: 0, wrongAnswers: 0}};
 const outLn= "outline-primary";
-const defButtonsVariants = [outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn];
 const defActiveCard = {
   word: "",
   wordTranslate: "", 
@@ -79,6 +79,7 @@ const Speakit = () => {
   const [wrongWords, setWrongWords] = useState<Array<any>>([]);
   const [activeCard, setActiveCard] = useState<card>(defActiveCard);
   const [exit, setExit] = useState(false);
+  const { finalTranscript, resetTranscript } = useSpeechRecognition();
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
 
@@ -127,29 +128,48 @@ const Speakit = () => {
     } else { 
         setActiveCard(defActiveCard); 
         setAttempt(0);
+        SpeechRecognition.stopListening();
       }
   }, [isTraining])
 
   useEffect(() => {
-    if (wordsSet && isTraining) setActiveCard(wordsSet[attempt+1]);
-      else {setActiveCard(defActiveCard)}
+    if (wordsSet) {
+      if (isTraining) {
+        setActiveCard(wordsSet[attempt]);
+        SpeechRecognition.startListening({ continuous: true, language: 'en-US' });
+      } else {
+        setActiveCard(defActiveCard);
+        SpeechRecognition.stopListening();
+      }
+    } 
   }, [attempt])
+
+  useEffect(() =>{
+    if (finalTranscript) setAnswer(finalTranscript.toLocaleLowerCase());
+  },[finalTranscript])
 
   useEffect(() => {
     if (isTraining) {
+      resetTranscript();
       let answerSound = "files/correct.mp3";
-      if (!answer.match(activeCard.word)) {
-        answerSound = "files/error.mp3";
-      }
-      if(attempt === NUM_OF_ANSWERS) {
+      if(attempt === NUM_OF_ANSWERS - 1) {
         setModal()
       }
-      setAttempt(attempt+1);
+      console.log(activeCard.word === answer, answer)
+      if (!activeCard.word.match(answer)) {
+        answerSound = "files/error.mp3";
+        statistics.wrongAnswers = statistics.wrongAnswers + 1;
+      } else {
+        statistics.correctAnswers = statistics.correctAnswers + 1;
+      }
       if (isSound) playAudioWord(answerSound);
+      setStatistics(statistics);
+      setTimeout(() => setAttempt(attempt+1), 1000);
     }
   }, [answer])
 
   const setModal = () => {
+    SpeechRecognition.stopListening();
     const modalWrongWords:Array<any> = []
     wrongWords.forEach((el:Array<any>) => {
       const word = (<p key={el[0]}>{el[0]} - {el[1]}</p>);
@@ -201,7 +221,7 @@ const Speakit = () => {
       centered={ true }
       scrollable={ true }>
       <Modal.Header closeButton>
-        <Modal.Title>Игра окончена</Modal.Title>
+        <Modal.Title>Тренировка завершена</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="results">
@@ -301,13 +321,14 @@ const Speakit = () => {
     if (!buttons) return [];
     buttons.forEach((button:any) => {
       buttonsArr.push(
-        <Toast onClick={() => {
-          playAudioWord(button.audio);
-          setActiveCard(button)}}>
-          <Toast.Body>
-            <BsFillVolumeUpFill size="2rem"/>
+        <Toast key={`toast-${button.word}`} 
+          onClick={() => {
+            playAudioWord(button.audio);
+            setActiveCard(button)}}>
+          <Toast.Body key={`body-${button.word}`}>
+            <BsFillVolumeUpFill key={`icon-${button.word}`} size="2rem"/>
             {button.transcription} - 
-            <strong className="mr-auto">{ button.word }</strong>
+            <strong key={`mr-auto word-${button.word}`}>{ button.word }</strong>
           </Toast.Body>
         </Toast>
       );
@@ -321,24 +342,30 @@ const Speakit = () => {
       <Card.Body>
         <Card.Img variant="top" src={url + activeCard.image} />
         {!isTraining &&  
-          (<Card.Text style={{ backgroundColor: '#dda', fontSize: '2rem', fontWeight: 500 }}>
+          (<Card.Text className="text1" style={{ backgroundColor: '#dda', fontSize: '2rem', fontWeight: 500 }}>
             {activeCard.wordTranslate}
           </Card.Text>
         )}
         {isTraining &&  
-          (<Card.Text style={activeCard.word.toUpperCase() 
+          (<Card.Text className="text2" style={activeCard.word.toUpperCase() 
           ? {backgroundColor: '#dd1'} 
           : {backgroundColor: '#fff'}}
           onClick={() => { playAudioWord(activeCard.audio) }}
           >  
             {activeCard.word.toUpperCase()}
-          <Card.Text style={activeCard.word.toUpperCase() 
+          <Card.Text className="text3" style={activeCard.word.toUpperCase() 
             ? {backgroundColor: '#add', letterSpacing: '2px', fontWeight: 500 } 
             : {backgroundColor: '#fff'}}>
             {activeCard.transcription}
           </Card.Text>
           </Card.Text> 
         )}
+          <Card.Text> 
+          {answer ? answer : <i>...Говорите</i>}
+          </Card.Text> 
+          <Button className="but1" onClick={resetTranscript}>Reset</Button>
+          <Button className="but3" onClick={() => SpeechRecognition.startListening({continuous: true, language: 'en-US'})}>Start</Button>
+          <Button className="but2" onClick={() => SpeechRecognition.stopListening()}>Stop</Button>
       </Card.Body>
     </Card>
     </div>
@@ -393,13 +420,13 @@ const Speakit = () => {
           <Preview
             heading={PREVIEW_HEADING}
             description={PREVIEW__DESCRIPTION}
-            backgroundImg={SavannahImg}
+            backgroundImg={SpeakitImg}
             level={level}
             setUserWords={setUserWords}
           />
         ) : (
         <div className="speak-it-game"
-            style={{ backgroundImage: `url(${SavannahImg})` }}
+            style={{ backgroundImage: `url(${SpeakitImg})` }}
             >
             {!wordsSet && ('Набор слов отсутствует')}
             {wordsSet && Game}
