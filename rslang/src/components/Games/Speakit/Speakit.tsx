@@ -47,7 +47,7 @@ type AllStatistics = {[index:number]: Statistics};
 const PREVIEW_HEADING = "Скажи это";
 const PREVIEW__DESCRIPTION =
   "Нажмите на карточку со словом, чтобы увидеть его перевод и услышать звучание. Нажмите на кнопку 'Тренировка произношения' и произнесите слово в микрофон.";
-const NUM_OF_ANSWERS = 20;
+const NUM_OF_ANSWERS = 10;
 const dateNow = new Date().getDate();
 const defStatistics:Statistics = {correctAnswers: 0, wrongAnswers: 0};
 const defAllStatistics:AllStatistics = {[dateNow]: {correctAnswers: 0, wrongAnswers: 0}};
@@ -79,11 +79,52 @@ const Speakit = () => {
   const [wrongWords, setWrongWords] = useState<Array<any>>([]);
   const [activeCard, setActiveCard] = useState<card>(defActiveCard);
   const [exit, setExit] = useState(false);
-  const { finalTranscript, resetTranscript } = useSpeechRecognition();
+  const { finalTranscript, listening, resetTranscript } = useSpeechRecognition();
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
 
-    
+   useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [buttons, activeCard]);
+  
+  const keyCodes = ["Digit0", "Digit1", "Digit2", "Digit3", "Digit4",
+    "Digit5", "Digit6", "Digit7", "Digit8", "Digit9", 
+    "KeyM", "NumpadEnter", "Space", "Backspace", "KeyQ", "KeyR" 
+  ];
+
+  const handleKeyDown:any = (event:any) => {
+    if (keyCodes.indexOf(event.code) !== -1) {
+      if (event.code === 'KeyM') {
+        setAnswer('');  
+        SpeechRecognition.startListening({language: 'en-US'})
+      }
+
+      if (event.code === 'Backspace') {
+        setTraining(!isTraining);  
+      }
+
+      if (isTraining && event.code === 'KeyQ') {
+          
+      }
+
+      if (isTraining && event.code === 'KeyR') {
+          setAttempt(0)
+      }
+      
+      if (keyCodes.indexOf(event.code) < 10) {
+        const indexButton:word = buttons[keyCodes.indexOf(event.code)];
+        setActiveCard(indexButton);
+        resetTranscript();
+        playAudioWord(indexButton.audio);
+        setAnswer('');
+      }
+    }
+
+  };
+
   const handleShow = () => setShowModal(true);
   
   const handleClose = () => {
@@ -125,10 +166,12 @@ const Speakit = () => {
     if (isTraining) {
       setAttempt(0);
       setActiveCard(wordsSet[0]); 
+      SpeechRecognition.startListening({language: 'en-US'});
     } else { 
         setActiveCard(defActiveCard); 
         setAttempt(0);
         SpeechRecognition.stopListening();
+        setAnswer('')
       }
   }, [isTraining])
 
@@ -138,6 +181,7 @@ const Speakit = () => {
         setActiveCard(wordsSet[attempt]);
         SpeechRecognition.startListening({ continuous: true, language: 'en-US' });
       } else {
+        resetTranscript();
         setActiveCard(defActiveCard);
         SpeechRecognition.stopListening();
       }
@@ -146,7 +190,7 @@ const Speakit = () => {
 
   useEffect(() =>{
     if (finalTranscript) setAnswer(finalTranscript.toLocaleLowerCase());
-  },[finalTranscript])
+  },[finalTranscript]);
 
   useEffect(() => {
     if (isTraining) {
@@ -155,7 +199,6 @@ const Speakit = () => {
       if(attempt === NUM_OF_ANSWERS - 1) {
         setModal()
       }
-      console.log(activeCard.word === answer, answer)
       if (!activeCard.word.match(answer)) {
         answerSound = "files/error.mp3";
         statistics.wrongAnswers = statistics.wrongAnswers + 1;
@@ -232,10 +275,6 @@ const Speakit = () => {
             <h4 className="results-answers-category">Неверных ответов:</h4>
             <span className="result">{statistics.wrongAnswers}</span>
           </div>
-          <h4 className="results-words">Необходимо повторить слова:</h4>
-          <div className="wrong-words">
-            {wrongAnswersWords}
-          </div>
         </div> 
       </Modal.Body>
       <Modal.Footer>
@@ -259,7 +298,7 @@ const Speakit = () => {
     <Button className="training-button"
       variant={isTraining ? 'danger' : 'info' } size="lg" block
       onClick={()=>{setTraining(!isTraining)}}>
-      {isTraining ? 'Закончить тренировку' : 'Начать тренировку' }
+      {isTraining ? 'Закончить проверку' : 'Начать проверку' }
     </Button>
   );
   
@@ -276,7 +315,9 @@ const Speakit = () => {
        <ButtonGroup toggle className="btn-group" aria-label="First group">
         <Button
           type="checkbox"
-          onClick={() => {setWords(null)}}
+          onClick={() => {
+            setWords(null)
+            setTraining(false)}}
         >
        {<BsArrowRepeat size="2.1rem" />}
         </Button>
@@ -288,16 +329,9 @@ const Speakit = () => {
        {isSound ? <BiBell size="2.2rem" /> : <BiBellOff size="2.2rem" />}
         </Button>
       </ButtonGroup>
-       <ButtonGroup toggle className="btn-group" aria-label="First group">
-        <Button
-          type="checkbox"
-          onClick={() => setSpeak(!isSpeak)}
-        >
-       {isSpeak ? <BsFillVolumeUpFill size="2.2rem" /> : <BsVolumeMute size="2.2rem" />}
-        </Button>
-      </ButtonGroup>
       <ButtonGroup toggle className="btn-group" aria-label="First group">
         <Button
+          variant={listening ? "success" : "primary"}
           type="checkbox"
           onClick={() => setMic(!isMic)}
         >
@@ -313,20 +347,27 @@ const Speakit = () => {
   <ProgressBar
    variant="success"
    now={(attempt) * (100 / (NUM_OF_ANSWERS))}
-   label={`${(attempt) * (100 / (NUM_OF_ANSWERS))}%`}
+  //  label={`${(attempt) * (100 / (NUM_OF_ANSWERS))}%`}
   /></>;
   
   const wordsButtons = () => {
     const buttonsArr: JSX.Element[] = [];
     if (!buttons) return [];
-    buttons.forEach((button:any) => {
+    buttons.forEach((button:any, i) => {
       buttonsArr.push(
         <Toast key={`toast-${button.word}`} 
           onClick={() => {
+            resetTranscript();
             playAudioWord(button.audio);
+            setAnswer('');  
             setActiveCard(button)}}>
           <Toast.Body key={`body-${button.word}`}>
+            <div key={`toast-icons ${i}`}
+            className={`toast-icons ${i}`} >
+            <div key={`hotkey ${i}`}
+            className={`hotkey ${i}`} >{i}</div>
             <BsFillVolumeUpFill key={`icon-${button.word}`} size="2rem"/>
+            </div>
             {button.transcription} - 
             <strong key={`mr-auto word-${button.word}`}>{ button.word }</strong>
           </Toast.Body>
@@ -338,39 +379,59 @@ const Speakit = () => {
 
   const wordCard = activeCard ? (
     <div className="info-wrapper">
-    <Card style={isTraining ? { width: '30rem' } : { width: '28rem' }} className="info-card">
+    <Card style={{width: '28rem'}} className="info-card">
       <Card.Body>
+        <div className="card-image-wrapper">
         <Card.Img variant="top" src={url + activeCard.image} />
+        </div>
         {!isTraining &&  
-          (<Card.Text className="text1" style={{ backgroundColor: '#dda', fontSize: '2rem', fontWeight: 500 }}>
+          (<Card.Text className="text1" 
+            style={ activeCard.wordTranslate === '' ? 
+            { backgroundColor: '#fff', fontSize: '2rem', fontWeight: 500 }
+            : { backgroundColor: '#dda', fontSize: '2rem', fontWeight: 500 }
+            }>
             {activeCard.wordTranslate}
           </Card.Text>
         )}
         {isTraining &&  
-          (<Card.Text className="text2" style={activeCard.word.toUpperCase() 
+          (<>
+          <Card.Text className="text2" style={activeCard.word.toUpperCase() 
           ? {backgroundColor: '#dd1'} 
           : {backgroundColor: '#fff'}}
           onClick={() => { playAudioWord(activeCard.audio) }}
           >  
             {activeCard.word.toUpperCase()}
+          </Card.Text> 
           <Card.Text className="text3" style={activeCard.word.toUpperCase() 
             ? {backgroundColor: '#add', letterSpacing: '2px', fontWeight: 500 } 
             : {backgroundColor: '#fff'}}>
             {activeCard.transcription}
           </Card.Text>
-          </Card.Text> 
-        )}
-          <Card.Text> 
-          {answer ? answer : <i>...Говорите</i>}
-          </Card.Text> 
-          <Button className="but1" onClick={resetTranscript}>Reset</Button>
-          <Button className="but3" onClick={() => SpeechRecognition.startListening({continuous: true, language: 'en-US'})}>Start</Button>
-          <Button className="but2" onClick={() => SpeechRecognition.stopListening()}>Stop</Button>
+        </>)}
+          {isMic && (<div className={answer === activeCard.word ? 'answer true-answer' : 'answer'}
+          onClick={() => {
+            setAnswer('');  
+            SpeechRecognition.startListening({language: 'en-US'})
+            }}>
+            <div key={`hotkey m`}
+            className={`hotkey m`}>M</div> 
+            <BiMicrophone size="1.2rem" />
+            {answer && answer}
+          </div>)}
       </Card.Body>
     </Card>
     </div>
   ) : (<></>);
   
+  const nextWordButton = (
+    <>
+      <Button className="training-button"
+        variant={'info'} size="lg" block
+        onClick={()=>{setAttempt(attempt+1)}}>
+        Следующее слово
+      </Button>
+    </>)
+
   const gameWrapper = (<div className="game-wrapper">
         {wordCard}
       <div className="words-wrapper">
@@ -390,11 +451,7 @@ const Speakit = () => {
     <div className="training-wrapper">
       { wordCard }
       { speaking }
-      <Button className="training-button"
-        variant={'info'} size="lg" block
-        onClick={()=>{setAttempt(attempt+1)}}>
-      Следующее слово
-      </Button>
+      { nextWordButton }
     </div>
     </>
   );
