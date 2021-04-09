@@ -13,7 +13,7 @@
   }
 
   .menu {
-    margin: 10px;
+    margin-bottom: 10px;
 
     .menu-wrapper {
       display: flex;
@@ -47,9 +47,6 @@
       height: 100%;
       width: 50%;
       text-align: center;
-
-
-
     }
 
     .answers-wrapper{
@@ -64,6 +61,7 @@
       height: 100%;
 
       .word-answer{
+        display: flex;
         height: fit-content;
         min-width: fit-content;
         text-transform: uppercase;
@@ -72,13 +70,30 @@
         font-size: 1.3rem;
         padding: 7px
       }
+
+      .button-icons {
+        margin-right: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+  
+
+        .hotkey {
+          width: 25px;
+          height: 25px;
+          font-weight: 450;
+          background-color: #777;
+          border-radius: 5px;
+          margin-right: 10px;
+        }
+      }
+
     }
     }
 
 
   }
 }
-
       .word-quest{
         font-size: 2rem;
         position: relative;
