@@ -1,6 +1,6 @@
-export const url = "https://rocky-basin-33827.herokuapp.com/";
+// export const url = "https://rocky-basin-33827.herokuapp.com/";
 // export const url = "http://serene-falls-78086.herokuapp.com/";
-// export const url = "http://rslang.tk:3000/";
+export const url = "http://rslang.tk:3000/";
 
 export const numOfPages = 30;
 
