@@ -8,6 +8,9 @@ import { url } from "../../../api/defData";
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
 import Preview from "../Preview/Preview";
 
+import getUserData from "../../../api/getUserData";
+import setUserData from "../../../api/setUserData";
+
 const PREVIEW_HEADING = "Спринт";
 const PREVIEW__DESCRIPTION =
   "На экране есть слово на английском и перевод. Вы должны определить правильный перевод или неправильный";
@@ -24,6 +27,7 @@ const SprintGame = () => {
   const [valueResponse, changeValueResponse] = useState(true);
   const [indexWord, changeIndexWord] = useState(0);
   const [countTrueAnswers, changeCountTrueAnswers] = useState(0);
+  const [countAllAnswers, changeCountAllAnswers] = useState(0);
   const [bonusScore, changeBonusScore] = useState(1);
   const [soundOn, changeSoundOn] = useState(true);
   const [classSound, changeClassSound] = useState('sound-btn');
@@ -32,28 +36,45 @@ const SprintGame = () => {
   const [arrWrongAnswer, changeArrWrongAnswer] = useState<any[]>([]);
   const [timerTimeOut, changeTimeOut] = useState<any>(null)
 
+  const [allStatistics, setAllStatistics] = useState<any>(false);
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+
   const setUserWords = (words: any) => {
     setWords(words);
+    getUserStatistics()
     setCountStart(true);
+    changeIndexWord(0)
+    changeScore(0);
+    changeBonusScore(1);
+    changeCountTrueAnswers(0)
+    changeCountAllAnswers(0)
+    changeArrWrongAnswer([]);
+    changeClassStatistic('statistic-sprint');
     changeWordAndTranslate(words);
   };
 
   const checkEndGame = () => {
-    if(indexWord === 20 || count === 0) {
+    let compareStatistic = false;
+    if(indexWord === 21 || count === 0) {
       changeClassStatistic('statistic-sprint statistic-sprint-active');
-      setCount(60)
+      if(count < 58){
+        compareStatistic = true
+      };
+        setCount(60)
+    }
+    if(compareStatistic){
+      allStatisticsCompare();
     }
   }
 
   const changeWordAndTranslate = (words: any) => {
     checkEndGame();
-
-    if(indexWord !== 20){
+    if(indexWord < 20){
       const randomResponse = Math.floor(Math.random() * 10) < 5 ? false : true;
       changeValueResponse(randomResponse);
       changeWord(words[indexWord].word);
       setTrueTranslate(words[indexWord].wordTranslate);
-      console.log(words, word, trueTranslate)
       if(randomResponse){
         changeWordTranslate(words[indexWord].wordTranslate);
       } else {
@@ -66,11 +87,12 @@ const SprintGame = () => {
           }
         }
       }
-      changeIndexWord(indexWord + 1);
     }
+    if(indexWord < 21 ) changeIndexWord(indexWord + 1);
   }
 
   const checkAnswer = (value: boolean) => {
+    changeCountAllAnswers(countAllAnswers + 1);
     let sound = null;
     if(value === valueResponse && !!indexWord){
       sound = "correct.mp3";
@@ -112,11 +134,58 @@ const SprintGame = () => {
     changeBonusScore(1);
     changeCountTrueAnswers(0)
     changeArrWrongAnswer([]);
+    changeCountAllAnswers(0)
     changeWordAndTranslate(words);
     changeClassStatistic('statistic-sprint');
   }
 
+  async function getUserStatistics() {
+    if (token && userId) {
+      const fullUrl = `${url}users/${JSON.parse(userId)}/statistics`;
+      const bearerToken = JSON.parse(token);
+      await getUserData(fullUrl, bearerToken)
+        .then((responseData: any) => {
+          if (responseData.sprint) setAllStatistics(responseData.sprint);
+          if (!responseData.sprint) setAllStatistics({})
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    }
+  }
 
+  async function setUserStatistics() {
+    if (token && userId && allStatistics) {
+      const newStatistics = { sprint: allStatistics };
+      const fullUrl = `${url}users/${JSON.parse(userId)}/statistics`;
+      const bearerToken = JSON.parse(token);
+      await setUserData(fullUrl, bearerToken, newStatistics)
+        .then((responseData: any) => {})
+        .catch((error) => {
+          console.log(error.message);
+        });
+    }
+  }
+
+  const allStatisticsCompare = () => {
+    const dateNow = new Date().getDate();
+    const countCorrectAnswers = indexWord - arrWrongAnswer.length - 1;
+    const countWrongAnswers = arrWrongAnswer.length;
+    if (!allStatistics[dateNow]){
+      allStatistics[dateNow] = {}
+      allStatistics[dateNow].correctAnswers = countCorrectAnswers;
+      allStatistics[dateNow].wrongAnswers = countWrongAnswers;
+    } else {
+      allStatistics[dateNow].correctAnswers =
+        allStatistics[dateNow].correctAnswers + countCorrectAnswers;
+      allStatistics[dateNow].wrongAnswers =
+        allStatistics[dateNow].wrongAnswers + countWrongAnswers;
+    }
+
+    changeIndexWord(0)
+    setAllStatistics(allStatistics);
+    //setUserStatistics();
+  };
 
 
   useEffect(() => {
@@ -134,22 +203,23 @@ const SprintGame = () => {
     changeTimeOut(timer);
   }, [count, countStart])
 
-  const handleUserKeyPress = (event: any) => {
-    console.log(words, indexWord, word, wordTranslate)
-    if(event.code === "Digit1"){
-      checkAnswer(true);
-    } if(event.code === "Digit2"){
-      checkAnswer(false);
+  const hotKeys = (event: any) => {
+    if(classStatistic !== 'statistic-sprint statistic-sprint-active'){
+      if(event.code === "Digit1"){
+        checkAnswer(true);
+      } if(event.code === "Digit2"){
+        checkAnswer(false);
+      }
     }
   }
 
   useEffect(() => {
-    window.addEventListener("keydown", handleUserKeyPress);
+    window.addEventListener("keydown", hotKeys);
 
     return () => {
-      window.removeEventListener("keydown", handleUserKeyPress);
+      window.removeEventListener("keydown", hotKeys);
     };
-  }, [words, indexWord]);
+  }, [words, indexWord, allStatistics]);
 
   const blockCircles = (countTrueAnswers: number) => {
     const arr = [0,0,0,0];
@@ -215,12 +285,12 @@ const SprintGame = () => {
             </Link>
               <h4>Игра окончена</h4>
               <p>Ваш результат: {score}</p>
-              <p>Верных ответов - {indexWord - arrWrongAnswer.length}</p>
+              <p>Верных ответов - {countAllAnswers - arrWrongAnswer.length}</p>
               <p>Неверных ответов - {arrWrongAnswer.length}</p>
               <p>Необходимо повторить слова:</p>
               <div>{wrongAnswers}</div>
               <div className="wrap-btns-statistic">
-                <button onClick={(event:any) => {gameAgain();
+                <button onClick={(event:any) => {
                   setCountStart(false)
                   setWords(null)}}>
                   Другие слова</button>
