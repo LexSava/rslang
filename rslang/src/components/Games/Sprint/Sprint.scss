@@ -24,14 +24,6 @@
     background-color: white;
 }
 
-.timer {
-    font-size: 25px;
-    font-weight: 700;
-    margin-bottom: 25px;
-    color: white;
-    text-shadow: 4px -2px 5px black;
-}
-
 .score {
     font-size: 25px;
     margin-left: 45px;
@@ -191,6 +183,63 @@
       transform: scale(1.1);
   }
 
+  .base-timer {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+  }
+  
+  .base-timer__svg {
+    transform: scaleX(-1);
+  }
+  
+  .base-timer__circle {
+    fill: none;
+    stroke: none;
+  }
+  
+  .base-timer__path-elapsed {
+    stroke-width: 7px;
+    stroke: grey;
+  }
+  
+  .base-timer__path-remaining {
+    stroke-width: 7px;
+    stroke-linecap: round;
+    transform: rotate(90deg);
+    transform-origin: center;
+    transition: 1s linear all;
+    fill-rule: nonzero;
+    stroke: currentColor;
+  }
+  
+  .base-timer__path-remaining.green {
+    color: rgb(65, 184, 131);
+  }
+  
+  .base-timer__path-remaining.orange {
+    color: orange;
+  }
+  
+  .base-timer__path-remaining.red {
+    color: red;
+  }
+  
+  .base-timer__label {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 4px -2px 5px black;
+  }
+
 @media screen and (max-width: 991px) {
     .area-game {
         min-width: 500px;
@@ -200,5 +249,6 @@
 @media screen and (max-width: 768px) {
     .area-game {
         min-width: 300px;
+        width: 400px;
     }
 }

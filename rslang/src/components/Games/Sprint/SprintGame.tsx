@@ -15,6 +15,24 @@ const PREVIEW_HEADING = "Спринт";
 const PREVIEW__DESCRIPTION =
   "На экране есть слово на английском и перевод. Вы должны определить правильный перевод или неправильный";
 
+const FULL_DASH_ARRAY = 283;
+const WARNING_THRESHOLD = 10;
+const ALERT_THRESHOLD = 5; 
+const COLOR_CODES = {
+  info: {
+    color: "green"
+  },
+  warning: {
+    color: "orange",
+    threshold: WARNING_THRESHOLD
+  },
+  alert: {
+    color: "red",
+    threshold: ALERT_THRESHOLD
+  }
+}; 
+let remainingPathColor = COLOR_CODES.info.color;
+
 const SprintGame = () => {
   const [words, setWords] = useState(null);
   const level = null; //TODO: get level from book page
@@ -39,6 +57,8 @@ const SprintGame = () => {
   const [allStatistics, setAllStatistics] = useState<any>(false);
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
+
+  const [info, changeInfo] = useState('')
 
   const setUserWords = (words: any) => {
     setWords(words);
@@ -184,7 +204,7 @@ const SprintGame = () => {
 
     changeIndexWord(0)
     setAllStatistics(allStatistics);
-    //setUserStatistics();
+    setUserStatistics();
   };
 
 
@@ -193,7 +213,7 @@ const SprintGame = () => {
     if(count !== 0 && countStart){
         timer = setTimeout(() => {
           const newCount = count - 1;
-          setCount(newCount);
+          setCount(newCount)
       }, 1000);
     } if(classStatistic === 'statistic-sprint statistic-sprint-active'){
       setCount(60)
@@ -238,6 +258,29 @@ const SprintGame = () => {
       return (<p>{elem[0]} - {elem[1]}</p>)
   });
 
+  const timerAnimation = 
+  <div className="base-timer">
+    <svg className="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <g className="base-timer__circle">
+        <circle className="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
+        <path
+          id="base-timer-path-remaining"
+          strokeDasharray={`${(
+            count/60 * FULL_DASH_ARRAY
+          ).toFixed(0)} 283`}
+          className={`base-timer__path-remaining ${remainingPathColor}`}
+          d="
+            M 50, 50
+            m -45, 0
+            a 45,45 0 1,0 90,0
+            a 45,45 0 1,0 -90,0
+          "
+        ></path>
+      </g>
+    </svg>
+    <span id="base-timer-label" className="base-timer__label">{count}</span>
+  </div>
+
   return (
     <div className="sprint-game">
       <FullScreenWrapper>
@@ -257,9 +300,7 @@ const SprintGame = () => {
                 changeImgSound();
               }}
             ></span>
-            <span 
-              className="timer">
-                {count}</span>
+            {timerAnimation}
             <p className = "score">
               <span>Очки: {score}</span>
               <span className={classBonusScore}>+{10 * bonusScore}</span>
