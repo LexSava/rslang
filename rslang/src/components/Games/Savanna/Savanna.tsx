@@ -126,7 +126,6 @@ const Savannah = () => {
   const keyCodes = ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"];
 
   const handleKeyDown:any = (event:any) => {
-    console.log('A key was pressed', event.code, keyCodes.indexOf(event.code), buttons[keyCodes.indexOf(event.code)]);
     if (keyCodes.indexOf(event.code) !== -1) setAnswer(buttons[keyCodes.indexOf(event.code)])
   };
 
@@ -300,11 +299,15 @@ const Savannah = () => {
     buttons.forEach((button:any, i) => {
       buttonsArr.push(<>
       <Button onClick={() => setAnswer(button)} 
-        className="word-answer" 
+        className={`word-answer ${button}`} 
         name={button} 
         value={button}
         variant={buttonsVariants[i]}>
-      [ {i + 1} ] {button}</Button></>)
+        <div key={`button-icons ${i}`} className={`button-icons ${ i }`}>
+          <div key={`hotkey ${i}`} className={`hotkey ${i}`}>{ i + 1 }</div>
+        </div>
+        {button}
+      </Button></>)
     });
     return buttonsArr;
   };

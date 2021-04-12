@@ -10,6 +10,7 @@ import RioImg from "../../../assets/img/games/audio_rio.jpg";
 import { url, numOfPages } from "../../../api/defData";
 import { playAudioWord, playAudio } from "../../../utils/AudioWord";
 import getWords from "../../../api/getWords";
+import Results from "./../Results/Results";
 
 const correctAudio = require("./../../../assets/audio/correct.mp3");
 const errorAudio = require("./../../../assets/audio/error.mp3");
@@ -34,13 +35,10 @@ type WordGameType = {
   displayedWords: string[];
 };
 
-const keyMap = {
-  FIRST_WORD: "1",
-  SECOND_WORD: "2",
-};
-
 const AudioCall = () => {
   const [words, setWords] = useState<WordGameType[] | null>(null);
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   const currentWord: WordGameType | undefined = words?.find(
     (word) => word.isPassed === false
   );
@@ -174,6 +172,10 @@ const AudioCall = () => {
     return (currentIndex! / words!.length) * 100;
   };
 
+  const continueGame = () => {
+    setWords(null);
+  };
+
   const defineGameScene = () => {
     if (words === null) {
       return (
@@ -186,7 +188,29 @@ const AudioCall = () => {
         />
       );
     } else if (currentWord === undefined) {
-      return null; //TODO: end of the game
+      const correctWords = words
+        .filter((word) => word.isCorrect)
+        .map(
+          (correctWord) =>
+            `${correctWord.word.word} - ${correctWord.word.wordTranslate}`
+        );
+
+      const wrongWords = words
+        .filter((word) => !word.isCorrect)
+        .map(
+          (wrongWord) =>
+            `${wrongWord.word.word} - ${wrongWord.word.wordTranslate}`
+        );
+
+      return (
+        <div className="audio-call-game">
+          <Results
+            correctWords={correctWords}
+            wrongWords={wrongWords}
+            continueGame={continueGame}
+          />
+        </div>
+      );
     } else {
       return (
         <div className="audio-call-game">

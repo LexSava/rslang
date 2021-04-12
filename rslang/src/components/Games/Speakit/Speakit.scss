@@ -13,7 +13,7 @@
   }
 
   .menu {
-    margin: 10px;
+    margin-bottom: 10px;
 
     .menu-wrapper {
       display: flex;
@@ -37,20 +37,21 @@
     }
   }
 
+  .training-wrapper,
   .game-wrapper {
     display: block;
     height: 85%;
     width: 100%;
     
-    .info-wrapper{
+    .info-wrapper {
       display: flex;
-      height: 400px;
+      // height: 400px;
       width: 100%;
       align-items: center;
       justify-content: center;
       text-align: center;
+      margin: 0 auto 10px auto;
 
-      margin: 0 auto;
       .card-info:hover {
         cursor: none;
       }
@@ -66,11 +67,51 @@
         padding: 8px 30px;
         margin: 20px auto 0 auto;
       }
+      .card-body {
+        cursor: default;
+        max-height: 450px;
+        max-width: 400px;
+
+        .card-image-wrapper {
+          width: 355px;
+          height: 236px;
+          margin: 0 auto;
+      
+          .card-img-top {
+            max-height: 100%;
+            max-width: 100%;
+          }
+        }
+      
+        .text1 {
+          min-height: 45px;
+        }
+
+      }
+
+      .answer,
+      .true-answer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
+        background-color: #ccc;
+        padding: 10px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 1.5rem;
+        font-weight: 500;
+        margin: 10px auto 0 auto;
+      }
+
+      .true-answer {
+        background-color: #28a728;
+      }
     }
   
     .training-button {
       display: block;
-      width: 60%;
+      width: 30rem;
       margin: 10px auto;
     }
 
@@ -82,27 +123,45 @@
       justify-content: center;
       align-items: center;
 
-
       .toast:hover {
         cursor: pointer;
       }
 
       .toast {
         font-size: 18px;
-        width: 150px;
-        height: 50px;
         border-radius: 10px;
         justify-content: space-between;
         margin: 0 10px 0.5rem 10px;
-
       }
 
       .toast-body {
+        display: flex;
         text-align: center;
+        justify-content: space-between;
+        align-items: center;
+      
+      .toast-icons {
+        display: flex;
+        margin-right: auto;
       }
     }
-  }
 
+    }
+
+    .hotkey {
+      width: 25px;
+      height: 25px;
+      font-weight: 450;
+      background-color: #777;
+      border-radius: 5px;
+      margin-right: 10px;
+      padding: 3px;
+      font-size: 1.3rem;
+    }
+
+  }
 }
+
+
 
 

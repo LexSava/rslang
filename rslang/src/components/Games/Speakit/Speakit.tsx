@@ -7,11 +7,13 @@ import { BsVolumeMute, BsFillVolumeUpFill, BsArrowRepeat } from "react-icons/bs"
 import { BiBell, BiBellOff, BiExit, BiMicrophone, BiMicrophoneOff } from "react-icons/bi";
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
 import { Redirect } from 'react-router';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import  { playAudioWord } from "../../../utils/AudioWord";
 import Preview from "../Preview/Preview";
 import useLocalStorage from "../../../hooks/useLocalStorage";
 import getUserData from "../../../api/getUserData";
 import setUserData from "../../../api/setUserData";
-import SavannahImg from "../../../assets/img/games/savannah.jpg";
+import SpeakitImg from "../../../assets/img/games/speakitImg.png";
 import { url } from "../../../api/defData";
 
 type word = {
@@ -50,47 +52,91 @@ const dateNow = new Date().getDate();
 const defStatistics:Statistics = {correctAnswers: 0, wrongAnswers: 0};
 const defAllStatistics:AllStatistics = {[dateNow]: {correctAnswers: 0, wrongAnswers: 0}};
 const outLn= "outline-primary";
+const defActiveCard = {
+  word: "",
+  wordTranslate: "", 
+  transcription: "",
+  audio: "",
+  image: "files/02_0628.jpg"
+};
 
 const Speakit = () => {
-  const defButtonsVariants = [outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn, outLn];
   const [words, setWords] = useState(null);
-  const [wordsSet, setWordsSet] = useState<any>(null);
+  const [wordsSet, setWordsSet] = useState<any>([]);
   const [level, setLevel] = useState(null); //TODO: get level from book page
   const [isSound, setSound] = useState(true);
   const [isSpeak, setSpeak] = useState(true);
   const [isMic, setMic] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isTraining, setTraining] = useState(false);
-  const [lives, setLives] = useState(100);
-  const [question, setQuestion] = useState('Question');
-  const [questionId, setQuestionId] = useState('');
-  const [questionImage, setQuestionImage] = useState('Question');
-  const [answerTrue, setAnswerTrue] = useState('');
+  const [isStatistics, setIsStatistics] = useState(false);
   const [answer, setAnswer] = useState('');
   const [attempt, setAttempt] = useState(0);
   const [statistics, setStatistics] = useLocalStorage("savanna", defStatistics);
   const [allStatistics, setAllStatistics] = useState(defAllStatistics);
-  const [buttonsVariants, setButtonsVariants] = useState(defButtonsVariants);
-  const [buttons, setButtons] = useState([['Ошибка'], ['получения'],['слов'],['с'],['сервера']]);
+  const [buttons, setButtons] = useState([]);
   const [wrongAnswersWords, setWrongAnswersWords] = useState<Array<any>>([]);
   const [wrongWords, setWrongWords] = useState<Array<any>>([]);
-  const [activeCard, setActiveCard] = useState<card>({word: "", wordTranslate: "", 
-    transcription: "", audio: "", image: ""});
+  const [activeCard, setActiveCard] = useState<card>(defActiveCard);
   const [exit, setExit] = useState(false);
+  const { finalTranscript, listening, resetTranscript } = useSpeechRecognition();
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
 
+   useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [buttons, activeCard]);
+  
+  const keyCodes = ["Digit0", "Digit1", "Digit2", "Digit3", "Digit4",
+    "Digit5", "Digit6", "Digit7", "Digit8", "Digit9", 
+    "KeyM", "NumpadEnter", "Space", "Backspace", "KeyQ", "KeyR" 
+  ];
+
+  const handleKeyDown:any = (event:any) => {
+    if (keyCodes.indexOf(event.code) !== -1) {
+      if (event.code === 'KeyM') {
+        setAnswer('');  
+        SpeechRecognition.startListening({language: 'en-US'})
+      }
+
+      if (event.code === 'Backspace') {
+        setTraining(!isTraining);  
+      }
+
+      if (isTraining && event.code === 'KeyQ') {
+          
+      }
+
+      if (isTraining && event.code === 'KeyR') {
+          setAttempt(0)
+      }
+      
+      if (keyCodes.indexOf(event.code) < 10) {
+        const indexButton:word = buttons[keyCodes.indexOf(event.code)];
+        setActiveCard(indexButton);
+        resetTranscript();
+        playAudioWord(indexButton.audio);
+        setAnswer('');
+      }
+    }
+
+  };
+
+  const handleShow = () => setShowModal(true);
+  
   const handleClose = () => {
     allStatisticsCompare(statistics);
     setStatistics(defStatistics);
     setWrongWords([]);
     setAttempt(0);
-    setLives(100);
     setShowModal(false)
-    };
-  const handleShow = () => setShowModal(true);
+  };
   
   const setUserWords = (words: any) => {
+    words.splice(NUM_OF_ANSWERS);
     setWords(words);
     getUserStatistics();
   };
@@ -113,54 +159,60 @@ const Speakit = () => {
   }, [words]);
 
   useEffect(() => {
-    if(wordsSet) setAllArrays();
-  }, [wordsSet, attempt]);
-
-   useEffect(() => {
-  }, [activeCard])
+    setButtons(wordsSet);
+  }, [wordsSet])
 
   useEffect(() => {
-    if(lives === 0 || attempt === 20) {
-      setModal()
-    }
-  }, [lives, attempt])
-
-  const setAllArrays = () => {
-    if(attempt < 20) {
-      setButtonsVariants(defButtonsVariants);
-      const wordQuest = wordsSet[attempt];  
-      setQuestion(wordQuest.word);
-      setQuestionId(wordQuest.id);
-      setQuestionImage(wordQuest.image);
-      setAnswerTrue(wordQuest.wordTranslate);
-      const randArr=[];
-      const randWords=[];
-
-      for(let i = 0; i < NUM_OF_ANSWERS; i++) {
-        const rand = Math.floor(Math.random() * wordsSet.length);
-        const randWord = wordsSet[rand];
-          if (randArr.indexOf(rand) === -1 && rand !== attempt) {
-            const word = {word: randWord.word,
-        wordTranslate: randWord.wordTranslate,
-        transcription: randWord.transcription,
-        audio: randWord.audio,
-        image: randWord.image};
-            randArr.push(rand);
-            randWords.push(word);
-          } else i--
-        setButtons(shuffleWords(randWords));
+    if (isTraining) {
+      setAttempt(0);
+      setActiveCard(wordsSet[0]); 
+      SpeechRecognition.startListening({language: 'en-US'});
+    } else { 
+        setActiveCard(defActiveCard); 
+        setAttempt(0);
+        SpeechRecognition.stopListening();
+        setAnswer('')
       }
-    };
-  };
+  }, [isTraining])
 
-  const speakWord = (wordUrl: string) => {
-     if (isSpeak) {
-        const audio = new Audio(url + wordUrl);
-        audio.play();
-      };
-  };
+  useEffect(() => {
+    if (wordsSet) {
+      if (isTraining) {
+        setActiveCard(wordsSet[attempt]);
+        SpeechRecognition.startListening({ continuous: true, language: 'en-US' });
+      } else {
+        resetTranscript();
+        setActiveCard(defActiveCard);
+        SpeechRecognition.stopListening();
+      }
+    } 
+  }, [attempt])
+
+  useEffect(() =>{
+    if (finalTranscript) setAnswer(finalTranscript.toLocaleLowerCase());
+  },[finalTranscript]);
+
+  useEffect(() => {
+    if (isTraining) {
+      resetTranscript();
+      let answerSound = "files/correct.mp3";
+      if(attempt === NUM_OF_ANSWERS - 1) {
+        setModal()
+      }
+      if (!activeCard.word.match(answer)) {
+        answerSound = "files/error.mp3";
+        statistics.wrongAnswers = statistics.wrongAnswers + 1;
+      } else {
+        statistics.correctAnswers = statistics.correctAnswers + 1;
+      }
+      if (isSound) playAudioWord(answerSound);
+      setStatistics(statistics);
+      setTimeout(() => setAttempt(attempt+1), 1000);
+    }
+  }, [answer])
 
   const setModal = () => {
+    SpeechRecognition.stopListening();
     const modalWrongWords:Array<any> = []
     wrongWords.forEach((el:Array<any>) => {
       const word = (<p key={el[0]}>{el[0]} - {el[1]}</p>);
@@ -204,45 +256,52 @@ const Speakit = () => {
     setUserStatistics();
   };
 
-  const modalRender = (<Modal 
-          show={ showModal }
-           onHide={handleClose}
-            animation={false}
-            centered={ true }
-            scrollable={ true }>
-          <Modal.Header closeButton>
-            <Modal.Title>Игра окончена</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="results">
-              <h3 className="your-results">Ваш результат:</h3>
-              <div className="results-answers">
-                <h4 className="results-answers-category">Верных ответов:</h4>
-                <span className="result">{statistics.correctAnswers}</span>
-                <h4 className="results-answers-category">Неверных ответов:</h4>
-                <span className="result">{statistics.wrongAnswers}</span>
-              </div>
-              <h4 className="results-words">Необходимо повторить слова:</h4>
-              <div className="wrong-words">
-                {wrongAnswersWords}
-              </div>
-            </div> 
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={() => {
-              handleClose();
-              setTimeout(() => {setWords(null)}, 2000)
-              }}>
-              Другие Слова</Button>
-            <Button variant="success" onClick={handleClose}>
-            Ещё раз
-            </Button>
-            <Button variant="danger" onClick={() => {setExit(true)}}>
-            Выйти
-            </Button>
-          </Modal.Footer>
-        </Modal>)
+  const modalRender = (
+    <Modal 
+      show={ showModal }
+      onHide={handleClose}
+      animation={false}
+      centered={ true }
+      scrollable={ true }>
+      <Modal.Header closeButton>
+        <Modal.Title>Тренировка завершена</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="results">
+            <h3 className="your-results">Ваш результат:</h3>
+          <div className="results-answers">
+            <h4 className="results-answers-category">Верных ответов:</h4>
+            <span className="result">{statistics.correctAnswers}</span>
+            <h4 className="results-answers-category">Неверных ответов:</h4>
+            <span className="result">{statistics.wrongAnswers}</span>
+          </div>
+        </div> 
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={() => {
+          handleClose();
+          setTimeout(() => {setWords(null)}, 2000)
+          }}>
+          Другие Слова
+        </Button>
+        <Button variant="success" onClick={handleClose}>
+          Ещё раз
+        </Button>
+        <Button variant="danger" onClick={() => {setExit(true)}}>
+          Выйти
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 
+  const trainingButton = (
+    <Button className="training-button"
+      variant={isTraining ? 'danger' : 'info' } size="lg" block
+      onClick={()=>{setTraining(!isTraining)}}>
+      {isTraining ? 'Закончить проверку' : 'Начать проверку' }
+    </Button>
+  );
+  
   const buttonsBar = (
       <ButtonToolbar className="btns-toolbar">
        <ButtonGroup toggle className="btn-group" aria-label="First group">
@@ -256,7 +315,9 @@ const Speakit = () => {
        <ButtonGroup toggle className="btn-group" aria-label="First group">
         <Button
           type="checkbox"
-          onClick={() => {setAttempt(0)}}
+          onClick={() => {
+            setWords(null)
+            setTraining(false)}}
         >
        {<BsArrowRepeat size="2.1rem" />}
         </Button>
@@ -268,65 +329,111 @@ const Speakit = () => {
        {isSound ? <BiBell size="2.2rem" /> : <BiBellOff size="2.2rem" />}
         </Button>
       </ButtonGroup>
-       <ButtonGroup toggle className="btn-group" aria-label="First group">
-        <Button
-          type="checkbox"
-          onClick={() => setSpeak(!isSpeak)}
-        >
-       {isSpeak ? <BsFillVolumeUpFill size="2.2rem" /> : <BsVolumeMute size="2.2rem" />}
-        </Button>
-      </ButtonGroup>
       <ButtonGroup toggle className="btn-group" aria-label="First group">
         <Button
+          variant={listening ? "success" : "primary"}
           type="checkbox"
           onClick={() => setMic(!isMic)}
         >
        {isMic ? <BiMicrophone size="2.2rem" /> : <BiMicrophoneOff size="2.2rem" />}
         </Button>
       </ButtonGroup>
+      <ButtonGroup>
+        {trainingButton}
+      </ButtonGroup>
       </ButtonToolbar>
     )
-  const progressBar = <><ProgressBar variant="success" now={(attempt) * 5} label={`${(attempt) * 5}%`} /></>;
-  const attemptsBar = <><ProgressBar className="rating"  variant="danger" now={lives} label={`${lives / 20}`} /></>;
+  const progressBar = <>
+  <ProgressBar
+   variant="success"
+   now={(attempt) * (100 / (NUM_OF_ANSWERS))}
+  //  label={`${(attempt) * (100 / (NUM_OF_ANSWERS))}%`}
+  /></>;
   
   const wordsButtons = () => {
     const buttonsArr: JSX.Element[] = [];
-    buttons.forEach((button:any) => {
+    if (!buttons) return [];
+    buttons.forEach((button:any, i) => {
       buttonsArr.push(
-        <Toast onClick={() => {
-          speakWord(button.audio)
-          setActiveCard(button)}}>
-          <Toast.Body>
-            <BsFillVolumeUpFill size="2rem"/>
+        <Toast key={`toast-${button.word}`} 
+          onClick={() => {
+            resetTranscript();
+            playAudioWord(button.audio);
+            setAnswer('');  
+            setActiveCard(button)}}>
+          <Toast.Body key={`body-${button.word}`}>
+            <div key={`toast-icons ${i}`}
+            className={`toast-icons ${i}`} >
+            <div key={`hotkey ${i}`}
+            className={`hotkey ${i}`} >{i}</div>
+            <BsFillVolumeUpFill key={`icon-${button.word}`} size="2rem"/>
+            </div>
             {button.transcription} - 
-            <strong className="mr-auto"> {button.word}</strong>          </Toast.Body>
+            <strong key={`mr-auto word-${button.word}`}>{ button.word }</strong>
+          </Toast.Body>
         </Toast>
       );
     });
     return (buttonsArr);
   };
 
-  const wordCard = (
-    <Card style={{ width: '28rem' }} className="info-card">
+  const wordCard = activeCard ? (
+    <div className="info-wrapper">
+    <Card style={{width: '28rem'}} className="info-card">
       <Card.Body>
+        <div className="card-image-wrapper">
         <Card.Img variant="top" src={url + activeCard.image} />
-        <Card.Text>
-          {activeCard.wordTranslate}
-        </Card.Text>
+        </div>
+        {!isTraining &&  
+          (<Card.Text className="text1" 
+            style={ activeCard.wordTranslate === '' ? 
+            { backgroundColor: '#fff', fontSize: '2rem', fontWeight: 500 }
+            : { backgroundColor: '#dda', fontSize: '2rem', fontWeight: 500 }
+            }>
+            {activeCard.wordTranslate}
+          </Card.Text>
+        )}
+        {isTraining &&  
+          (<>
+          <Card.Text className="text2" style={activeCard.word.toUpperCase() 
+          ? {backgroundColor: '#dd1'} 
+          : {backgroundColor: '#fff'}}
+          onClick={() => { playAudioWord(activeCard.audio) }}
+          >  
+            {activeCard.word.toUpperCase()}
+          </Card.Text> 
+          <Card.Text className="text3" style={activeCard.word.toUpperCase() 
+            ? {backgroundColor: '#add', letterSpacing: '2px', fontWeight: 500 } 
+            : {backgroundColor: '#fff'}}>
+            {activeCard.transcription}
+          </Card.Text>
+        </>)}
+          {isMic && (<div className={answer === activeCard.word ? 'answer true-answer' : 'answer'}
+          onClick={() => {
+            setAnswer('');  
+            SpeechRecognition.startListening({language: 'en-US'})
+            }}>
+            <div key={`hotkey m`}
+            className={`hotkey m`}>M</div> 
+            <BiMicrophone size="1.2rem" />
+            {answer && answer}
+          </div>)}
       </Card.Body>
     </Card>
-  );
+    </div>
+  ) : (<></>);
   
-  const trainingButton = (<Button className="training-button" variant="info" size="lg" block
-    onClick={()=>{setTraining(true)}}>
-    Начать тренировку</Button>
-  );
-  
+  const nextWordButton = (
+    <>
+      <Button className="training-button"
+        variant={'info'} size="lg" block
+        onClick={()=>{setAttempt(attempt+1)}}>
+        Следующее слово
+      </Button>
+    </>)
+
   const gameWrapper = (<div className="game-wrapper">
-      <div className="info-wrapper">
         {wordCard}
-      </div>
-        {trainingButton}
       <div className="words-wrapper">
         {wordsButtons()}
       </div>
@@ -335,30 +442,19 @@ const Speakit = () => {
 
   const speaking = (
     <div className="speaking">
-
+      
     </div>    
   );
 
-    const trainingBlock = (<>
-      <div className="training-wrapper">
-        <Button onClick={()=>{setTraining(false)}} variant="danger">
-          Назад
-        </Button>
-        <Card style={{ width: '30rem' }} className="training-card">
-          <Card.Body>
-            <Card.Img variant="top" src={url + activeCard.image} />
-            <Card.Text>
-              {activeCard.word}
-              {activeCard.transcription}
-              {activeCard.wordTranslate}
-            </Card.Text>
-          </Card.Body>
-        </Card>
-        {speaking}
-        <Button onClick={()=>{setAttempt(attempt + 1)}} variant="succes">
-          Пропустить
-        </Button>
-      </div></>);
+  const trainingeWrapper = (
+    <>
+    <div className="training-wrapper">
+      { wordCard }
+      { speaking }
+      { nextWordButton }
+    </div>
+    </>
+  );
 
   const Game = (
     <>
@@ -366,10 +462,9 @@ const Speakit = () => {
       {progressBar}
       <div className="menu-wrapper">
       {buttonsBar}
-      {attemptsBar}
       </div>
     </div>
-      {isTraining ? trainingBlock : gameWrapper}
+      {isTraining ? trainingeWrapper : gameWrapper}
     </>
   )
 
@@ -382,13 +477,13 @@ const Speakit = () => {
           <Preview
             heading={PREVIEW_HEADING}
             description={PREVIEW__DESCRIPTION}
-            backgroundImg={SavannahImg}
+            backgroundImg={SpeakitImg}
             level={level}
             setUserWords={setUserWords}
           />
         ) : (
         <div className="speak-it-game"
-            style={{ backgroundImage: `url(${SavannahImg})` }}
+            style={{ backgroundImage: `url(${SpeakitImg})` }}
             >
             {!wordsSet && ('Набор слов отсутствует')}
             {wordsSet && Game}
