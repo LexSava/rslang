@@ -5,15 +5,15 @@ export const url = "https://rslang.tk:3000/";
 export const numOfPages = 30;
 
 export const defSettingsData = {
-    "wordsPerDay": 20,
+    "wordsPerDay": 5,
     "optional": {},
-    "vocabulary": {sound: true, speak: true},
-    "savanna": {sound: true, speak: true},
-    "call": {sound: true, speak: true},
-    "sprint": {sound: true, speak: true},
-    "puzzle": {sound: true, speak: true},
-    "ourgame": {sound: true, speak: true},
-    "speakit": {sound: true, speak: true}
+    "vocabulary": {},
+    "savanna": {},
+    "call": {},
+    "sprint": {},
+    "puzzle": {},
+    "ourgame": {},
+    "speakit": {}
 };
 
 export let defStatisticsData = {

@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AudioCall.scss";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { VolumeUp, CheckCircleFill, ArrowRight } from "react-bootstrap-icons";
 import { Button, Image, ProgressBar } from "react-bootstrap";
 
@@ -10,6 +10,7 @@ import RioImg from "../../../assets/img/games/audio_rio.jpg";
 import { url, numOfPages } from "../../../api/defData";
 import { playAudioWord, playAudio } from "../../../utils/AudioWord";
 import getWords from "../../../api/getWords";
+import Results from "./../Results/Results";
 
 const correctAudio = require("./../../../assets/audio/correct.mp3");
 const errorAudio = require("./../../../assets/audio/error.mp3");
@@ -34,13 +35,10 @@ type WordGameType = {
   displayedWords: string[];
 };
 
-const keyMap = {
-  FIRST_WORD: "1",
-  SECOND_WORD: "2",
-};
-
 const AudioCall = () => {
   const [words, setWords] = useState<WordGameType[] | null>(null);
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
   const currentWord: WordGameType | undefined = words?.find(
     (word) => word.isPassed === false
   );
@@ -101,6 +99,53 @@ const AudioCall = () => {
     }
   };
 
+  useEffect(() => {
+    const handleUserKeyPress = (e: any) => {
+      switch (e.code) {
+        case "Digit1": {
+          setAnswerWord(currentWord?.displayedWords[0]);
+          break;
+        }
+        case "Digit2": {
+          setAnswerWord(currentWord?.displayedWords[1]);
+          break;
+        }
+        case "Digit3": {
+          setAnswerWord(currentWord?.displayedWords[2]);
+          break;
+        }
+        case "Digit4": {
+          setAnswerWord(currentWord?.displayedWords[3]);
+          break;
+        }
+        case "Digit5": {
+          setAnswerWord(currentWord?.displayedWords[4]);
+          break;
+        }
+        case "Enter": {
+          if (currentWord?.isCorrect === null) {
+            setDefeatWord();
+          } else {
+            switchNextWord();
+          }
+          break;
+        }
+        case "Space": {
+          if (currentWord) playAudioWord(currentWord.word.audio);
+          break;
+        }
+        default:
+          console.log(`${e.code} isn't supported for AudioCall game.`);
+      }
+    };
+
+    window.addEventListener("keydown", handleUserKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleUserKeyPress);
+    };
+  }, [words]);
+
   const switchNextWord = () => {
     if (typeof words === undefined || words === null) return;
     let wordIndex: number = 0;
@@ -127,6 +172,10 @@ const AudioCall = () => {
     return (currentIndex! / words!.length) * 100;
   };
 
+  const continueGame = () => {
+    setWords(null);
+  };
+
   const defineGameScene = () => {
     if (words === null) {
       return (
@@ -139,7 +188,29 @@ const AudioCall = () => {
         />
       );
     } else if (currentWord === undefined) {
-      return null; //TODO: end of the game
+      const correctWords = words
+        .filter((word) => word.isCorrect)
+        .map(
+          (correctWord) =>
+            `${correctWord.word.word} - ${correctWord.word.wordTranslate}`
+        );
+
+      const wrongWords = words
+        .filter((word) => !word.isCorrect)
+        .map(
+          (wrongWord) =>
+            `${wrongWord.word.word} - ${wrongWord.word.wordTranslate}`
+        );
+
+      return (
+        <div className="audio-call-game">
+          <Results
+            correctWords={correctWords}
+            wrongWords={wrongWords}
+            continueGame={continueGame}
+          />
+        </div>
+      );
     } else {
       return (
         <div className="audio-call-game">

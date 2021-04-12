@@ -42,11 +42,13 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    overflow: hidden;
     
     .question-wrapper{
       height: 100%;
       width: 50%;
       text-align: center;
+      overflow: hidden;
     }
 
     .answers-wrapper{
@@ -99,7 +101,7 @@
     border-radius: 30px;
     text-transform: uppercase;
     padding: 20px;
-    // transition: all 0.5s;
+    overflow: hidden;
   }
 
 }

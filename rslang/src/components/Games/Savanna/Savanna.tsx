@@ -186,7 +186,7 @@ const Savannah = () => {
   useEffect(() => {
     if (timerStart) {
       if (timeoutTime > 0) {
-        const questWordStyle = {top: `${43 - (timeoutTime / 10)}vw`};
+        const questWordStyle = {top: `${45 - (timeoutTime / 10)}vw`};
         setQuestWordStyle(questWordStyle);
         setTimeout(() => {
           setTimeoutTime(timeoutTime - 1)}, 15);
