@@ -1,9 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Speakit.scss";
-import React, { useState, useEffect } from "react";
-import { Badge, Button, ButtonGroup, ButtonToolbar, Card, 
-  ListGroup, ListGroupItem, Modal, ProgressBar, Toast } from "react-bootstrap";
-import { BsVolumeMute, BsFillVolumeUpFill, BsArrowRepeat } from "react-icons/bs";
+import { useState, useEffect } from "react";
+import { Button, ButtonGroup, ButtonToolbar, Card, Modal, ProgressBar, Toast } from "react-bootstrap";
+import { BsFillVolumeUpFill, BsArrowRepeat } from "react-icons/bs";
 import { BiBell, BiBellOff, BiExit, BiMicrophone, BiMicrophoneOff } from "react-icons/bi";
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
 import { Redirect } from 'react-router';
@@ -51,7 +50,6 @@ const NUM_OF_ANSWERS = 10;
 const dateNow = new Date().getDate();
 const defStatistics:Statistics = {correctAnswers: 0, wrongAnswers: 0};
 const defAllStatistics:AllStatistics = {[dateNow]: {correctAnswers: 0, wrongAnswers: 0}};
-const outLn= "outline-primary";
 const defActiveCard = {
   word: "",
   wordTranslate: "", 
@@ -65,30 +63,20 @@ const Speakit = () => {
   const [wordsSet, setWordsSet] = useState<any>([]);
   const [level, setLevel] = useState(null); //TODO: get level from book page
   const [isSound, setSound] = useState(true);
-  const [isSpeak, setSpeak] = useState(true);
   const [isMic, setMic] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isTraining, setTraining] = useState(false);
-  const [isStatistics, setIsStatistics] = useState(false);
   const [answer, setAnswer] = useState('');
   const [attempt, setAttempt] = useState(0);
   const [statistics, setStatistics] = useLocalStorage("savanna", defStatistics);
   const [allStatistics, setAllStatistics] = useState(defAllStatistics);
   const [buttons, setButtons] = useState([]);
-  const [wrongAnswersWords, setWrongAnswersWords] = useState<Array<any>>([]);
-  const [wrongWords, setWrongWords] = useState<Array<any>>([]);
   const [activeCard, setActiveCard] = useState<card>(defActiveCard);
   const [exit, setExit] = useState(false);
   const { finalTranscript, listening, resetTranscript } = useSpeechRecognition();
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
 
-   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-    window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [buttons, activeCard]);
   
   const keyCodes = ["Digit0", "Digit1", "Digit2", "Digit3", "Digit4",
     "Digit5", "Digit6", "Digit7", "Digit8", "Digit9", 
@@ -106,12 +94,8 @@ const Speakit = () => {
         setTraining(!isTraining);  
       }
 
-      if (isTraining && event.code === 'KeyQ') {
-          
-      }
-
       if (isTraining && event.code === 'KeyR') {
-          setAttempt(0)
+          setAttempt(0);
       }
       
       if (keyCodes.indexOf(event.code) < 10) {
@@ -125,12 +109,18 @@ const Speakit = () => {
 
   };
 
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+    window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [buttons, activeCard]);
+
   const handleShow = () => setShowModal(true);
   
   const handleClose = () => {
     allStatisticsCompare(statistics);
     setStatistics(defStatistics);
-    setWrongWords([]);
     setAttempt(0);
     setShowModal(false)
   };
@@ -213,12 +203,6 @@ const Speakit = () => {
 
   const setModal = () => {
     SpeechRecognition.stopListening();
-    const modalWrongWords:Array<any> = []
-    wrongWords.forEach((el:Array<any>) => {
-      const word = (<p key={el[0]}>{el[0]} - {el[1]}</p>);
-      if(wrongWords.indexOf(word) === -1) modalWrongWords.push(word);
-    })
-    setWrongAnswersWords(modalWrongWords)
     handleShow();
   };
 

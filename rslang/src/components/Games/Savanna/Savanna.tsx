@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Savanna.scss";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { 
   Button, 
   Badge, 
@@ -20,30 +20,17 @@ import setUserData from "../../../api/setUserData";
 import SavannahImg from "../../../assets/img/games/savannah.jpg";
 import { url } from "../../../api/defData";
 
-type word = {
-  audio: string;
-  audioExample: string;
-  audioMeaning: string;
-  group: number;
-  id: string;
-  image: string;
-  page: number;
-  textExample: string;
-  textExampleTranslate: string;
-  textMeaning: string;
-  textMeaningTranslate: string;
-  transcription: string;
-  word: string;
-  wordTranslate: string;
-};
-
 type Statistics = { correctAnswers: number; wrongAnswers: number };
+type Settings = { sound: boolean; speak: boolean };
 type AllStatistics = { [index: number]: Statistics };
+type AllSettings = { [index: string]: Settings };
 
 const PREVIEW_HEADING = "Саванна";
 const PREVIEW__DESCRIPTION =
   "Слово спускается в саванну, предлагается 5 вариантов его перевода, правильный только один. Твоя задача выбрать правильный перевод слова раньше чем слово коснётся земли.";
 const NUM_OF_ANSWERS = 4;
+const TIMEOUT_TIME = 450;
+const NUM_OF_ATTEMPTS = 20;
 const dateNow = new Date().getDate();
 const defStatistics: Statistics = { correctAnswers: 0, wrongAnswers: 0 };
 const defAllStatistics: AllStatistics = {
@@ -51,6 +38,11 @@ const defAllStatistics: AllStatistics = {
 };
 
 const Savannah = () => {
+  const settingsLocal:string | null = localStorage.getItem('settings');
+  const locSettings:AllSettings = settingsLocal ? JSON.parse(settingsLocal) : {savanna: {sound: true, speak: true}};
+  const settings:Settings = locSettings.savanna;
+  const {sound, speak} = settings;
+  const questWordStyleDef = {top: "-2vw"};
   const defButtonsVariants = [
     "primary",
     "primary",
@@ -61,13 +53,15 @@ const Savannah = () => {
   const [words, setWords] = useState(null);
   const [wordsSet, setWordsSet] = useState<any>(null);
   const [level, setLevel] = useState(null); //TODO: get level from book page
-  const [soundOff, setSoundOff] = useState(true);
-  const [isSpeak, setIsSpeak] = useState(true);
+  const [questWordStyle, setQuestWordStyle] = useState(questWordStyleDef);
+  const [soundOff, setSoundOff] = useState(sound);
+  const [isSpeak, setIsSpeak] = useState(speak);
+  const [timeoutTime, setTimeoutTime] = useState(TIMEOUT_TIME);
+  const [timerStart, setTimerStart] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [lives, setLives] = useState(100);
-  const [question, setQuestion] = useState("Question");
+  const [question, setQuestion] = useState("");
   const [questionId, setQuestionId] = useState("");
-  const [questionImage, setQuestionImage] = useState("Question");
   const [answerTrue, setAnswerTrue] = useState("");
   const [answer, setAnswer] = useState("");
   const [attempt, setAttempt] = useState(0);
@@ -91,10 +85,12 @@ const Savannah = () => {
     allStatisticsCompare(statistics);
     setStatistics(defStatistics);
     setWrongWords([]);
-    setAttempt(0);
-    setLives(100);
     setShowModal(false);
+    setLives(100);
+    setAttempt(0);
+    setTimerStart(false);
   };
+
   const handleShow = () => setShowModal(true);
 
   const setUserWords = (words: any) => {
@@ -113,69 +109,49 @@ const Savannah = () => {
       }
       return words;
     }
-
   }
   
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
+    const settingsLocal:string | null = localStorage.getItem('settings');
+    const locSettings:AllSettings = settingsLocal ? JSON.parse(settingsLocal) : {savanna: {sound: true, speak: true}};
+    let settings:Settings = locSettings.savanna;
+    settings = {sound: soundOff, speak: isSpeak};
+    locSettings.savanna = settings;
+    localStorage.setItem('settings', JSON.stringify(locSettings))
+    
+    async function setUserSettings() {
+     if (settings && userId && token) {
+      const newSettings = { savanna: settings };
+      const fullUrl = `${url}users/${JSON.parse(userId)}/settings`;
+      const bearerToken = JSON.parse(token);
+      await setUserData(fullUrl, bearerToken, newSettings)
+        .then((responseData: any) => {})
+        .catch((error) => {
+          console.log(error.message);
+        });
+      }
+    }
+    setUserSettings();
+  }, [soundOff, isSpeak]);
+  
+  useEffect(() => {
+    const keyCodes = ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"];
+    const handleKeyDown:any = (event:any) => {
+    if (keyCodes.indexOf(event.code) !== -1) setAnswer(buttons[keyCodes.indexOf(event.code)])
+    };
+    window.addEventListener('keyup', handleKeyDown);
     return () => {
-    window.removeEventListener('keydown', handleKeyDown);
+    window.removeEventListener('keyup', handleKeyDown);
     };
   }, [buttons]);
   
-  const keyCodes = ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"];
-
-  const handleKeyDown:any = (event:any) => {
-    if (keyCodes.indexOf(event.code) !== -1) setAnswer(buttons[keyCodes.indexOf(event.code)])
-  };
-
   useEffect(() => {
     setWordsSet(shuffleWords(words));
   }, [words]);
 
   useEffect(() => {
-    if (wordsSet) setAllArrays();
-  }, [wordsSet, attempt]);
-
-  useEffect(() => {
-    if (answer) {
-      let answerSound = "correct.mp3";
-      const trueAnswerIdx = buttons.indexOf(answerTrue);
-      buttonsVariants[trueAnswerIdx] = "success";
-      if (answer !== answerTrue || answer === "wrong") {
-        const wrongAnswerIdx = buttons.indexOf(answer);
-        if (wrongAnswerIdx !== -1) buttonsVariants[wrongAnswerIdx] = "danger";
-        answerSound = "error.mp3";
-        const words: Array<any> = wrongWords;
-        const wrongWord = new Array(question, answerTrue, questionId);
-        words.push(wrongWord);
-        statistics.wrongAnswers = statistics.wrongAnswers + 1;
-        setWrongWords(words);
-        setLives(lives - 20);
-        setAnswer("");
-      } else {
-        statistics.correctAnswers = statistics.correctAnswers + 1;
-      }
-      setStatistics(statistics);
-      setButtonsVariants(buttonsVariants);
-      if (soundOff) {
-        const audio = new Audio(`${url}files/${answerSound}`);
-        audio.play();
-      }
-      setTimeout(() => {
-        setAttempt(attempt + 1);
-      }, 2000);
-    }
-  }, [answer]);
-
-  useEffect(() => {
-    if (lives === 0 || attempt === 20) {
-      setModal();
-    }
-  }, [lives, attempt]);
-
-  const setAllArrays = () => {
-    if (attempt < 20) {
+    if (wordsSet && !showModal) {
+    if (attempt < NUM_OF_ATTEMPTS) {
       setButtonsVariants(defButtonsVariants);
       const wordQuest = wordsSet[attempt];
       if (isSpeak) {
@@ -184,7 +160,6 @@ const Savannah = () => {
       }
       setQuestion(wordQuest.word);
       setQuestionId(wordQuest.id);
-      setQuestionImage(wordQuest.image);
       setAnswerTrue(wordQuest.wordTranslate);
       const randArr=[];
       const randWords=[wordQuest.wordTranslate]
@@ -196,12 +171,65 @@ const Savannah = () => {
           randArr.push(rand);
           randWords.push(randWord.wordTranslate);
         } else i--;
-        setButtons(shuffleWords(randWords));
+          setButtons(shuffleWords(randWords));
+        }
       }
-    }
-  };
+    };
+  }, [wordsSet, attempt]);
 
-  const setModal = () => {
+  useEffect(() => {
+    if (question)
+      setTimerStart(true);
+      setTimeoutTime(TIMEOUT_TIME)
+  }, [question]);
+
+  useEffect(() => {
+    if (timerStart) {
+      if (timeoutTime > 0) {
+        const questWordStyle = {top: `${43 - (timeoutTime / 10)}vw`};
+        setQuestWordStyle(questWordStyle);
+        setTimeout(() => {
+          setTimeoutTime(timeoutTime - 1)}, 15);
+      } else {
+        setAnswer('wrong');
+        setTimerStart(false);
+        setTimeoutTime(TIMEOUT_TIME);
+        };
+    }
+  }, [timeoutTime, timerStart]);
+
+  useEffect(() => {
+    if (answer) {
+      setTimerStart(false);
+      let answerSound = "correct.mp3";
+      const trueAnswerIdx = buttons.indexOf(answerTrue);
+      buttonsVariants[trueAnswerIdx] = "success";
+      if (answer !== answerTrue || answer === "wrong") {
+        const wrongAnswerIdx = buttons.indexOf(answer);
+        if (wrongAnswerIdx !== -1) buttonsVariants[wrongAnswerIdx] = "danger";
+        answerSound = "error.mp3";
+        const words: Array<any> = wrongWords;
+        const wrongWord = [question, answerTrue, questionId];
+        words.push(wrongWord);
+        statistics.wrongAnswers = statistics.wrongAnswers + 1;
+        setWrongWords(words);
+        setLives(lives - 20);
+      } else {
+        statistics.correctAnswers = statistics.correctAnswers + 1;
+      }
+      setButtonsVariants(buttonsVariants);
+      setStatistics(statistics);
+      setAnswer("");
+      if (soundOff) {
+        const audio = new Audio(`${url}files/${answerSound}`);
+        audio.play();
+      }
+    if (lives !== 0 || attempt !== NUM_OF_ATTEMPTS) setTimeout(() => { setAttempt(attempt + 1) }, 2000);
+    }
+  }, [answer]);
+
+  useEffect(() => {
+    if (lives === 0 || attempt === NUM_OF_ATTEMPTS) {
     const modalWrongWords: Array<any> = [];
     wrongWords.forEach((el: Array<any>) => {
       const word = (
@@ -214,6 +242,7 @@ const Savannah = () => {
     setWrongAnswersWords(modalWrongWords);
     handleShow();
   };
+  }, [lives, attempt, wrongWords]);
 
   async function getUserStatistics() {
     if (token && userId) {
@@ -257,26 +286,17 @@ const Savannah = () => {
   const buttonsBar = (
       <ButtonToolbar className="btns-toolbar">
         <ButtonGroup toggle className="btn-group" aria-label="First group">
-        <Button
-          type="checkbox"
-          onClick={() => {setExit(true)}}
-        >
+        <Button type="checkbox" onClick={() => {setExit(true)}}>
        {<BiExit size="2.2rem" />}
         </Button>
       </ButtonGroup>
        <ButtonGroup toggle className="btn-group" aria-label="First group">
-        <Button
-          type="checkbox"
-          onClick={() => {setAttempt(0)}}
-        >
+        <Button type="checkbox" onClick={() => {setAttempt(0)}} >
        {<BsArrowRepeat size="2.1rem" />}
         </Button>
       </ButtonGroup>
        <ButtonGroup toggle className="btn-group" aria-label="First group">
-        <Button
-          type="checkbox"
-          onClick={() => setSoundOff(!soundOff)}
-        >
+        <Button type="checkbox" onClick={() => setSoundOff(!soundOff)} >
        {soundOff ? <BiBell size="2.2rem" /> : <BiBellOff size="2.2rem" />}
         </Button>
       </ButtonGroup>
@@ -315,7 +335,7 @@ const Savannah = () => {
     <div className="question-word">
       <div className="word-image"></div>
       <div className="word-wrapper">
-        <Badge className="word-quest" variant="warning">
+        <Badge className="word-quest" variant="warning" style={questWordStyle}>
           {question}
         </Badge>
       </div>
