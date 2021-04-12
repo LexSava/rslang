@@ -33,9 +33,6 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
     0
   );
 
-  console.log(statisticUser);
-  console.log(statisticUser.optional.regDate);
-
   const ARRAY_OF_DATES: any = [];
   const D = new Date(statisticUser.optional.regDate);
   const Till = new Date();
@@ -54,10 +51,19 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
   }, [Till]);
 
   useEffect(() => {
-    setWordsLearnedToday(
-      (wordsLearnedToday[ARRAY_OF_DATES.length - 1] =
-        statisticUser.learnedWords)
-    );
+    while (wordsLearnedToday.length < ARRAY_OF_DATES.length) {
+      wordsLearnedToday.push(statisticUser.vocabulary.learnedWords);
+    }
+  }, [Till]);
+
+  console.log(wordsLearnedToday);
+  console.log(arrWordsLearnedToday);
+
+  useEffect(() => {
+    // setWordsLearnedToday(
+    //   (wordsLearnedToday[ARRAY_OF_DATES.length - 1] =
+    //     statisticUser.vocabulary.learnedWords)
+    // );
     setLearnedWords(props.allStatistics.vocabulary.learnedWords);
     setBestSeries(props.allStatistics.vocabulary.bestSeries);
     setCorrectAnswer(props.allStatistics.vocabulary.correctAnswer);
@@ -73,7 +79,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
       datasets: [
         {
           label: "Выучено слов",
-          data: wordsLearnedToday,
+          data: arrWordsLearnedToday,
           backgroundColor: ["rgba(54, 162, 235, 0.6)"],
           borderWidth: 5,
         },
