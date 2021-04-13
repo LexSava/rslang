@@ -8,7 +8,6 @@ import HardWords from "../../assets/img/hard_words.jpg";
 import NewWordsSection from "./StudySections/NewWordsSection";
 import RepeatWordsSection from "./StudySections/RepeatWordsSection";
 import HardWordsSection from "./StudySections/HardWordsSection";
-
 import _ from "lodash";
 
 interface InterfaceStudy {
@@ -16,11 +15,14 @@ interface InterfaceStudy {
   hardWords: any;
   learnedWords: any;
   deletedWords: any;
+  learnedWordToday: any;
+  page: number;
   getHardWords(arr: any): void;
   getLearnedWords(arr: any): void;
   getDeletedWords(arr: any): void;
   getCorrectAnswer(arr: any): void;
   getBestSeries(arr: any): void;
+  getLearnedWordToday(arr: any): void;
 }
 
 const Study: React.FC<InterfaceStudy> = (props) => {
@@ -28,6 +30,7 @@ const Study: React.FC<InterfaceStudy> = (props) => {
   const [hardWords, setHardWords] = useState<any>([]);
   const [learnedWords, setLearnedWords] = useState<any>([]);
   const [deletedWords, setDeletedWords] = useState<any>([]);
+  const [learnedWordToday, setLearnedWordToday] = useState<any>([]);
 
   useEffect(() => {
     props.getHardWords(hardWords);
@@ -41,6 +44,10 @@ const Study: React.FC<InterfaceStudy> = (props) => {
     props.getDeletedWords(deletedWords);
   }, [deletedWords]);
 
+  useEffect(() => {
+    props.getLearnedWordToday(learnedWordToday);
+  }, [learnedWordToday]);
+
   const getHardWords = (arr: any) => {
     setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
   };
@@ -49,6 +56,9 @@ const Study: React.FC<InterfaceStudy> = (props) => {
   };
   const getDeletedWords = (arr: any) => {
     setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
+  };
+  const getLearnedWordToday = (arr: any) => {
+    setLearnedWordToday(_.uniqWith(learnedWordToday.concat(arr), _.isEqual));
   };
 
   const startSectionWithWords = (section: string) => {
@@ -77,8 +87,8 @@ const Study: React.FC<InterfaceStudy> = (props) => {
         <Container className="d-flex flex-wrap align-items-center justify-content-around">
           <h3 className="study-page-head m-0">Сегодня изучено</h3>
           <p className="study-page-head-text m-0">
-            Сегодня изучено: {props.learnedWords.length} из {props.words.length}{" "}
-            слов
+            Сегодня изучено: {props.learnedWordToday.length} из{" "}
+            {props.words.length * (props.page + 1)} слов
           </p>
         </Container>
         <Container className="d-flex justify-content-around flex-wrap mt-4 p-5 bg-light">
@@ -152,6 +162,7 @@ const Study: React.FC<InterfaceStudy> = (props) => {
         onGetHardWords={getHardWords}
         onGetLearnedWords={getLearnedWords}
         onGetDeletedWords={getDeletedWords}
+        onGetLearnedWordToday={getLearnedWordToday}
         onGetCorrectAnswer={props.getCorrectAnswer}
         onGetBestSeries={props.getBestSeries}
       />
