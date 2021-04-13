@@ -18,7 +18,6 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
   const [statisticUser, setStatisticUser] = useState<any>(props.allStatistics);
   const [barData, setBarData] = useState<any>({});
   const [lineData, setLineData] = useState<any>({});
-  // const [wordsLearnedToday, setWordsLearnedToday] = useState<any>([]);
   const [arrWordsLearnedToday, setArrWordsLearnedToday] = useLocalStorage(
     "arrWordsLearnedToday",
     []
@@ -53,15 +52,6 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
       D.setDate(D.getDate() + 1);
     }
   }, [Till]);
-
-  // useEffect(() => {
-  //   while (wordsLearnedToday.length < ARRAY_OF_DATES.length) {
-  //     wordsLearnedToday.push(statisticUser.vocabulary.learnedWordToday);
-  //   }
-  // }, [Till]);
-
-  // console.log(wordsLearnedToday);
-  // console.log(arrWordsLearnedToday);
 
   useEffect(() => {
     setLearnedWords(props.allStatistics.vocabulary.learnedWords);

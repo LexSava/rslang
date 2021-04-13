@@ -71,15 +71,19 @@ const Main: React.FC<InterfaceMain> = (props) => {
       setPage(++page);
     }
   }, [learnedWordToday]);
-  console.log(page);
 
   // schedule.scheduleJob("0 * * * * *", () => {
   //   // setGraphStatisticsDaily([]);
   //   // setLearnedWordToday([]);
   //   setGraphStatisticsDaily([...graphStatisticsDaily, learnedWordToday.length]);
+  //   setGraphStatisticsAllProgress([
+  //     ...graphStatisticsAllProgress,
+  //     learnedWords.length,
+  //   ]);
   // });
 
   // console.log(graphStatisticsDaily);
+  // console.log(graphStatisticsAllProgress);
 
   async function setUserStatistics() {
     if (tokenUse && Id) {
