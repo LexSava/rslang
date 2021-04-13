@@ -12,6 +12,9 @@ import { playAudioWord, playAudio } from "../../../utils/AudioWord";
 import getWords from "../../../api/getWords";
 import Results from "./../Results/Results";
 
+import getUserData from "../../../api/getUserData";
+import setUserData from "../../../api/setUserData";
+
 const correctAudio = require("./../../../assets/audio/correct.mp3");
 const errorAudio = require("./../../../assets/audio/error.mp3");
 
@@ -35,8 +38,18 @@ type WordGameType = {
   displayedWords: string[];
 };
 
+type Statistics = {
+  [key: string]: DayInfo;
+};
+
+type DayInfo = {
+  correctAnswers: number;
+  wrongAnswers: number;
+};
+
 const AudioCall = () => {
   const [words, setWords] = useState<WordGameType[] | null>(null);
+  const [statisticsDone, setStatisticsDone] = useState<boolean>(false);
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
   const currentWord: WordGameType | undefined = words?.find(
@@ -98,6 +111,38 @@ const AudioCall = () => {
       playAudio(errorAudio.default);
     }
   };
+
+  async function updateUserStatistics(
+    correctAnswers: number,
+    wrongAnswers: number
+  ) {
+    if (token && userId) {
+      const fullUrl = `${url}users/${JSON.parse(userId)}/statistics`;
+      await getUserData(fullUrl, JSON.parse(token))
+        .then((responseData: any) => {
+          const callData = responseData?.call || {};
+
+          const dateNow = new Date().getDate();
+          const prevCorrectAnswers = callData[dateNow]?.correctAnswers || 0;
+          const prevWrongAnswers = callData[dateNow]?.wrongAnswers || 0;
+
+          callData[dateNow] = {
+            correctAnswers: correctAnswers + prevCorrectAnswers,
+            wrongAnswers: wrongAnswers + prevWrongAnswers,
+          };
+
+          const fullUrl = `${url}users/${JSON.parse(userId)}/statistics`;
+          const bearerToken = JSON.parse(token);
+          if (!statisticsDone) {
+            setUserData(fullUrl, bearerToken, { call: callData });
+            setStatisticsDone(true);
+          }
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    }
+  }
 
   useEffect(() => {
     const handleUserKeyPress = (e: any) => {
@@ -163,7 +208,6 @@ const AudioCall = () => {
     if (words[wordIndex + 1]) {
       playAudioWord(words[wordIndex + 1].word.audio);
     } else {
-      console.log("end of the game!");
     }
   };
 
@@ -173,6 +217,7 @@ const AudioCall = () => {
   };
 
   const continueGame = () => {
+    setStatisticsDone(false);
     setWords(null);
   };
 
@@ -201,6 +246,7 @@ const AudioCall = () => {
           (wrongWord) =>
             `${wrongWord.word.word} - ${wrongWord.word.wordTranslate}`
         );
+      updateUserStatistics(correctWords.length, wrongWords.length);
 
       return (
         <div className="audio-call-game">
