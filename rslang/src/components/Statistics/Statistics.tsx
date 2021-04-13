@@ -64,10 +64,6 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
   // console.log(arrWordsLearnedToday);
 
   useEffect(() => {
-    // setWordsLearnedToday(
-    //   (wordsLearnedToday[ARRAY_OF_DATES.length - 1] =
-    //     statisticUser.vocabulary.learnedWords)
-    // );
     setLearnedWords(props.allStatistics.vocabulary.learnedWords);
     setBestSeries(props.allStatistics.vocabulary.bestSeries);
     setCorrectAnswer(props.allStatistics.vocabulary.correctAnswer);
