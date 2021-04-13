@@ -7,7 +7,7 @@ import { Container, Card, Button } from "react-bootstrap";
 import Sprint from "../../assets/img/sprint.png";
 import Puzzle from "../../assets/img/puzzle.png";
 import Call from "../../assets/img/call.png";
-import OurGame from "../../assets/img/our-game.png";
+import OurGameImg from "../../assets/img/our-game.png";
 import Savanna from "../../assets/img/savanna.png";
 import SpeakIt from "../../assets/img/speak-it.png";
 
@@ -15,6 +15,7 @@ import AudioCall from "./AudioCall/AudioCall";
 import Savannah from "./Savanna/Savanna";
 import SprintGame from "./Sprint/SprintGame";
 import Speakit from "./Speakit/Speakit";
+import OurGame from "./OurGame/OurGame";
 
 interface InterfaceGames {}
 
@@ -59,8 +60,8 @@ const Games: React.FC<InterfaceGames> = (props) => {
       styleClass: "card-mini-game-5",
     },
     {
-      name: "Наша игра",
-      image: OurGame,
+      name: "Концентрация",
+      image: OurGameImg,
       url: "our-game",
       styleClass: "card-mini-game-6",
     },
@@ -96,6 +97,9 @@ const Games: React.FC<InterfaceGames> = (props) => {
           </Route>
           <Route path={`${basePathName}/speak-it`}>
             <Speakit />
+          </Route>
+          <Route path={`${basePathName}/our-game`}>
+            <OurGame />
           </Route>
           <Route path={basePathName}>{gameCardElements}</Route>
         </Switch>
