@@ -29,6 +29,7 @@ interface InterfaceNewWordsSection {
   onGetDeletedWords(arr: any): void;
   onGetCorrectAnswer(arr: any): void;
   onGetBestSeries(arr: any): void;
+  onGetLearnedWordToday(arr: any): void;
 }
 
 const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
@@ -170,6 +171,7 @@ const NewWordsSection: React.FC<InterfaceNewWordsSection> = (props) => {
       setTestButtonText("Следующее слово");
       setTestButtonArrow(BsArrowRight);
       props.onGetLearnedWords(newWords[cardNumber]);
+      props.onGetLearnedWordToday(newWords[cardNumber]);
     } else {
       setTestButtonText("Проверить");
       setTestButtonArrow(BsArrowUp);
