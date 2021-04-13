@@ -282,9 +282,8 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
                       <small className="text-muted">Front-end Developer</small>
                     </p>
                     <p className="card-text">
-                      This is a wider card with supporting text below as a
-                      natural lead-in to additional content. This content is a
-                      little bit longer.
+                      Реализовала мини-игру "Аудиовызов", блок выбора уровня
+                      сложности, стартовый экран игры, результаты.
                     </p>
                   </div>
                 </div>
