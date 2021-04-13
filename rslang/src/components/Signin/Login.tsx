@@ -1,9 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./signin.scss";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Form, Modal } from "react-bootstrap";
-import useLocalStorage from "../../hooks/useLocalStorage";
 import getUserData from "../../api/getUserData";
 import setUserData from "../../api/setUserData";
 import { Redirect } from 'react-router';
@@ -11,11 +10,28 @@ import { url, defSettingsData, defStatisticsData } from "../../api/defData";
 
 const Login = () => {
   const { register, handleSubmit, errors } = useForm();
-  const [message, setMessage] = useState<any>(null);
   const [isLoged, setLoged] = useState(false);
-  
-  let token = "";
-  let userId = "";
+  const [needLogin, setNeedLogin] = useState(false);
+  const [message, setMessage] = useState<any>(null);
+
+  const localToken = localStorage.getItem('token');
+  const localUserId = localStorage.getItem('userId');
+  let token = localToken ? JSON.parse(localToken) : '';
+  let userId = localUserId ? JSON.parse(localUserId) : '';
+    
+  useEffect(() => {
+    if (token) {
+    const fullUrl = `${url}users/${userId}/statistics`;
+    getUserData(fullUrl, token).then(( responseData:any ) => {
+    localStorage.setItem("statistics", JSON.stringify(responseData))
+      setTimeout(() => { setLoged(true) }, 1000);
+    }).catch(error => {
+      console.log(error.message)
+      setMessage({ data: "Токен устарел, введите данные для входа", type: "" });
+      setTimeout(() => { setNeedLogin(true)}, 1000);
+    });
+    } else { setTimeout(() => {setNeedLogin(true)}, 1000) }
+  }, [token, userId])
 
   async function api<T>(url: string, data: any): Promise<T> {
    const init: RequestInit = {
@@ -58,15 +74,11 @@ const Login = () => {
 
   const getSettings = () => {
     if(userId && token) {
-    console.log(userId, token)
     const fullUrl = `${url}users/${userId}/settings`;
     getUserData(fullUrl, token).then(( responseData:any ) => {
     localStorage.setItem("settings", JSON.stringify(responseData))
     }).catch(error => {
-      setMessage({
-        data: "Создание новых данных",
-        type: "",
-      });
+      setMessage({ data: "Создание новых данных", type: "" });
       setUserData(fullUrl, token, defSettingsData).then(( responseData:any ) => {
       localStorage.setItem("settings", JSON.stringify(responseData))
     }).catch(error => {
@@ -90,7 +102,6 @@ const Login = () => {
       data: "Вход выполнен",
       type: "",
     });
-    console.log(responseData)
     token = responseData.token;
     userId = responseData.userId;
     setTimeout(setMessage, 4000);
@@ -134,6 +145,7 @@ const Login = () => {
     <>
       <Modal.Body>
         {isLoged && <Redirect to="/tutorial-page"/>}
+        {needLogin &&
              <Form>
               <div className="message">
                 {message && (
@@ -214,7 +226,7 @@ const Login = () => {
             )}
           </Form.Text>
         </Form.Group>
-      </Form>
+      </Form>}
     </Modal.Body>      
     <Modal.Footer>      
       <Button variant="primary"
