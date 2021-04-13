@@ -42,11 +42,13 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    overflow: hidden;
     
     .question-wrapper{
       height: 100%;
       width: 50%;
       text-align: center;
+      overflow: hidden;
     }
 
     .answers-wrapper{
@@ -90,29 +92,16 @@
 
     }
     }
-
-
   }
-}
-      .word-quest{
-        font-size: 2rem;
-        position: relative;
-        left: 0vw;
-        border-radius: 30px;
-        text-transform: uppercase;
-        padding: 20px;
-        animation-name: word-quest;
-        animation-timing-function: ease-in-out;
-        animation-duration: 10s;
-        animation-iteration-count: initial;
-      }
 
+  .word-quest{
+    font-size: 2rem;
+    position: relative;
+    left: 0vw;
+    border-radius: 30px;
+    text-transform: uppercase;
+    padding: 20px;
+    overflow: hidden;
+  }
 
-@keyframes word-quest {
-  15% {
-    transform: translateY(0);
-  }
-  95% {
-    transform: translateY(230px);
-  }
 }
