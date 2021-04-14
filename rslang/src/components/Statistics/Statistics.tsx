@@ -37,7 +37,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
   );
 
   const ARRAY_OF_DATES: any = [];
-  const D = new Date(statisticUser.optional.regDate);
+  const D = new Date(props.allStatistics.optional.regDate);
   const Till = new Date();
 
   function pad(s: any) {
@@ -51,7 +51,8 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
       );
       D.setDate(D.getDate() + 1);
     }
-  }, [Till]);
+    ARRAY_OF_DATES.push(Till);
+  }, []);
 
   useEffect(() => {
     setLearnedWords(props.allStatistics.vocabulary.learnedWords);
@@ -66,19 +67,21 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
   }, [statisticUser]);
 
   useEffect(() => {
-    if (arrWordsLearnedToday.length === 0) {
+    if (props.allStatistics.vocabulary.graphStatisticsDaily.length === 0) {
       arrWordsLearnedToday[0] = statisticUser.vocabulary.learnedWordToday;
     } else {
-      arrWordsLearnedToday[arrWordsLearnedToday.length - 1] =
+      arrWordsLearnedToday[arrWordsLearnedToday.length] =
         statisticUser.vocabulary.learnedWordToday;
     }
   }, [arrWordsLearnedToday]);
 
   useEffect(() => {
-    if (arrWordsLearnedAll.length === 0) {
+    if (
+      props.allStatistics.vocabulary.graphStatisticsAllProgress.length === 0
+    ) {
       arrWordsLearnedAll[0] = statisticUser.vocabulary.learnedWords;
     } else {
-      arrWordsLearnedAll[arrWordsLearnedAll.length - 1] =
+      arrWordsLearnedAll[arrWordsLearnedAll.length] =
         statisticUser.vocabulary.learnedWords;
     }
   }, [arrWordsLearnedAll]);
