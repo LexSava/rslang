@@ -53,12 +53,13 @@ const Main: React.FC<InterfaceMain> = (props) => {
   const tokenUse: any = JSON.parse(token);
   const Id: any = JSON.parse(userId);
 
-  schedule.scheduleJob("0 0 * * *", () => {
+  schedule.scheduleJob("59 23 * * *", () => {
     setLearnedWordToday([]);
+    setPage(0);
     console.log("YES");
   });
 
-  schedule.scheduleJob("59 23 * * *", () => {
+  schedule.scheduleJob("58 23 * * *", () => {
     setGraphStatisticsDaily([...graphStatisticsDaily, learnedWordToday.length]);
     setGraphStatisticsAllProgress([
       ...graphStatisticsAllProgress,
@@ -82,8 +83,11 @@ const Main: React.FC<InterfaceMain> = (props) => {
   //   ]);
   // });
 
-  // console.log(graphStatisticsDaily);
-  // console.log(graphStatisticsAllProgress);
+  // schedule.scheduleJob("0 * * * * *", () => {
+  //   setLearnedWordToday([]);
+  //   setPage(0);
+  //   console.log("YES");
+  // });
 
   async function setUserStatistics() {
     if (tokenUse && Id) {
