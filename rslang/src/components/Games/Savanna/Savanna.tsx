@@ -316,6 +316,7 @@ const Savannah = () => {
   
   const answersButtons = () => {
     const buttonsArr: JSX.Element[] = [];
+    if (buttons) {
     buttons.forEach((button:any, i) => {
       buttonsArr.push(<>
       <Button onClick={() => setAnswer(button)} 
@@ -329,6 +330,7 @@ const Savannah = () => {
         {button}
       </Button></>)
     });
+    }
     return buttonsArr;
   };
   const questionWord = (

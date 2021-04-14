@@ -11,6 +11,7 @@ import {
   ProgressBar } from "react-bootstrap";
 import { BsVolumeMute, BsFillVolumeUpFill, BsArrowRepeat } from "react-icons/bs";
 import { BiBell, BiBellOff, BiExit } from "react-icons/bi";
+import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
 import { Redirect } from "react-router";
@@ -58,7 +59,7 @@ const defWordsCards = (<div className="words-cards">Нет ничего</div>)
 
 const settingsLocal:string | null = localStorage.getItem('settings');
   const locSettings:AllSettings = settingsLocal ? JSON.parse(settingsLocal) : {savanna: {sound: true, speak: true}};
-  const settings:Settings = locSettings.savanna;
+  const settings:Settings = locSettings.ourgame;
   const {sound, speak} = settings;
   const [words, setWords] = useState<Array<word> | null>(null);
   const [wordsSet, setWordsSet] = useState<Array<word> | null>(null);
@@ -117,30 +118,32 @@ const settingsLocal:string | null = localStorage.getItem('settings');
   
   useEffect(() => {
     if (wordsSet) {
+      const slicedWordSet = wordsSet.slice(0, NUM_OF_ANSWERS);
       const wordsCards:JSX.Element[] = [];
       const wordsAnswers:wordsAnswersType = {};
-      wordsSet.forEach((word: word, i) => {
+      slicedWordSet.forEach((word: word, i) => {
         const wordCard = 
-        (<Card className={`${word.word}`} 
-          onClick={(e:any) => {console.log(e.target)}}>
-          <Card.Body className={`body-${word.word} ${i}`}>
-            {word.word}
-          </Card.Body>
+          (<Card key={word.word}
+            onClick={(e:any) => {console.log(e.target)}}>
+            <Card.Body className={`body-${word.word} ${i}`}>
+              {word.word}
+            </Card.Body>
         </Card>);
         
-      const wordTrCard = 
-        (<Card className={`${word.wordTranslate}`} 
-          onClick={(e:any) => {console.log(e.target)}}>
-          <Card.Body className={`body-${word.wordTranslate} ${i}`}>
-            {word.wordTranslate}
-          </Card.Body>
+        const wordTrCard = 
+          (<Card key={word.wordTranslate} 
+            onClick={(e:any) => {console.log(e.target)}}>
+            <Card.Body className={`body-${word.wordTranslate} ${i}`}>
+              {word.wordTranslate}
+            </Card.Body>
         </Card>);
-      wordsCards.push(wordCard, wordTrCard);
-      wordsAnswers[word.word] = word.wordTranslate;
-    });
-    setWordsAnswers(wordsAnswers);
-    setWordsCards(shuffleWords(wordsCards))
-    } 
+
+        wordsCards.push(wordCard, wordTrCard);
+        wordsAnswers[word.word] = word.wordTranslate;
+      });
+      setWordsAnswers(wordsAnswers);
+      setWordsCards(shuffleWords(wordsCards))
+    }
   }, [wordsSet])
 
   const ModalFrame = (
@@ -171,6 +174,22 @@ const settingsLocal:string | null = localStorage.getItem('settings');
     </Modal>
   );
 
+  const attemptsBar = <><ProgressBar className="attempts"  variant="danger" now={lives} label={`${lives / 20}`} /></>;
+  const progressBar = <><ProgressBar className="progress" variant="success" now={(attempt) * 5} label={`${(attempt) * 5}%`} /></>;
+
+  const UrgeWithPleasureComponent = () => (
+    <CountdownCircleTimer
+      isPlaying
+      duration={10}
+      colors={[
+        ['#004777', 0.33],
+        ['#F7B801', 0.33],
+        ['#A30000', 0.33],
+      ]}
+    >
+    {({ remainingTime }) => remainingTime}
+    </CountdownCircleTimer>
+  )
   const buttonsBar = (
     <ButtonToolbar className="btns-toolbar">
       <ButtonGroup toggle className="btn-group" aria-label="First group">
@@ -197,14 +216,13 @@ const settingsLocal:string | null = localStorage.getItem('settings');
           )}
         </Button>
       </ButtonGroup>
+        {UrgeWithPleasureComponent}
+        {attemptsBar}
     </ButtonToolbar>
   );
-
-  const progressBar = <><ProgressBar variant="success" now={(attempt) * 5} label={`${(attempt) * 5}%`} /></>;
-  const attemptsBar = <><ProgressBar className="rating"  variant="danger" now={lives} label={`${lives / 20}`} /></>;
   
   const gameWrapper = (
-      <div className="ourgames-cards">
+      <div className="ourgame-cards">
         {wordsCards}
       </div>
   );
@@ -222,7 +240,7 @@ const settingsLocal:string | null = localStorage.getItem('settings');
   );
 
 return (
-    <div className="ourgame" id="ourgame">
+    <div className="ourgame">
       <FullScreenWrapper>
         {exit && <Redirect to="/tutorial-page/games" />}
         {ModalFrame}
