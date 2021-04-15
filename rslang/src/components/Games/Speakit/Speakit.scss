@@ -1,0 +1,167 @@
+.speak-it {
+  min-height: 70vh;
+  min-width: 100%;
+
+  .speak-it-game {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  .menu {
+    margin-bottom: 10px;
+
+    .menu-wrapper {
+      display: flex;
+      justify-content: space-between;
+
+      .rating{
+        margin: 10px;
+        width: 200px;
+        height: 30px;
+        border-radius: 10px;
+        font-size: 1.5rem;
+      }
+
+      .btns-toolbar{
+        margin: 5px;
+
+        .btn-group {
+          margin: 0 10px;
+        }
+      }
+    }
+  }
+
+  .training-wrapper,
+  .game-wrapper {
+    display: block;
+    height: 85%;
+    width: 100%;
+    
+    .info-wrapper {
+      display: flex;
+      // height: 400px;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin: 0 auto 10px auto;
+
+      .card-info:hover {
+        cursor: none;
+      }
+
+      p {
+        font-size: 20px;
+        font-weight: 700;
+        width: fit-content;
+        height: fit-content;
+        vertical-align: middle;
+        background-color: #aeaeae;
+        border-radius: 20px;
+        padding: 8px 30px;
+        margin: 20px auto 0 auto;
+      }
+      .card-body {
+        cursor: default;
+        max-height: 450px;
+        max-width: 400px;
+
+        .card-image-wrapper {
+          width: 355px;
+          height: 236px;
+          margin: 0 auto;
+      
+          .card-img-top {
+            max-height: 100%;
+            max-width: 100%;
+          }
+        }
+      
+        .text1 {
+          min-height: 45px;
+        }
+
+      }
+
+      .answer,
+      .true-answer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
+        background-color: #ccc;
+        padding: 10px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 1.5rem;
+        font-weight: 500;
+        margin: 10px auto 0 auto;
+      }
+
+      .true-answer {
+        background-color: #28a728;
+      }
+    }
+  
+    .training-button {
+      display: block;
+      width: 30rem;
+      margin: 10px auto;
+    }
+
+    .words-wrapper{
+      height: fit-content;  
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+
+      .toast:hover {
+        cursor: pointer;
+      }
+
+      .toast {
+        font-size: 18px;
+        border-radius: 10px;
+        justify-content: space-between;
+        margin: 0 10px 0.5rem 10px;
+      }
+
+      .toast-body {
+        display: flex;
+        text-align: center;
+        justify-content: space-between;
+        align-items: center;
+      
+      .toast-icons {
+        display: flex;
+        margin-right: auto;
+      }
+    }
+
+    }
+
+    .hotkey {
+      width: 25px;
+      height: 25px;
+      font-weight: 450;
+      background-color: #777;
+      border-radius: 5px;
+      margin-right: 10px;
+      padding: 3px;
+      font-size: 1.3rem;
+    }
+
+  }
+}
+
+
+
+

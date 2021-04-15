@@ -1,0 +1,105 @@
+.audio-call {
+  min-height: 70vh;
+  width: 100%;
+
+  &-game {
+    background: linear-gradient(#7d5db0, #c584a4);
+    width: 100%;
+
+    &__wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      flex-direction: column;
+    }
+  }
+
+  &__image {
+    width: 10vw;
+    margin-bottom: 3%;
+    height: 10vw;
+  }
+
+  &__listen-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: unset;
+    border-radius: 50%;
+
+    &_icon_big {
+      width: 8vw;
+      height: 8vw;
+      padding: 14%;
+    }
+
+    &_icon {
+      width: 4vw;
+      height: 4vw;
+      padding: 4%;
+    }
+  }
+
+  &__answer-btn {
+    width: 16%;
+    min-width: fit-content;
+    margin-top: 4%;
+    padding: 1%;
+  }
+
+  &__answer {
+    display: flex;
+    align-items: center;
+  }
+
+  &__answer-word {
+    font-size: 2rem;
+    color: white;
+    font-weight: bold;
+    margin-left: 3%;
+  }
+
+  &__words {
+    margin-top: 4%;
+    font-size: 1.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    width: 90%;
+    justify-content: center;
+
+    &__word {
+      display: flex;
+      padding: 25px;
+      width: fit-content;
+      margin-right: 2%;
+
+      &_active {
+        cursor: pointer;
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+      }
+
+      &_index {
+        padding-right: 12%;
+        color: rgba(255, 255, 255, 0.3);
+
+        &_icon {
+          color: rgb(115, 253, 182);
+        }
+      }
+      &_text {
+        color: white;
+        &_inactive {
+          color: rgba(255, 255, 255, 0.3);
+        }
+        &_crossed {
+          text-decoration: line-through;
+        }
+      }
+    }
+  }
+}
+
+.translucent-word-color {
+  color: rgba(255, 255, 255, 0.3);
+}

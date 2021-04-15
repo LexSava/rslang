@@ -1,0 +1,39 @@
+.logo-tutorial-page {
+  font-weight: 900;
+  font-size: 2rem;
+  margin-top: 25px;
+  padding-right: 20px;
+  font-family: "Chango", cursive;
+  text-align: left;
+}
+
+.user-name-and-avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+  }
+
+  .username {
+    text-align: center;
+    margin: 0 10px;
+  }
+}
+.user-name-and-avatar:hover {
+  font-weight: 600;
+  cursor: pointer;
+  color: rgb(1, 87, 248);
+}
+.user-name-and-avatar:active {
+
+}
+
+.login-button {
+  font-weight: 300;
+  padding: 7px 27px;
+  font-weight: 400;
+}

@@ -1,0 +1,21 @@
+.fullscreen-icon {
+  cursor: pointer;
+  float: right;
+
+  &_exit {
+    color: white;
+  }
+
+  &:hover {
+    transform: scale(1.5, 1.5);
+  }
+}
+
+.fullscreen-wrapper {
+  height: 100%;
+
+  &__game {
+    display: flex;
+    height: 100%;
+  }
+}
