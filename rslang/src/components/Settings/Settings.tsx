@@ -95,6 +95,7 @@ const Settings: React.FC<InterfaceSettings> = (props) => {
           <Button className="settings-button"
             variant={changed ? "success" : "primary"}
             onClick={()=>{newSettingsSave()}}
+            disabled={!changed}
           >Сохранить</Button>  
         <div className="user-info">
           <h3 className="username">{username}</h3>
