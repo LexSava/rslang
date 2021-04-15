@@ -61,7 +61,8 @@ const defActiveCard = {
 const Speakit = () => {
   const [words, setWords] = useState(null);
   const [wordsSet, setWordsSet] = useState<any>([]);
-  const [level, setLevel] = useState(null); //TODO: get level from book page
+  // const [level, setLevel] = useState(null); //TODO: get level from book page
+  const level = null; //TODO: get level from book page
   const [isSound, setSound] = useState(true);
   const [isMic, setMic] = useState(true);
   const [showModal, setShowModal] = useState(false);

@@ -116,7 +116,7 @@ const Main: React.FC<InterfaceMain> = (props) => {
     await getUserData(fullUrl, bearerToken)
       .then((responseData: any) => {
         setAllStatistics(responseData);
-        console.log(responseData);
+        // console.log(responseData);
       })
       .catch((error) => {
         console.log(error.message);

@@ -38,14 +38,14 @@ type WordGameType = {
   displayedWords: string[];
 };
 
-type Statistics = {
-  [key: string]: DayInfo;
-};
+// type Statistics = {
+//   [key: string]: DayInfo;
+// };
 
-type DayInfo = {
-  correctAnswers: number;
-  wrongAnswers: number;
-};
+// type DayInfo = {
+//   correctAnswers: number;
+//   wrongAnswers: number;
+// };
 
 const AudioCall = () => {
   const [words, setWords] = useState<WordGameType[] | null>(null);

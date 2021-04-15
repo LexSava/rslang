@@ -59,7 +59,8 @@ const Savannah = () => {
   ];
   const [words, setWords] = useState(null);
   const [wordsSet, setWordsSet] = useState<any>(null);
-  const [level, setLevel] = useState(null); //TODO: get level from book page
+  // const [level, setLevel] = useState(null); //TODO: get level from book page
+  const level = null;
   const [questWordStyle, setQuestWordStyle] = useState(questWordStyleDef);
   const [soundOff, setSoundOff] = useState(sound);
   const [isSpeak, setIsSpeak] = useState(speak);

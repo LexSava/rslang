@@ -29,18 +29,6 @@ const Games: React.FC<InterfaceGames> = (props) => {
   const basePathName = "/tutorial-page/games";
   const gameCards: GameCardType[] = [
     {
-      name: "Скажи это",
-      image: SpeakIt,
-      url: "speak-it",
-      styleClass: "card-mini-game-1",
-    },
-    {
-      name: "Паззл",
-      image: Puzzle,
-      url: "puzzle",
-      styleClass: "card-mini-game-2",
-    },
-    {
       name: "Саванна",
       image: Savanna,
       url: "savanna",
@@ -59,11 +47,11 @@ const Games: React.FC<InterfaceGames> = (props) => {
       styleClass: "card-mini-game-5",
     },
     {
-      name: "Наша игра",
-      image: OurGame,
-      url: "our-game",
-      styleClass: "card-mini-game-6",
-    },
+      name: "Скажи это",
+      image: SpeakIt,
+      url: "speak-it",
+      styleClass: "card-mini-game-1",
+    }
   ];
 
   const gameCardElements = gameCards.map((card, index) => {
