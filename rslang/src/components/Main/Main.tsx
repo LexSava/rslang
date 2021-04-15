@@ -50,7 +50,7 @@ const Main: React.FC<InterfaceMain> = (props) => {
     new Date(allStatistics.optional.regDate).getDate()
   );
   const Till = new Date().getDate();
-  
+
   let [page, setPage] = useLocalStorage("page", 0);
   const urlWords = `https://rocky-basin-33827.herokuapp.com/words?page=${page}&group=0`;
   const token: any = localStorage.getItem("token");
@@ -73,20 +73,6 @@ const Main: React.FC<InterfaceMain> = (props) => {
       setDateNow(Till);
     }
   }, [Till]);
-  console.log(dateNow);
-
-  // schedule.scheduleJob("09 0 * * *", () => {
-  //   setLearnedWordToday([]);
-  //   console.log("YES");
-  // });
-
-  // schedule.scheduleJob("0 0 * * *", () => {
-  //   setGraphStatisticsDaily([...graphStatisticsDaily, learnedWordToday.length]);
-  //   setGraphStatisticsAllProgress([
-  //     ...graphStatisticsAllProgress,
-  //     learnedWords.length,
-  //   ]);
-  // });
 
   useEffect(() => {
     if (learnedWordToday.length / 20 === page + 1) {
@@ -135,7 +121,6 @@ const Main: React.FC<InterfaceMain> = (props) => {
     await getUserData(fullUrl, bearerToken)
       .then((responseData: any) => {
         setAllStatistics(responseData);
-        console.log(responseData);
       })
       .catch((error) => {
         console.log(error.message);
