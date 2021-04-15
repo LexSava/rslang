@@ -1,7 +1,14 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Speakit.scss";
 import { useState, useEffect } from "react";
-import { Button, ButtonGroup, ButtonToolbar, Card, Modal, ProgressBar, Toast } from "react-bootstrap";
+import { 
+  Button,
+  ButtonGroup,
+  ButtonToolbar,
+  Card,
+  Modal,
+  ProgressBar,
+  Toast } from "react-bootstrap";
 import { BsFillVolumeUpFill, BsArrowRepeat } from "react-icons/bs";
 import { BiBell, BiBellOff, BiExit, BiMicrophone, BiMicrophoneOff } from "react-icons/bi";
 import FullScreenWrapper from "../../FullScreenWrapper/FullScreenWrapper";
@@ -446,7 +453,7 @@ const Speakit = () => {
     <div className="menu">
       {progressBar}
       <div className="menu-wrapper">
-      {buttonsBar}
+        {buttonsBar}
       </div>
     </div>
       {isTraining ? trainingeWrapper : gameWrapper}
@@ -480,3 +487,4 @@ const Speakit = () => {
 };
 
 export default Speakit;
+  

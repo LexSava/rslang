@@ -7,7 +7,7 @@ import { Container, Card, Button } from "react-bootstrap";
 import Sprint from "../../assets/img/sprint.png";
 import Puzzle from "../../assets/img/puzzle.png";
 import Call from "../../assets/img/call.png";
-import OurGame from "../../assets/img/our-game.png";
+import OurGameImg from "../../assets/img/our-game.png";
 import Savanna from "../../assets/img/savanna.png";
 import SpeakIt from "../../assets/img/speak-it.png";
 
