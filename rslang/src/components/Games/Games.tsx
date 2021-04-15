@@ -57,7 +57,7 @@ const Games: React.FC<InterfaceGames> = (props) => {
   const gameCardElements = gameCards.map((card, index) => {
     const styleClasses = `border-0 shadow bg-body m-3 card-mini-game ${card.styleClass}`;
     return (
-      <Link to={`${basePathName}/${card.url}`} key={index}>
+      <Link to={`${basePathName}/${card.url}`} key={index} className="games-link">
         <Card style={{ width: "20rem" }} className={styleClasses}>
           <Card.Img variant="top" className="img-mini-game" src={card.image} />
           <Card.Body>
@@ -71,7 +71,7 @@ const Games: React.FC<InterfaceGames> = (props) => {
 
   return (
     <Container className="min-vh-100 p-0 border border-top-0 m-0">
-      <Container className="d-flex justify-content-around flex-wrap  p-5 bg-light m-0">
+      <Container className="d-flex justify-content-around flex-wrap p-5 bg-light m-0">
         <Switch>
           <Route path={`${basePathName}/call`}>
             <AudioCall />

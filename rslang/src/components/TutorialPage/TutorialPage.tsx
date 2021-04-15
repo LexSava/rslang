@@ -11,6 +11,7 @@ interface InterfaceTutorialPage {}
 
 const TutorialPage: React.FC<InterfaceTutorialPage> = (props) => {
   const avatar: string | null = localStorage.getItem("userpic") || "";
+  const username: string | null = localStorage.getItem("username") || "";
   const avatarUrl = `${url}${JSON.parse(avatar)}`;
 
   return (
@@ -19,7 +20,10 @@ const TutorialPage: React.FC<InterfaceTutorialPage> = (props) => {
         <Link to="/" className="link-logo-block text-primary">
           <h1 className="logo-tutorial-page text-dark m-0">RS Lang</h1>
         </Link>
+        <Link to="/tutorial-page/settings" className="user-name-and-avatar">
         {avatar && <img className="avatar" src={avatarUrl} alt="avatar" />}
+        {username && <p className="username">{JSON.parse(username)}</p>}
+        </Link>
         <SignOut />
       </Container>
       <Menu />
