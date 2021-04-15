@@ -51,7 +51,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
       );
       D.setDate(D.getDate() + 1);
     }
-    ARRAY_OF_DATES.push(Till);
+    // ARRAY_OF_DATES.push(Till);
   }, []);
 
   useEffect(() => {

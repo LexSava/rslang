@@ -13,7 +13,6 @@ import setUserData from "../../api/setUserData";
 import getWords from "../../api/getWords";
 import { url } from "../../api/defData";
 import _ from "lodash";
-
 interface InterfaceMain {}
 
 const Main: React.FC<InterfaceMain> = (props) => {
@@ -44,8 +43,8 @@ const Main: React.FC<InterfaceMain> = (props) => {
     graphStatisticsAllProgress,
     setGraphStatisticsAllProgress,
   ] = useLocalStorage("graphStatisticsAllProgress", []);
-  const [dateNow, setDateNow] = useLocalStorage("dateNow", "");
   const Till = new Date().getDate();
+  const [dateNow, setDateNow] = useLocalStorage("dateNow", 0);
 
   let [page, setPage] = useLocalStorage("page", 0);
   const urlWords = `https://rocky-basin-33827.herokuapp.com/words?page=${page}&group=0`;
@@ -54,7 +53,6 @@ const Main: React.FC<InterfaceMain> = (props) => {
   const tokenUse: any = JSON.parse(token);
   const Id: any = JSON.parse(userId);
 
-  useEffect(() => {}, [allStatistics]);
   useEffect(() => {
     if (dateNow < Till) {
       setGraphStatisticsDaily([
@@ -118,7 +116,6 @@ const Main: React.FC<InterfaceMain> = (props) => {
     await getUserData(fullUrl, bearerToken)
       .then((responseData: any) => {
         setAllStatistics(responseData);
-        setDateNow(new Date(responseData.optional.regDate).getDate());
         console.log(responseData);
       })
       .catch((error) => {
