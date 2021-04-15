@@ -13,9 +13,6 @@ import setUserData from "../../api/setUserData";
 import getWords from "../../api/getWords";
 import { url } from "../../api/defData";
 import _ from "lodash";
-
-const urlWords = `https://rocky-basin-33827.herokuapp.com/words?page=2&group=0`;
-
 interface InterfaceMain {}
 
 const Main: React.FC<InterfaceMain> = (props) => {
@@ -29,15 +26,54 @@ const Main: React.FC<InterfaceMain> = (props) => {
   const [deletedWords, setDeletedWords] = useLocalStorage("deletedWords", "");
   const [correctAnswer, setCorrectAnswer] = useLocalStorage("correctAnswer", 0);
   const [bestSeries, setBestSeries] = useLocalStorage("bestSeries", 0);
+  const [learnedWordToday, setLearnedWordToday] = useLocalStorage(
+    "learnedWordToday",
+    []
+  );
   const [sortingDeletedWords, setSortingDeletedWords] = useLocalStorage(
     "sortingDeletedWords",
     ""
   );
 
+  const [graphStatisticsDaily, setGraphStatisticsDaily] = useLocalStorage(
+    "graphStatisticsDaily",
+    []
+  );
+  const [
+    graphStatisticsAllProgress,
+    setGraphStatisticsAllProgress,
+  ] = useLocalStorage("graphStatisticsAllProgress", []);
+  const Till = new Date().getDate();
+  const [dateNow, setDateNow] = useLocalStorage("dateNow", 0);
+
+  let [page, setPage] = useLocalStorage("page", 0);
+  const urlWords = `https://rocky-basin-33827.herokuapp.com/words?page=${page}&group=0`;
   const token: any = localStorage.getItem("token");
   const userId: any = localStorage.getItem("userId");
   const tokenUse: any = JSON.parse(token);
   const Id: any = JSON.parse(userId);
+
+  useEffect(() => {
+    if (dateNow < Till) {
+      setGraphStatisticsDaily([
+        ...graphStatisticsDaily,
+        learnedWordToday.length,
+      ]);
+      setGraphStatisticsAllProgress([
+        ...graphStatisticsAllProgress,
+        learnedWords.length,
+      ]);
+      setLearnedWordToday([]);
+
+      setDateNow(Till);
+    }
+  }, [Till]);
+
+  useEffect(() => {
+    if (learnedWordToday.length / 20 === page + 1) {
+      setPage(++page);
+    }
+  }, [learnedWordToday]);
 
   async function setUserStatistics() {
     if (tokenUse && Id) {
@@ -46,6 +82,9 @@ const Main: React.FC<InterfaceMain> = (props) => {
           learnedWords: learnedWords.length,
           correctAnswer: correctAnswer,
           bestSeries: bestSeries,
+          learnedWordToday: learnedWordToday.length,
+          graphStatisticsDaily: graphStatisticsDaily,
+          graphStatisticsAllProgress: graphStatisticsAllProgress,
         },
       };
       const fullUrl = `${url}users/${Id}/statistics`;
@@ -67,6 +106,9 @@ const Main: React.FC<InterfaceMain> = (props) => {
     correctAnswer,
     bestSeries,
     sortingDeletedWords,
+    graphStatisticsDaily,
+    learnedWordToday,
+    graphStatisticsAllProgress,
   ]);
 
   async function getStatistic(url: string, bearerToken: string) {
@@ -74,7 +116,7 @@ const Main: React.FC<InterfaceMain> = (props) => {
     await getUserData(fullUrl, bearerToken)
       .then((responseData: any) => {
         setAllStatistics(responseData);
-        console.log(responseData);
+        // console.log(responseData);
       })
       .catch((error) => {
         console.log(error.message);
@@ -100,7 +142,7 @@ const Main: React.FC<InterfaceMain> = (props) => {
 
   useEffect(() => {
     getData(url, "");
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     setSortingDeletedWords(
@@ -111,9 +153,15 @@ const Main: React.FC<InterfaceMain> = (props) => {
   const getHardWords = (arr: any) => {
     setHardWords(_.uniqWith(hardWords.concat(arr), _.isEqual));
   };
+
   const getLearnedWords = (arr: any) => {
     setLearnedWords(_.uniqWith(learnedWords.concat(arr), _.isEqual));
   };
+
+  const getLearnedWordToday = (arr: any) => {
+    setLearnedWordToday(_.uniqWith(learnedWordToday.concat(arr), _.isEqual));
+  };
+
   const getDeletedWords = (arr: any) => {
     setDeletedWords(_.uniqWith(deletedWords.concat(arr), _.isEqual));
   };
@@ -134,11 +182,14 @@ const Main: React.FC<InterfaceMain> = (props) => {
           hardWords={hardWords}
           deletedWords={deletedWords}
           learnedWords={learnedWords}
+          learnedWordToday={learnedWordToday}
+          page={page}
           getHardWords={getHardWords}
           getLearnedWords={getLearnedWords}
           getDeletedWords={getDeletedWords}
           getCorrectAnswer={getCorrectAnswer}
           getBestSeries={getBestSeries}
+          getLearnedWordToday={getLearnedWordToday}
         />
       </Route>
       <Route path="/tutorial-page/vocabulary">

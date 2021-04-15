@@ -37,13 +37,10 @@ const Register = () => {
 
   async function avatar<T>(file: any, userId: string): Promise<T> {
     const fullUrl = `${url}avatar`;
-    console.log(file)
     const formData:any = new FormData();
     const newFileName = userId + '.jpg';
     formData.append("file", file[0], newFileName);
-    console.log(formData)
     const init: RequestInit = {
-    mode: 'no-cors',
     method: 'POST',
     headers: {
       'Accept': 'application/json'
@@ -76,10 +73,8 @@ const Register = () => {
       type: "",
     });
     setTimeout(setMessage, 5000)
-    console.log(responseData)
     if (userData.userpic === custom) {
     avatar<any>(userData.file, responseData.id).then(( res:any ) => {
-      console.log(res)
       }).catch(error => {
       console.log(error)
       })

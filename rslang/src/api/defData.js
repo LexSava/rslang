@@ -7,13 +7,13 @@ export const numOfPages = 30;
 export const defSettingsData = {
     "wordsPerDay": 20,
     "optional": {},
-    "vocabulary": {},
-    "savanna": {sound: true, speak: true},
+    "vocabulary": {strong: true, deleted: true, translate: true},
+    "savanna": { sound: true, speak: true },
     "call": {},
     "sprint": {},
     "puzzle": {},
     "ourgame": {},
-    "speakit": {sound: true}
+    "speakit": { sound: true }
 };
 
 export let defStatisticsData = {

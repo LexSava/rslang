@@ -15,7 +15,6 @@ import AudioCall from "./AudioCall/AudioCall";
 import Savannah from "./Savanna/Savanna";
 import SprintGame from "./Sprint/SprintGame";
 import Speakit from "./Speakit/Speakit";
-import OurGame from "./OurGame/OurGame";
 
 interface InterfaceGames {}
 
@@ -29,18 +28,6 @@ type GameCardType = {
 const Games: React.FC<InterfaceGames> = (props) => {
   const basePathName = "/tutorial-page/games";
   const gameCards: GameCardType[] = [
-    {
-      name: "Скажи это",
-      image: SpeakIt,
-      url: "speak-it",
-      styleClass: "card-mini-game-1",
-    },
-    {
-      name: "Паззл",
-      image: Puzzle,
-      url: "puzzle",
-      styleClass: "card-mini-game-2",
-    },
     {
       name: "Саванна",
       image: Savanna,
@@ -60,17 +47,17 @@ const Games: React.FC<InterfaceGames> = (props) => {
       styleClass: "card-mini-game-5",
     },
     {
-      name: "Концентрация",
-      image: OurGameImg,
-      url: "our-game",
-      styleClass: "card-mini-game-6",
-    },
+      name: "Скажи это",
+      image: SpeakIt,
+      url: "speak-it",
+      styleClass: "card-mini-game-1",
+    }
   ];
 
   const gameCardElements = gameCards.map((card, index) => {
     const styleClasses = `border-0 shadow bg-body m-3 card-mini-game ${card.styleClass}`;
     return (
-      <Link to={`${basePathName}/${card.url}`} key={index}>
+      <Link to={`${basePathName}/${card.url}`} key={index} className="games-link">
         <Card style={{ width: "20rem" }} className={styleClasses}>
           <Card.Img variant="top" className="img-mini-game" src={card.image} />
           <Card.Body>
@@ -84,7 +71,7 @@ const Games: React.FC<InterfaceGames> = (props) => {
 
   return (
     <Container className="min-vh-100 p-0 border border-top-0 m-0">
-      <Container className="d-flex justify-content-around flex-wrap  p-5 bg-light m-0">
+      <Container className="d-flex justify-content-around flex-wrap p-5 bg-light m-0">
         <Switch>
           <Route path={`${basePathName}/call`}>
             <AudioCall />
@@ -97,9 +84,6 @@ const Games: React.FC<InterfaceGames> = (props) => {
           </Route>
           <Route path={`${basePathName}/speak-it`}>
             <Speakit />
-          </Route>
-          <Route path={`${basePathName}/our-game`}>
-            <OurGame />
           </Route>
           <Route path={basePathName}>{gameCardElements}</Route>
         </Switch>

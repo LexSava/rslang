@@ -18,10 +18,13 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
   const [statisticUser, setStatisticUser] = useState<any>(props.allStatistics);
   const [barData, setBarData] = useState<any>({});
   const [lineData, setLineData] = useState<any>({});
-  const [wordsLearnedToday, setWordsLearnedToday] = useState<any>([]);
   const [arrWordsLearnedToday, setArrWordsLearnedToday] = useLocalStorage(
     "arrWordsLearnedToday",
-    ""
+    []
+  );
+  const [arrWordsLearnedAll, setArrWordsLearnedAll] = useLocalStorage(
+    "arrWordsLearnedAll",
+    []
   );
   const [learnedWords, setLearnedWords] = useLocalStorage(
     "learnedWordsStatistic",
@@ -33,11 +36,8 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
     0
   );
 
-  console.log(statisticUser);
-  console.log(statisticUser.optional.regDate);
-
   const ARRAY_OF_DATES: any = [];
-  const D = new Date(statisticUser.optional.regDate);
+  const D = new Date(props.allStatistics.optional.regDate);
   const Till = new Date();
 
   function pad(s: any) {
@@ -51,21 +51,40 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
       );
       D.setDate(D.getDate() + 1);
     }
-  }, [Till]);
+    // ARRAY_OF_DATES.push(Till);
+  }, []);
 
   useEffect(() => {
-    setWordsLearnedToday(
-      (wordsLearnedToday[ARRAY_OF_DATES.length - 1] =
-        statisticUser.learnedWords)
-    );
     setLearnedWords(props.allStatistics.vocabulary.learnedWords);
     setBestSeries(props.allStatistics.vocabulary.bestSeries);
     setCorrectAnswer(props.allStatistics.vocabulary.correctAnswer);
+    setArrWordsLearnedToday(
+      props.allStatistics.vocabulary.graphStatisticsDaily
+    );
+    setArrWordsLearnedAll(
+      props.allStatistics.vocabulary.graphStatisticsAllProgress
+    );
   }, [statisticUser]);
 
   useEffect(() => {
-    setArrWordsLearnedToday(wordsLearnedToday);
-  }, [wordsLearnedToday]);
+    if (props.allStatistics.vocabulary.graphStatisticsDaily.length === 0) {
+      arrWordsLearnedToday[0] = statisticUser.vocabulary.learnedWordToday;
+    } else {
+      arrWordsLearnedToday[arrWordsLearnedToday.length] =
+        statisticUser.vocabulary.learnedWordToday;
+    }
+  }, [arrWordsLearnedToday]);
+
+  useEffect(() => {
+    if (
+      props.allStatistics.vocabulary.graphStatisticsAllProgress.length === 0
+    ) {
+      arrWordsLearnedAll[0] = statisticUser.vocabulary.learnedWords;
+    } else {
+      arrWordsLearnedAll[arrWordsLearnedAll.length] =
+        statisticUser.vocabulary.learnedWords;
+    }
+  }, [arrWordsLearnedAll]);
 
   useEffect(() => {
     setLineData({
@@ -73,7 +92,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
       datasets: [
         {
           label: "Выучено слов",
-          data: wordsLearnedToday,
+          data: arrWordsLearnedAll,
           backgroundColor: ["rgba(54, 162, 235, 0.6)"],
           borderWidth: 5,
         },
@@ -87,12 +106,24 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
       datasets: [
         {
           label: "Ежедневный прогресс",
-          data: wordsLearnedToday,
+          data: arrWordsLearnedToday,
           backgroundColor: [
             "rgba(255, 99, 132, 0.6)",
             "rgba(54, 162, 235, 0.6)",
             "rgba(255, 206, 86, 0.6)",
             "rgba(75, 192, 192, 0.6)",
+            "rgba(255, 99, 13, 0.6)",
+            "rgba(54, 162, 35, 0.6)",
+            "rgba(255, 206, 6, 0.6)",
+            "rgba(75, 12, 92, 0.6)",
+            "rgba(255, 9, 132, 0.6)",
+            "rgba(54, 162, 235, 0.6)",
+            "rgba(955, 206, 6, 0.6)",
+            "rgba(75, 192, 12, 0.6)",
+            "rgba(275, 129, 192, 0.6)",
+            "rgba(54, 12, 235, 0.6)",
+            "rgba(755, 6, 1, 0.6)",
+            "rgba(75, 2, 12, 0.6)",
           ],
           borderWidth: 3,
         },
@@ -135,7 +166,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
             <tr>
               <td>4</td>
               <td>Изучено новых слов</td>
-              <td>{learnedWords}</td>
+              <td>{statisticUser.vocabulary.learnedWordToday}</td>
             </tr>
           </tbody>
         </Table>
@@ -149,7 +180,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
                 {
                   ticks: {
                     min: 0,
-                    stepSize: 1,
+                    stepSize: 5,
                   },
                 },
               ],
@@ -190,7 +221,7 @@ const Statistics: React.FC<InterfaceStatistics> = (props) => {
                 {
                   ticks: {
                     min: 0,
-                    stepSize: 1,
+                    stepSize: 5,
                   },
                 },
               ],

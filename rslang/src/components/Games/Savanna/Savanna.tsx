@@ -50,13 +50,21 @@ const Savannah = () => {
     "primary",
     "primary",
   ];
+  const defButtons = [
+    "Отсутствуют",
+    "данные",
+    "с",
+    "сервера",
+    "!",
+  ];
   const [words, setWords] = useState(null);
   const [wordsSet, setWordsSet] = useState<any>(null);
-  const [level, setLevel] = useState(null); //TODO: get level from book page
+  // const [level, setLevel] = useState(null); //TODO: get level from book page
+  const level = null;
   const [questWordStyle, setQuestWordStyle] = useState(questWordStyleDef);
   const [soundOff, setSoundOff] = useState(sound);
   const [isSpeak, setIsSpeak] = useState(speak);
-  const [timeoutTime, setTimeoutTime] = useState(TIMEOUT_TIME);
+  const [timeoutTime, setTimeoutTime] = useState<number>(TIMEOUT_TIME);
   const [timerStart, setTimerStart] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [lives, setLives] = useState(100);
@@ -68,13 +76,7 @@ const Savannah = () => {
   const [statistics, setStatistics] = useLocalStorage("savanna", defStatistics);
   const [allStatistics, setAllStatistics] = useState(defAllStatistics);
   const [buttonsVariants, setButtonsVariants] = useState(defButtonsVariants);
-  const [buttons, setButtons] = useState([
-    "Ошибка",
-    "получения",
-    "слов",
-    "с",
-    "сервера",
-  ]);
+  const [buttons, setButtons] = useState(defButtons);
   const [wrongAnswersWords, setWrongAnswersWords] = useState<Array<any>>([]);
   const [wrongWords, setWrongWords] = useState<Array<any>>([]);
   const [exit, setExit] = useState(false);
@@ -86,6 +88,17 @@ const Savannah = () => {
     setStatistics(defStatistics);
     setWrongWords([]);
     setShowModal(false);
+    setLives(100);
+    setAttempt(0);
+    setTimerStart(false);
+  };
+
+  const replay = () => {
+    setTimeoutTime(TIMEOUT_TIME);
+    setQuestWordStyle(questWordStyleDef);
+    setAnswer('');
+    setWords(null);
+    setWrongWords([]);
     setLives(100);
     setAttempt(0);
     setTimerStart(false);
@@ -150,7 +163,7 @@ const Savannah = () => {
   }, [words]);
 
   useEffect(() => {
-    if (wordsSet && !showModal) {
+    if (wordsSet && !showModal && words) {
     if (attempt < NUM_OF_ATTEMPTS) {
       setButtonsVariants(defButtonsVariants);
       const wordQuest = wordsSet[attempt];
@@ -184,7 +197,7 @@ const Savannah = () => {
   }, [question]);
 
   useEffect(() => {
-    if (timerStart) {
+    if (timerStart  && words) {
       if (timeoutTime > 0) {
         const questWordStyle = {top: `${45 - (timeoutTime / 10)}vw`};
         setQuestWordStyle(questWordStyle);
@@ -195,7 +208,7 @@ const Savannah = () => {
         setTimerStart(false);
         setTimeoutTime(TIMEOUT_TIME);
         };
-    }
+    } 
   }, [timeoutTime, timerStart]);
 
   useEffect(() => {
@@ -291,7 +304,7 @@ const Savannah = () => {
         </Button>
       </ButtonGroup>
        <ButtonGroup toggle className="btn-group" aria-label="First group">
-        <Button type="checkbox" onClick={() => {setAttempt(0)}} >
+        <Button type="checkbox" onClick={() => {replay()}} >
        {<BsArrowRepeat size="2.1rem" />}
         </Button>
       </ButtonGroup>
@@ -318,17 +331,18 @@ const Savannah = () => {
     const buttonsArr: JSX.Element[] = [];
     if (buttons) {
     buttons.forEach((button:any, i) => {
-      buttonsArr.push(<>
+      buttonsArr.push(
       <Button onClick={() => setAnswer(button)} 
-        className={`word-answer ${button}`} 
+        className={`word-answer ${button + i}`} 
+        key={`word-answer-${button}`} 
         name={button} 
         value={button}
         variant={buttonsVariants[i]}>
-        <div key={`button-icons ${i}`} className={`button-icons ${ i }`}>
-          <div key={`hotkey ${i}`} className={`hotkey ${i}`}>{ i + 1 }</div>
+        <div key={`button-icons-${i}`} className={`button-icons ${ i }`}>
+          <div key={`hotkey-${i}`} className={`hotkey ${i}`}>{ i + 1 }</div>
         </div>
         {button}
-      </Button></>)
+      </Button>)
     });
     }
     return buttonsArr;
