@@ -1,0 +1,69 @@
+.user-settings-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  .user-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+  .username {
+    font-size: 2em;
+  }
+
+  .userpic {
+    width: 150px;
+    height: auto;
+    border-radius: 30%;
+    margin: 0 20px;
+  }
+  }
+
+  .words-in-day-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .words-in-day {
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    .words-per-day {
+      text-align: center;
+      width: 2rem;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+  }
+
+  .settings-buttons {
+    margin: 5px 5px;
+  }
+
+
+  .settings-block {
+      h4 {
+        text-align: center;
+      }
+    display: flex;
+    flex-direction: column;
+    font-size: 1.3rem;
+    margin: 10px 0;
+
+  }
+
+  .setting {
+    font-size: 1.3rem;
+    margin: 10px 0;
+  }
+}
+
+.settings-button {
+  margin: 5px auto;
+}

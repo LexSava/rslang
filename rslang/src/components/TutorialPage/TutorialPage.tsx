@@ -10,9 +10,9 @@ import SignOut from "../Signin/SignOut";
 interface InterfaceTutorialPage {}
 
 const TutorialPage: React.FC<InterfaceTutorialPage> = (props) => {
-  const avatar: string | null = localStorage.getItem("userpic") || "";
+  const userpic: string | null = localStorage.getItem("userpic") || "";
   const username: string | null = localStorage.getItem("username") || "";
-  const avatarUrl = `${url}${JSON.parse(avatar)}`;
+  const avatarUrl = `${url}${JSON.parse(userpic)}`;
 
   return (
     <Container className="min-vh-100">
@@ -21,7 +21,7 @@ const TutorialPage: React.FC<InterfaceTutorialPage> = (props) => {
           <h1 className="logo-tutorial-page text-dark m-0">RS Lang</h1>
         </Link>
         <Link to="/tutorial-page/settings" className="user-name-and-avatar">
-        {avatar && <img className="avatar" src={avatarUrl} alt="avatar" />}
+        {userpic && <img className="avatar" src={avatarUrl} alt="avatar" />}
         {username && <p className="username">{JSON.parse(username)}</p>}
         </Link>
         <SignOut />

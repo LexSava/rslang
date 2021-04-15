@@ -7,7 +7,7 @@ export const numOfPages = 30;
 export const defSettingsData = {
     "wordsPerDay": 20,
     "optional": {},
-    "vocabulary": {},
+    "vocabulary": {strong: true, deleted: true, translate: true},
     "savanna": { sound: true, speak: true },
     "call": {},
     "sprint": {},
