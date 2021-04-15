@@ -13,7 +13,6 @@ import setUserData from "../../api/setUserData";
 import getWords from "../../api/getWords";
 import { url } from "../../api/defData";
 import _ from "lodash";
-import schedule from "node-schedule";
 
 interface InterfaceMain {}
 
@@ -45,10 +44,7 @@ const Main: React.FC<InterfaceMain> = (props) => {
     graphStatisticsAllProgress,
     setGraphStatisticsAllProgress,
   ] = useLocalStorage("graphStatisticsAllProgress", []);
-  const [dateNow, setDateNow] = useLocalStorage(
-    "dateNow",
-    new Date(allStatistics.optional.regDate).getDate()
-  );
+  const [dateNow, setDateNow] = useLocalStorage("dateNow", "");
   const Till = new Date().getDate();
 
   let [page, setPage] = useLocalStorage("page", 0);
@@ -58,6 +54,7 @@ const Main: React.FC<InterfaceMain> = (props) => {
   const tokenUse: any = JSON.parse(token);
   const Id: any = JSON.parse(userId);
 
+  useEffect(() => {}, [allStatistics]);
   useEffect(() => {
     if (dateNow < Till) {
       setGraphStatisticsDaily([
@@ -121,6 +118,8 @@ const Main: React.FC<InterfaceMain> = (props) => {
     await getUserData(fullUrl, bearerToken)
       .then((responseData: any) => {
         setAllStatistics(responseData);
+        setDateNow(new Date(responseData.optional.regDate).getDate());
+        console.log(responseData);
       })
       .catch((error) => {
         console.log(error.message);
