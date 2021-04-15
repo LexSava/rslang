@@ -185,7 +185,9 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
       <Container id="video" className="bg-light mt-5 p-5 position-relative">
         <h2 className="teaching-head ml-5">Видео о работе приложения</h2>
         <Container className="w-75 mt-5">
-          <img src={Video} alt="Video" className="w-100" />
+          <a href="https://youtu.be/4_fu6L22Xag" target="_blank">
+            <img src={Video} alt="Video" className="w-100" />
+          </a>
         </Container>
       </Container>
 
@@ -246,12 +248,13 @@ const HomePage: React.FC<InterfaceHomePage> = (props) => {
                       Mitry Nayezzhy
                     </h5>
                     <p className="card-text team-card-profession-text">
-                      <small className="text-muted">Front-end, Back-end Developer, DevOps</small>
+                      <small className="text-muted">
+                        Front-end, Back-end Developer, DevOps
+                      </small>
                     </p>
                     <p className="card-text">
-                      Реализовал игры "Саванна" и "Скажи это",
-                      Авторизация и разавторизация пользователя.
-                      Расширил функционал Бэкэнда.
+                      Реализовал игры "Саванна" и "Скажи это", Авторизация и
+                      разавторизация пользователя. Расширил функционал Бэкэнда.
                       Размещение и поддержка проекта.
                     </p>
                   </div>
