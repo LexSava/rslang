@@ -45,7 +45,12 @@ const Main: React.FC<InterfaceMain> = (props) => {
     graphStatisticsAllProgress,
     setGraphStatisticsAllProgress,
   ] = useLocalStorage("graphStatisticsAllProgress", []);
-
+  const [dateNow, setDateNow] = useLocalStorage(
+    "dateNow",
+    new Date(allStatistics.optional.regDate).getDate()
+  );
+  const Till = new Date().getDate();
+  
   let [page, setPage] = useLocalStorage("page", 0);
   const urlWords = `https://rocky-basin-33827.herokuapp.com/words?page=${page}&group=0`;
   const token: any = localStorage.getItem("token");
@@ -53,29 +58,29 @@ const Main: React.FC<InterfaceMain> = (props) => {
   const tokenUse: any = JSON.parse(token);
   const Id: any = JSON.parse(userId);
 
-  schedule.scheduleJob("59 23 * * *", () => {
-    setLearnedWordToday([]);
-    setPage(0);
-    console.log("YES");
-  });
-
-  schedule.scheduleJob("58 23 * * *", () => {
-    setGraphStatisticsDaily([...graphStatisticsDaily, learnedWordToday.length]);
-    setGraphStatisticsAllProgress([
-      ...graphStatisticsAllProgress,
-      learnedWords.length,
-    ]);
-  });
-
   useEffect(() => {
-    if (learnedWordToday.length / 20 === page + 1) {
-      setPage(++page);
-    }
-  }, [learnedWordToday]);
+    if (dateNow < Till) {
+      setGraphStatisticsDaily([
+        ...graphStatisticsDaily,
+        learnedWordToday.length,
+      ]);
+      setGraphStatisticsAllProgress([
+        ...graphStatisticsAllProgress,
+        learnedWords.length,
+      ]);
+      setLearnedWordToday([]);
 
-  // schedule.scheduleJob("0 * * * * *", () => {
-  //   // setGraphStatisticsDaily([]);
-  //   // setLearnedWordToday([]);
+      setDateNow(Till);
+    }
+  }, [Till]);
+  console.log(dateNow);
+
+  // schedule.scheduleJob("09 0 * * *", () => {
+  //   setLearnedWordToday([]);
+  //   console.log("YES");
+  // });
+
+  // schedule.scheduleJob("0 0 * * *", () => {
   //   setGraphStatisticsDaily([...graphStatisticsDaily, learnedWordToday.length]);
   //   setGraphStatisticsAllProgress([
   //     ...graphStatisticsAllProgress,
@@ -83,11 +88,11 @@ const Main: React.FC<InterfaceMain> = (props) => {
   //   ]);
   // });
 
-  // schedule.scheduleJob("0 * * * * *", () => {
-  //   setLearnedWordToday([]);
-  //   setPage(0);
-  //   console.log("YES");
-  // });
+  useEffect(() => {
+    if (learnedWordToday.length / 20 === page + 1) {
+      setPage(++page);
+    }
+  }, [learnedWordToday]);
 
   async function setUserStatistics() {
     if (tokenUse && Id) {
