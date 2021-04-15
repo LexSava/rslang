@@ -1,5 +1,4 @@
 async function getUserDatas<T>(url: string, bearerToken: string):Promise<T> {
-   console.log(url, bearerToken)
    const init: RequestInit = {
      method: 'GET',
      headers: {

@@ -1,5 +1,4 @@
 async function setUserDatas<T>(url: string, bearerToken: string, data: Object):Promise<T> {
-   console.log(data, url)
    const init: RequestInit = {
      method: 'PUT',
      headers: {
