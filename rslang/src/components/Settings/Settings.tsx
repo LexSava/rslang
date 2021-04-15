@@ -22,10 +22,10 @@ const Settings: React.FC<InterfaceSettings> = (props) => {
   const soundSavannaLoc = savanna.sound;
   const speakSavannaLoc = savanna.speak;
   const soundSpeakItLoc = speakit.sound;
-  vocabulary = vocabulary ? vocabulary : {translate: true, deleted: true, strong: true};
-  const translateLoc = vocabulary.translate ? vocabulary.translate : true;
-  const strongLoc = vocabulary.strong ? vocabulary.strong : true;
-  const deletedLoc = vocabulary.deeted ? vocabulary.deleted : true;
+  vocabulary = vocabulary;
+  const translateLoc = vocabulary ? vocabulary.translate : true;
+  const strongLoc = vocabulary ? vocabulary.strong : true;
+  const deletedLoc = vocabulary ? vocabulary.deleted : true;
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
   let username = localStorage.getItem("username");
@@ -83,9 +83,7 @@ const Settings: React.FC<InterfaceSettings> = (props) => {
     speakit: {sound: soundSpeakIt},
     };
     newSettings.wordsPerDay = wordsPerDayNew; 
-    if (newSettings === parseSettings) {
       localStorage.setItem("settings", JSON.stringify(newSettings));
-    }
     setUserSettings(newSettings);
   };  
 
