@@ -21,8 +21,8 @@ import SavannahImg from "../../../assets/img/games/savannah.jpg";
 import { url } from "../../../api/defData";
 
 type Statistics = { correctAnswers: number; wrongAnswers: number };
-type Settings = { sound: boolean; speak: boolean };
 type AllStatistics = { [index: number]: Statistics };
+type Settings = { sound: boolean; speak: boolean };
 type AllSettings = { [index: string]: Settings };
 
 const PREVIEW_HEADING = "Саванна";

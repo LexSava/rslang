@@ -49,6 +49,8 @@ type card = {
 
 type Statistics = {correctAnswers: number, wrongAnswers: number};
 type AllStatistics = {[index:number]: Statistics};
+type Settings = { sound: boolean };
+type AllSettings = { [index: string]: Settings };
 
 const PREVIEW_HEADING = "Скажи это";
 const PREVIEW__DESCRIPTION =
@@ -66,17 +68,21 @@ const defActiveCard = {
 };
 
 const Speakit = () => {
+  const settingsLocal:string | null = localStorage.getItem('settings');
+  const locSettings:AllSettings = settingsLocal ? JSON.parse(settingsLocal) : {speakit: {sound: true}};
+  const settings:Settings = locSettings.speakit;
+  const sound = settings.sound;
   const [words, setWords] = useState(null);
   const [wordsSet, setWordsSet] = useState<any>([]);
   // const [level, setLevel] = useState(null); //TODO: get level from book page
   const level = null; //TODO: get level from book page
-  const [isSound, setSound] = useState(true);
+  const [isSound, setSound] = useState(sound);
   const [isMic, setMic] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isTraining, setTraining] = useState(false);
   const [answer, setAnswer] = useState('');
   const [attempt, setAttempt] = useState(0);
-  const [statistics, setStatistics] = useLocalStorage("savanna", defStatistics);
+  const [statistics, setStatistics] = useLocalStorage("speakit", defStatistics);
   const [allStatistics, setAllStatistics] = useState(defAllStatistics);
   const [buttons, setButtons] = useState([]);
   const [activeCard, setActiveCard] = useState<card>(defActiveCard);
@@ -213,6 +219,29 @@ const Speakit = () => {
     SpeechRecognition.stopListening();
     handleShow();
   };
+
+  useEffect(() => {
+    const settingsLocal:string | null = localStorage.getItem('settings');
+    const locSettings:AllSettings = settingsLocal ? JSON.parse(settingsLocal) : {savanna: {sound: true, speak: true}};
+    let settings:Settings = locSettings.speakit;
+    settings = {sound: isSound};
+    locSettings.speakit = settings;
+    localStorage.setItem('settings', JSON.stringify(locSettings))
+    
+    async function setUserSettings() {
+     if (settings && userId && token) {
+      const newSettings = { savanna: settings };
+      const fullUrl = `${url}users/${JSON.parse(userId)}/settings`;
+      const bearerToken = JSON.parse(token);
+      await setUserData(fullUrl, bearerToken, newSettings)
+        .then((responseData: any) => {})
+        .catch((error) => {
+          console.log(error.message);
+        });
+      }
+    }
+    setUserSettings();
+  }, [isSound]);
 
   async function getUserStatistics() {
     if(token && userId) {
