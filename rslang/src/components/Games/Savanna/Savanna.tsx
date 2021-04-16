@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import { 
   Button, 
   Badge, 
-  Modal, 
   ButtonToolbar, 
   ButtonGroup, 
-  ProgressBar } from "react-bootstrap";
+  ProgressBar, 
+  Toast } from "react-bootstrap";
 import { BsVolumeMute, BsFillVolumeUpFill, BsArrowRepeat } from "react-icons/bs";
 import { BiBell, BiBellOff, BiExit } from "react-icons/bi";
 
@@ -296,6 +296,51 @@ const Savannah = () => {
     setUserStatistics();
   };
 
+  const toastBlock = (
+    <Toast show={showModal} onClose={handleClose}>
+      <Toast.Header>
+        <strong className="mr-auto">
+        <h3 className="your-results">Ваш результат</h3>
+        </strong>
+      </Toast.Header>
+      <Toast.Body>
+        <div className="results">
+          <div className="results-answers">
+            <h4 className="results-answers-category">Верных ответов:</h4>
+            <p className="result">{statistics.correctAnswers}</p>
+            <h4 className="results-answers-category">Неверных ответов:</h4>
+            <p className="result">{statistics.wrongAnswers}</p>
+          </div>
+          <h4 className="results-words">Необходимо повторить слова:</h4>
+          <div className="wrong-words">{wrongAnswersWords}</div>
+          <div className="buttons-block">
+            <Button
+              onClick={() => {
+              handleClose();
+              setTimeout(() => {
+              setWords(null);
+              }, 2000);
+              }}
+            >
+              Другие Слова
+            </Button>
+            <Button variant="success" onClick={handleClose}>
+              Ещё раз
+            </Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+              setExit(true);
+              }}
+            >
+              Выйти
+            </Button>
+          </div>
+        </div>
+      </Toast.Body>
+    </Toast>
+  );
+
   const buttonsBar = (
       <ButtonToolbar className="btns-toolbar">
         <ButtonGroup toggle className="btn-group" aria-label="First group">
@@ -387,53 +432,7 @@ const Savannah = () => {
     <div className="savanna">
       <FullScreenWrapper>
         {exit && <Redirect to="/tutorial-page/games" />}
-        <Modal
-          show={showModal}
-          onHide={handleClose}
-          animation={false}
-          centered={true}
-          scrollable={true}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Игра окончена</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="results">
-              <h3 className="your-results">Ваш результат:</h3>
-              <div className="results-answers">
-                <h4 className="results-answers-category">Верных ответов:</h4>
-                <span className="result">{statistics.correctAnswers}</span>
-                <h4 className="results-answers-category">Неверных ответов:</h4>
-                <span className="result">{statistics.wrongAnswers}</span>
-              </div>
-              <h4 className="results-words">Необходимо повторить слова:</h4>
-              <div className="wrong-words">{wrongAnswersWords}</div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => {
-                handleClose();
-                setTimeout(() => {
-                  setWords(null);
-                }, 2000);
-              }}
-            >
-              Другие Слова
-            </Button>
-            <Button variant="success" onClick={handleClose}>
-              Ещё раз
-            </Button>
-            <Button
-              variant="danger"
-              onClick={() => {
-                setExit(true);
-              }}
-            >
-              Выйти
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        {toastBlock}
         {words === null ? (
           <Preview
             heading={PREVIEW_HEADING}

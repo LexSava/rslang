@@ -167,7 +167,7 @@ const Speakit = () => {
   }, [wordsSet])
 
   useEffect(() => {
-    if (isTraining) {
+    if (isTraining && activeCard) {
       setAttempt(0);
       setActiveCard(wordsSet[0]); 
       SpeechRecognition.startListening({language: 'en-US'});
@@ -184,6 +184,9 @@ const Speakit = () => {
       if (isTraining) {
         setActiveCard(wordsSet[attempt]);
         SpeechRecognition.startListening({ continuous: true, language: 'en-US' });
+        if(attempt === NUM_OF_ANSWERS - 1) {
+          setModal()
+        }
       } else {
         resetTranscript();
         setActiveCard(defActiveCard);
@@ -197,7 +200,7 @@ const Speakit = () => {
   },[finalTranscript]);
 
   useEffect(() => {
-    if (isTraining) {
+    if (isTraining && activeCard) {
       resetTranscript();
       let answerSound = "files/correct.mp3";
       if(attempt === NUM_OF_ANSWERS - 1) {
@@ -211,11 +214,13 @@ const Speakit = () => {
       }
       if (isSound) playAudioWord(answerSound);
       setStatistics(statistics);
-      setTimeout(() => setAttempt(attempt+1), 1000);
+      // setTimeout(() => setAttempt(attempt+1), 1000);
+      setAttempt(attempt+1);
     }
   }, [answer])
 
   const setModal = () => {
+    setAttempt(NUM_OF_ANSWERS)
     SpeechRecognition.stopListening();
     handleShow();
   };
@@ -277,42 +282,38 @@ const Speakit = () => {
     setUserStatistics();
   };
 
-  const modalRender = (
-    <Modal 
-      show={ showModal }
-      onHide={handleClose}
-      animation={false}
-      centered={ true }
-      scrollable={ true }>
-      <Modal.Header closeButton>
-        <Modal.Title>Тренировка завершена</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+  const toastBlock = (
+    <Toast className="modal-toast" show={showModal} onClose={handleClose}>
+      <Toast.Header>
+        <strong className="mr-auto">
+        <h3 className="your-results">Ваш результат</h3>
+        </strong>
+      </Toast.Header>
+      <Toast.Body>
         <div className="results">
-            <h3 className="your-results">Ваш результат:</h3>
           <div className="results-answers">
             <h4 className="results-answers-category">Верных ответов:</h4>
-            <span className="result">{statistics.correctAnswers}</span>
+            <p className="result">{statistics.correctAnswers}</p>
             <h4 className="results-answers-category">Неверных ответов:</h4>
-            <span className="result">{statistics.wrongAnswers}</span>
+            <p className="result">{statistics.wrongAnswers}</p>
           </div>
-        </div> 
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={() => {
-          handleClose();
-          setTimeout(() => {setWords(null)}, 2000)
-          }}>
-          Другие Слова
-        </Button>
-        <Button variant="success" onClick={handleClose}>
-          Ещё раз
-        </Button>
-        <Button variant="danger" onClick={() => {setExit(true)}}>
-          Выйти
-        </Button>
-      </Modal.Footer>
-    </Modal>
+          <div className="buttons-block">
+            <Button onClick={() => {
+              setTimeout(() => {setWords(null)})
+              handleClose();
+              }}>
+                Другие Слова
+            </Button>
+            <Button variant="success" onClick={handleClose}>
+              Ещё раз
+            </Button>
+            <Button variant="danger" onClick={() => {setExit(true)}}>
+              Выйти
+            </Button>
+          </div>
+        </div>
+      </Toast.Body>
+    </Toast>
   );
 
   const trainingButton = (
@@ -446,11 +447,11 @@ const Speakit = () => {
   
   const nextWordButton = (
     <>
-      <Button className="training-button"
+      { activeCard && <Button className="training-button"
         variant={'info'} size="lg" block
         onClick={()=>{setAttempt(attempt+1)}}>
         Следующее слово
-      </Button>
+      </Button>}
     </>)
 
   const gameWrapper = (<div className="game-wrapper">
@@ -493,7 +494,6 @@ const Speakit = () => {
       <div className="speak-it">
         <FullScreenWrapper>
         {exit && <Redirect to="/tutorial-page/games" />}
-        {modalRender}
           {words === null ? (
           <Preview
             heading={PREVIEW_HEADING}
@@ -506,6 +506,7 @@ const Speakit = () => {
         <div className="speak-it-game"
             style={{ backgroundImage: `url(${SpeakitImg})` }}
             >
+            {toastBlock}
             {!wordsSet && ('Набор слов отсутствует')}
             {wordsSet && Game}
           </div>

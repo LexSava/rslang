@@ -93,7 +93,7 @@
     }
     }
   }
-
+  
   .word-quest{
     font-size: 2rem;
     position: relative;
@@ -104,4 +104,30 @@
     overflow: hidden;
   }
 
+  .toast {
+    max-width: 68%;
+  
+
+    button {
+      margin: 10px;
+    }
+  }
+  
+  .wrong-words {
+    font-size: 1.5rem;
+  }
+
+  .toast.show {
+    position: fixed;
+    top: 200px;
+    width: 68%;
+    z-index: 10;
+    height: 65%;
+    left: 15vw;
+  }
+  
+  .result {
+    font-size: 2rem;
+    text-align: center;
+  }
 }
